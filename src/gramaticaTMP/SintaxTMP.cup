@@ -1,0 +1,72 @@
+package gramaticaTMP;
+import java_cup.runtime.Symbol;
+import pollitos.*;
+import java.util.ArrayList;
+
+parser code {:
+
+    public ArrayList<Tiempos> listTiempos;
+
+    public SintaxTMP(AnalizadorLexico4 lex, ArrayList<Tiempos> listTiempos){
+        super(lex);
+        this.listTiempos = listTiempos;
+    }
+
+    public void setAccion(String tipo, String mensaje, String accion){
+        System.out.println(tipo + " " + mensaje);
+    }
+
+    public void syntax_error(Symbol s){
+        setAccion("ERROR", "Error sintaxis columna: "+s.right+" fila: "+s.left,"");
+    }
+
+    public void traspasarDatosArreglo(ArrayList<Tiempos> listTiempos, ArrayList<Tiempos> listTemporal){
+        for(int i = 0; i < listTemporal.size(); i++){
+            listTiempos.add(listTemporal.get(i));
+        }
+    }
+        
+    //seguir con esto ma;ana xd guardar los datos en un arraylist para usarlos en la otra plataforma
+    
+:}
+
+    terminal COMA, DOS_PUNTOS, COMILLAS, AGRUPACION_A, AGRUPACION_B, ID, NUMERO, TIEMPOS, inicio, fin, imagenes,
+            id, duracion, LLAVE_A, LLAVE_B;
+            
+    non terminal a;
+
+    non terminal ArrayList<Tiempos> COMA1, b;
+
+    non terminal Tiempos c, COMA2;
+
+    non terminal ArrayList<ImagenesTiempo> COMA3, d;
+
+    non terminal ImagenesTiempo COMA4, e;
+
+    start with a;
+
+    a ::= LLAVE_A TIEMPOS DOS_PUNTOS LLAVE_A b LLAVE_B 
+;
+    b ::= ID DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA1:b {: b.add(a); RESULT=b; :}
+;
+    c ::= inicio DOS_PUNTOS COMILLAS ID:b COMILLAS COMA2:a {: if(a.getLienzoInicio() == null) { a.setLienzoInicio(b.toString()); } else { System.out.println("ya hay un inicio"); } RESULT=a; :}
+    | fin DOS_PUNTOS COMILLAS ID:b COMILLAS COMA2:a {: if(a.getLienzoFin() == null) { a.setLienzoFin(b.toString()); } else { System.out.println("ya hay un fin"); } RESULT=a; :}
+    | imagenes DOS_PUNTOS AGRUPACION_A d:b AGRUPACION_B COMA2:a {: if(a.getTransiciones() == null) { a.setTransiciones(b); } else { System.out.println("ya hay un transiciones"); } RESULT=a; :}
+;
+    d ::= LLAVE_A e:b LLAVE_B COMA3:a {: a.add(b); RESULT=a; :}
+;
+    e ::= id DOS_PUNTOS COMILLAS ID:b COMILLAS COMA4:a {: if(a.getId() == null){ a.setId(b.toString()); } else { System.out.println("ya hay un id en imagenes"); } RESULT=a; :}
+    | duracion DOS_PUNTOS NUMERO:b COMA4:a {: if(a.getDuracion() == null){ a.setDuracion((Integer) b); } else { System.out.println("ya existe un duracion en imagenes"); } RESULT=a; :}
+;
+    COMA1 ::= COMA b:a {: RESULT=a; :}
+    | {: ArrayList<Tiempos> listTiempos = new ArrayList<>(); RESULT=listTiempos; :}
+;
+    COMA2 ::= COMA c:a {: RESULT=a; :}
+    | {: Tiempos tiempo = new Tiempos(); RESULT=tiempo; :}
+;
+    COMA3 ::= COMA d:a {: RESULT=a; :}
+    | {: ArrayList<ImagenesTiempo> listImagenes = new ArrayList<>(); RESULT=listImagenes; :}
+;
+    COMA4 ::= COMA e:a {: RESULT=a; :}
+    | {: ImagenesTiempo imagen = new ImagenesTiempo(); RESULT=imagen; :}
+;

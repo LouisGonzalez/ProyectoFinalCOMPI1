@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorTexto/InterfazTexto.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaCLRS/AnalizadorLexico.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/Tiempos.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionesEditorTexto/VerificadorPaginas.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaCLRS/LexerCLRS.flex</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/Lienzos.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaTMP/SintaxTMP.cup</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorTexto/NuevoArchivo.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaLNZ/LexerLNZ.flex</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorGrafico/InterfazGrafico.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaPNT/LexerPNT.flex</file>
+        </group>
+    </open-files>
+</project-private>

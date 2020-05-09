@@ -1,0 +1,70 @@
+package gramaticaCLRS;
+import pollitos.*;   
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+
+parser code {:
+    
+    public ArrayList<Colores> listColores;
+
+    public SintaxCLRS(AnalizadorLexico lex, ArrayList<Colores> listColores){
+        super(lex);
+        this.listColores = listColores;
+    }
+
+    public void setAccion(String tipo, String mensaje, String accion){
+        System.out.println(tipo + " " + mensaje);
+    }
+
+    public void syntax_error(Symbol s){
+        setAccion("ERROR", "Error sintaxis columna: "+s.right+" fila: "+s.left,"");
+    }
+
+    public void traspasarDatosArreglo(ArrayList<Colores> listColores, ArrayList<Colores> listTemporal){
+        for(int i = 0; i < listTemporal.size(); i++){
+            listColores.add(listTemporal.get(i));
+        }
+    }
+
+:}
+
+    terminal COLORES, Green, Red, Blue, HEX, LLAVE_A, LLAVE_B, DOS_PUNTOS, NUMERO, ID, codigoHex, COMA;
+
+    non terminal a;
+
+    non terminal LienzoColor d, COMA3, e;
+
+    non terminal ArrayList<Colores> b, COMA1;
+
+    non terminal ArrayList<LienzoColor> COMA2, c;
+
+    start with a;
+
+    a ::= LLAVE_A COLORES DOS_PUNTOS LLAVE_A b:a LLAVE_B LLAVE_B {: parser.traspasarDatosArreglo(parser.listColores, a); :}
+;
+    b ::= ID:e DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA1:c {:  Colores color = new Colores(); color.setNombreLienzo(e.toString()); color.setListColores(a); c.add(color); RESULT=c; :}
+    | error b:e {: :}
+;
+    c ::= ID:e DOS_PUNTOS LLAVE_A d:a LLAVE_B COMA2:b  {:  if(a.getRojo()==null || a.getAzul() == null || a.getVerde()==null){ System.out.println("falta de un atributo color"); } else { a.setIdColor(e.toString()); b.add(a); } RESULT=b; :} 
+    | ID:e DOS_PUNTOS LLAVE_A e:a LLAVE_B COMA2:b {: if(a.getColorHex()==null){ System.out.println("Falta archivo hex en color"); } else { a.setIdColor(e.toString()); b.add(a); } RESULT=b; :} 
+    | error c:e {:  :}
+;
+    d ::= Red DOS_PUNTOS NUMERO:e COMA3:b {: if(b.getRojo()==null){ b.setRojo((Integer) e); } else { System.out.println("ya hay un dato rojo"); } RESULT=b; :}
+    | Blue DOS_PUNTOS NUMERO:e COMA3:b {: if(b.getAzul()==null){ b.setAzul((Integer) e); } else { System.out.println("ya hay un dato azul"); } RESULT=b; :}
+    | Green DOS_PUNTOS NUMERO:e COMA3:b {: if(b.getVerde()==null){ b.setVerde((Integer) e); } else { System.out.println("ya hay un dato en verde"); } RESULT=b;  :}
+    | error d:e {: System.out.println("error prro"); RESULT=e; :}
+;
+    e ::= HEX DOS_PUNTOS codigoHex:e {: LienzoColor colores = new LienzoColor(); colores.setColorHex(e.toString()); RESULT=colores; :}
+    | error e:e {: System.out.println("error"); RESULT=e; :}
+;
+    COMA1 ::= COMA b:e {: RESULT=e; :}
+    | {: ArrayList<Colores> coloresLienzos = new ArrayList<>(); RESULT=coloresLienzos; :}
+;
+    COMA2 ::= COMA c:e {: RESULT=e; :}
+    | {: ArrayList<LienzoColor> listColores = new ArrayList<>(); RESULT=listColores; :}
+;
+    COMA3 ::= COMA d:a {: RESULT=a; :}
+    | {: LienzoColor colores = new LienzoColor(); RESULT=colores; :}
+;
+
+

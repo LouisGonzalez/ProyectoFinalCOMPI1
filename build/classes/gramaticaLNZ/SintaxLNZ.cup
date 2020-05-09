@@ -1,0 +1,80 @@
+package gramaticaLNZ;
+import pollitos.*;
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+
+parser code {:
+
+    public ArrayList<Lienzos> listLienzos;
+
+    public SintaxLNZ(AnalizadorLexico2 lex, ArrayList<Lienzos> listLienzos){
+        super(lex);
+        this.listLienzos = listLienzos;
+    }
+
+    public void setAccion(String tipo, String mensaje, String accion){
+        System.out.println(tipo + " " + mensaje);
+    }
+
+    public void syntax_error(Symbol s){
+        setAccion("ERROR", "Error sintaxis columna: "+s.right+" fila: "+s.left,"");
+    }
+
+    public void traspasarDatosArreglo(ArrayList<Lienzos> listLienzos, ArrayList<Lienzos> listTemporal){
+        for(int i = 0; i < listTemporal.size(); i++){
+            listLienzos.add(listTemporal.get(i));
+        }
+
+    }
+
+:}
+
+    terminal COMA, LIENZOS, LLAVE_A, LLAVE_B, DOS_PUNTOS, COMILLAS, nombre, tipo, Fondo, size, Red, Green, Blue, cuadro,
+            dimension_x, dimension_y, png, gif, HEX, NUMERO, ID, codigoHex, PALABRA;
+
+    non terminal a;
+
+    non terminal ArrayList<Lienzos> b, COMA2;
+
+    non terminal Lienzos c, COMA1;
+
+    non terminal LienzoColor f, e, COMA3;
+
+    non terminal LienzoSize g, COMA4;
+
+    start with a;
+
+    a ::= LLAVE_A LIENZOS DOS_PUNTOS LLAVE_A b:a LLAVE_B LLAVE_B {: parser.traspasarDatosArreglo(parser.listLienzos, a); :}
+;
+    b ::= ID:c DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA2:b {: a.setNombre(c.toString()); if(a.getTipo()==null || a.getMisColores()==null || a.getMisDimensiones()==null){ System.out.println("Falta de un archivvo"); } else { b.add(a);  }RESULT=b; :}
+;
+    c ::= nombre DOS_PUNTOS COMILLAS PALABRA:e COMILLAS COMA1:a {: if(a.getNombre()==null){ a.setNombre(e.toString()); } else { System.out.println("ya hay un nombre"); } RESULT=a; :}
+    | tipo DOS_PUNTOS COMILLAS png COMILLAS COMA1:a {: if(a.getTipo()==null){ a.setTipo("png"); } else { System.out.println("ya hay un tipo"); } RESULT=a; :} 
+    | tipo DOS_PUNTOS COMILLAS gif COMILLAS COMA1:a {: if(a.getTipo()==null){ a.setTipo("gif"); } else { System.out.println("ya existe un tipo"); } RESULT=a; :}
+    | Fondo DOS_PUNTOS LLAVE_A e:b LLAVE_B COMA1:a {: if(a.getMisColores()==null){ if(b.getRojo()==null || b.getAzul()==null || b.getVerde()==null){ System.out.println("falta de un atributo en colores"); } else {  a.setMisColores(b); } } else { System.out.println("ya existe un fondo"); } RESULT=a; :}
+    | Fondo DOS_PUNTOS LLAVE_A f:b LLAVE_B COMA1:a {: if(a.getMisColores()==null){ a.setMisColores(b); } else { System.out.println("ya existe un fondo"); } RESULT=a; :}
+    | size DOS_PUNTOS LLAVE_A g:b LLAVE_B COMA1:a {: if(a.getMisDimensiones()==null){ if(b.getDimensionCuadros()==null || b.getCuadrosX()==null || b.getCuadrosY()==null){ System.out.println("falta de un atributo en dimensiones"); } else { a.setMisDimensiones(b); } } else { System.out.println("ya existe un size"); } RESULT=a; :}
+;
+    e ::= Red DOS_PUNTOS NUMERO:b COMA3:a {: if(a.getRojo() == null){ a.setRojo((Integer) b); } else { System.out.println("ya hay un rojo"); } RESULT=a; :}
+    | Blue DOS_PUNTOS NUMERO:b COMA3:a {: if(a.getAzul() == null){ a.setAzul((Integer) b); } else { System.out.println("ya hay un azul"); } RESULT=a; :}
+    | Green DOS_PUNTOS NUMERO:b COMA3:a {: if(a.getVerde() == null){ a.setVerde((Integer) b); } else { System.out.println("ya hay un verde"); } RESULT=a; :}
+;
+    f ::= HEX DOS_PUNTOS codigoHex:a {: LienzoColor color = new LienzoColor(); color.setColorHex(a.toString()); RESULT=color; :}
+;
+    g ::= cuadro DOS_PUNTOS NUMERO:b COMA4:a {: if(a.getDimensionCuadros()==null){ a.setDimensionCuadros((Integer) b); } else { System.out.println("ya hay un dimension cuadros"); } RESULT=a; :}
+    | dimension_x DOS_PUNTOS NUMERO:b COMA4:a {: if(a.getCuadrosX() == null){ a.setCuadrosX((Integer) b); } else { System.out.println("ya hay un cuadrosX"); } RESULT=a; :}
+    | dimension_y DOS_PUNTOS NUMERO:b COMA4:a {: if(a.getCuadrosY() == null){ a.setCuadrosY((Integer) b); } else { System.out.println("ya hay un cuadrosY"); } RESULT=a; :}
+;
+    COMA1::= COMA c:a {: RESULT=a; :}
+    | {: Lienzos lienzo = new Lienzos(); RESULT=lienzo; :}
+;
+    COMA2 ::= COMA b:a {: RESULT=a; :}
+    | {: ArrayList<Lienzos> listLienzos = new ArrayList<>(); RESULT=listLienzos; :}
+;
+    COMA3 ::= COMA e:a {: RESULT=a; :}
+    | {: LienzoColor color = new LienzoColor(); RESULT=color; :}
+;
+    COMA4 ::= COMA g:a {: RESULT=a; :}
+    | {: LienzoSize size = new LienzoSize(); RESULT=size; :}
+;
+    

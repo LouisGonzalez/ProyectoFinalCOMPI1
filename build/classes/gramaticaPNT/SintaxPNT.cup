@@ -1,0 +1,109 @@
+package gramaticaPNT;
+import java_cup.runtime.Symbol;
+
+parser code {:
+    
+    public SintaxPNT(AnalizadorLexico3 lex){
+        super(lex);
+    }
+
+    public void setAccion(String tipo, String mensaje, String accion){
+        System.out.println(tipo + " " + mensaje);
+    }
+
+    public void syntax_error(Symbol s){
+        setAccion("ERROR", "Error sintaxis columna: "+s.right+" fila: "+s.left,"");
+    }
+
+:}
+
+    terminal COMA, COMENTARIO_A, PUNTO_COMA, COMILLAS, RANGO, DOBLE_IGUAL, IGUAL, MENOR, MAYOR, MENOR_IGUAL,
+            MAYOR_IGUAL, DIFERENCIA, LLAVE_A, LLAVE_B, PARENTESIS_A, PARENTESIS_B, AGRUPACION_A, AGRUPACION_B,
+            MAS, MENOS, POR, COMENTARIO_B_A, COMENTARIO_B_B, VARS, INT, STRING, BOOLEAN, TRUE, FALSE, 
+            INSTRUCCIONES, PINTAR, IF, ELSE, WHILE, NUMERO, ID, AND, OR;
+
+    non terminal a, b, b1, b2, b3, b4, b5, b6, b8, c, c1, c2, c3, c4, c5, idColor, idImagen, posX, posY, COMA1, COMA2,
+                COMA3, COMA4, ext, relacional;
+
+    start with a;
+
+    a ::= b c
+;
+    b ::= VARS AGRUPACION_A b1 AGRUPACION_B
+;
+    b1 ::= INT ID IGUAL b2 b3 PUNTO_COMA b1 
+    | INT ID b3 PUNTO_COMA b1
+    | STRING ID IGUAL COMILLAS ID COMILLAS b4 PUNTO_COMA b1
+    | STRING ID b4 PUNTO_COMA b1
+    | BOOLEAN ID b5 PUNTO_COMA b1
+    | BOOLEAN ID IGUAL TRUE b5 PUNTO_COMA b1
+    | BOOLEAN ID IGUAL FALSE b5 PUNTO_COMA b1
+    |
+;
+    b2 ::= NUMERO
+    | ID
+    | NUMERO MAS b2
+    | ID MAS b2
+    | NUMERO MENOS b2
+    | ID MENOS b2
+    | c3 IGUAL c3
+;
+    b3 ::= COMA b2 b3
+    |
+;
+    b4 ::= COMA ID IGUAL COMILLAS ID COMILLAS b4
+    | COMA ID b4
+    |
+;
+    b5 ::= COMA ID b5
+    | COMA ID IGUAL TRUE b5
+    | COMA ID IGUAL FALSE b5
+    |
+;
+    c ::= INSTRUCCIONES PARENTESIS_A ID PARENTESIS_B AGRUPACION_A c1 AGRUPACION_B COMA4
+;
+    c1 ::= PINTAR PARENTESIS_A idColor COMA idImagen COMA posX COMA posX PARENTESIS_B PUNTO_COMA c1
+    | IF PARENTESIS_A c2 PARENTESIS_B LLAVE_A c1 LLAVE_B c1
+    | IF PARENTESIS_A c2 PARENTESIS_B LLAVE_A c1 LLAVE_B ELSE LLAVE_A c1 LLAVE_B c1
+    | WHILE PARENTESIS_A c2 PARENTESIS_B LLAVE_A c1 LLAVE_B c1
+    | b8 c1
+    |
+;
+    b8 ::= ID IGUAL b2  PUNTO_COMA 
+    | ID IGUAL COMILLAS ID COMILLAS PUNTO_COMA 
+    | ID IGUAL TRUE PUNTO_COMA 
+    | ID IGUAL FALSE PUNTO_COMA
+;
+    c2 ::= c3 relacional c3 ext
+    | ID ext
+    | TRUE ext
+    | FALSE ext
+;
+    c3 ::= ID
+    | NUMERO   
+;
+    ext ::= AND c2
+    | OR c2
+    |
+;
+    idColor ::= ID
+    | COMILLAS ID COMILLAS
+;
+    idImagen ::= ID 
+    | COMILLAS ID COMILLAS
+;
+    posX ::= b2
+    | b2 RANGO b2
+;
+    COMA4 ::= c
+    |
+;
+    relacional ::= DOBLE_IGUAL
+    | IGUAL
+    | MENOR
+    | MAYOR
+    | MENOR_IGUAL
+    | MAYOR_IGUAL
+    | DIFERENCIA
+;
+    

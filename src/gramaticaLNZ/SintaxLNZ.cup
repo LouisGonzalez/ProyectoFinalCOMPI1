@@ -46,7 +46,7 @@ parser code {:
 
     a ::= LLAVE_A LIENZOS DOS_PUNTOS LLAVE_A b:a LLAVE_B LLAVE_B {: parser.traspasarDatosArreglo(parser.listLienzos, a); :}
 ;
-    b ::= ID:c DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA2:b {: a.setNombre(c.toString()); if(a.getTipo()==null || a.getMisColores()==null || a.getMisDimensiones()==null){ System.out.println("Falta de un archivvo"); } else { b.add(a);  }RESULT=b; :}
+    b ::= ID:c DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA2:b {: a.setIdentificador(c.toString()); if(a.getTipo()==null || a.getMisColores()==null || a.getMisDimensiones()==null || a.getNombre()==null){ System.out.println("Falta de un archivvo"); } else { b.add(a);  }RESULT=b; :}
 ;
     c ::= nombre DOS_PUNTOS COMILLAS PALABRA:e COMILLAS COMA1:a {: if(a.getNombre()==null){ a.setNombre(e.toString()); } else { System.out.println("ya hay un nombre"); } RESULT=a; :}
     | tipo DOS_PUNTOS COMILLAS png COMILLAS COMA1:a {: if(a.getTipo()==null){ a.setTipo("png"); } else { System.out.println("ya hay un tipo"); } RESULT=a; :} 

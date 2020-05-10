@@ -11,10 +11,19 @@ package pollitos;
  */
 public class Lienzos {
     
+    private String identificador;
     private String nombre;
     private String tipo;
     private LienzoColor misColores;
     private LienzoSize misDimensiones;
+
+    public String getIdentificador() {
+        return identificador;
+    }
+
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
 
     public String getNombre() {
         return nombre;

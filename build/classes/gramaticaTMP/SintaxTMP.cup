@@ -45,9 +45,9 @@ parser code {:
 
     start with a;
 
-    a ::= LLAVE_A TIEMPOS DOS_PUNTOS LLAVE_A b LLAVE_B 
+    a ::= LLAVE_A TIEMPOS DOS_PUNTOS LLAVE_A b:a LLAVE_B {: parser.traspasarDatosArreglo(parser.listTiempos, a); :}
 ;
-    b ::= ID DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA1:b {: b.add(a); RESULT=b; :}
+    b ::= ID:c DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA1:b {: a.setNombreLienzo(c.toString()); b.add(a); RESULT=b; :}
 ;
     c ::= inicio DOS_PUNTOS COMILLAS ID:b COMILLAS COMA2:a {: if(a.getLienzoInicio() == null) { a.setLienzoInicio(b.toString()); } else { System.out.println("ya hay un inicio"); } RESULT=a; :}
     | fin DOS_PUNTOS COMILLAS ID:b COMILLAS COMA2:a {: if(a.getLienzoFin() == null) { a.setLienzoFin(b.toString()); } else { System.out.println("ya hay un fin"); } RESULT=a; :}

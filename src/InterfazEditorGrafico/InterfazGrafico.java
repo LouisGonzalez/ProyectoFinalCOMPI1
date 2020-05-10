@@ -5,19 +5,39 @@
  */
 package InterfazEditorGrafico;
 
+import OperacionEditorGrafico.CreacionObjetosLNZ;
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import javax.swing.JLabel;
+import javax.swing.border.LineBorder;
+import pollitos.*;
+
 /**
  *
  * @author luisGonzalez
  */
 public class InterfazGrafico extends javax.swing.JDialog {
 
+    private ArrayList<Lienzos> listLienzos;
+    private ArrayList<Colores> listColores;
+    private ArrayList<Tiempos> listTiempos;
+    private CreacionObjetosLNZ creacion = new CreacionObjetosLNZ();
+    
     /**
      * Creates new form InterfazGrafico
      */
-    public InterfazGrafico(java.awt.Frame parent, boolean modal) {
+    public InterfazGrafico(java.awt.Frame parent, boolean modal, ArrayList<Lienzos> listLienzos, ArrayList<Colores> listColores, ArrayList<Tiempos> listTiempos) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
+        this.listLienzos = listLienzos;
+        this.listColores = listColores;
+        this.listTiempos = listTiempos;
+        creacion.crearLienzos(listLienzos, listColores, listTiempos, panelGrafico);
+
     }
 
     /**
@@ -29,7 +49,7 @@ public class InterfazGrafico extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        panelGrafico = new javax.swing.JTabbedPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -48,27 +68,27 @@ public class InterfazGrafico extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 744, Short.MAX_VALUE)
+                .addComponent(panelGrafico, javax.swing.GroupLayout.DEFAULT_SIZE, 744, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
+                .addComponent(panelGrafico, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-   
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane panelGrafico;
     // End of variables declaration//GEN-END:variables
 }

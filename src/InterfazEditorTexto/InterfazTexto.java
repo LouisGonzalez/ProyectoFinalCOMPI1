@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import pollitos.Colores;
 import pollitos.Lienzos;
+import pollitos.Tiempos;
 
 /**
  *
@@ -34,8 +35,9 @@ public class InterfazTexto extends javax.swing.JFrame {
     private final Guardado guardado = new Guardado();
     public static String[] textos = new String[4];
     private String[] paths = new String[4];
-    private ArrayList<Lienzos> listLienzos = new ArrayList<>();
-    private ArrayList<Colores> listColores = new ArrayList<>();
+    private ArrayList<Lienzos> listLienzos;
+    private ArrayList<Colores> listColores;
+    private ArrayList<Tiempos> listTiempos;
 
     /**
      * Creates new form InterfazTexto
@@ -244,11 +246,14 @@ public class InterfazTexto extends javax.swing.JFrame {
     }//GEN-LAST:event_archivoGuardarActionPerformed
 
     private void btnGraficoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraficoActionPerformed
-        InterfazGrafico grafico = new InterfazGrafico(null, false);
+      InterfazGrafico grafico = new InterfazGrafico(null, true, listLienzos, listColores, listTiempos);
         grafico.setVisible(true);
     }//GEN-LAST:event_btnGraficoActionPerformed
 
     private void btnAnalizadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizadorActionPerformed
+        listLienzos = new ArrayList<>();
+        listColores = new ArrayList<>();
+        listTiempos = new ArrayList<>();
         for (int i = 0; i < paths.length; i++) {
             if (paths[i] != null) {
                 if (!paths[i].equals("")) {
@@ -257,7 +262,7 @@ public class InterfazTexto extends javax.swing.JFrame {
                         try {
                             new SintaxPNT(lexer3).parse();
                         } catch (Exception ex) {
-                            System.out.println(".PNT:");
+                            
                             Logger.getLogger(PanelTexto.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else if (paths[i].endsWith(".clrs")) {
@@ -279,7 +284,7 @@ public class InterfazTexto extends javax.swing.JFrame {
                     } else if (paths[i].endsWith(".tmp")) {
                         AnalizadorLexico4 lexer4 = new AnalizadorLexico4(new StringReader(textos[i]));
                         try {
-                            new SintaxTMP(lexer4).parse();
+                            new SintaxTMP(lexer4, listTiempos).parse();
                         } catch (Exception ex) {
                             System.out.println(".TMP");
                             Logger.getLogger(PanelTexto.class.getName()).log(Level.SEVERE, null, ex);

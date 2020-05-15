@@ -1,12 +1,12 @@
 {
     LIENZOS:{
    	 lienzoId1:{
-   		 nombre:"  yo soy wichito",
+   		 nombre:"lienzo 1",
    		 tipo:"png",
    		 Fondo:{
    			 Red: 25,
    			 Blue: 89,
-   			 Green: 45
+   			 Green: 45		
    		 },
    		 size:{
    			 cuadro: 50,

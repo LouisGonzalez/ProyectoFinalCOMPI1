@@ -6,12 +6,15 @@
 package InterfazEditorGrafico;
 
 import OperacionEditorGrafico.LlenadoPaneles;
+import OperacionEditorGrafico.PanelMatriz;
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import pollitos.Colores;
 import pollitos.Lienzos;
 import pollitos.Tiempos;
 import javax.swing.JLabel;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -23,7 +26,11 @@ public class PanelGrafico extends javax.swing.JPanel {
     private Tiempos misTiempos;
     private Colores misColores;
     private final LlenadoPaneles paneles;
+    private final PanelMatriz principal;
     public JLabel[][] tableroColor;
+    public JLabel[][] tableroNombreColor;
+    public JLabel[][] tableroPrincipal;
+    public static String color;
 
     /**
      * Creates new form PanelGrafico
@@ -33,10 +40,15 @@ public class PanelGrafico extends javax.swing.JPanel {
         this.miLienzo = miLienzo;
         this.misTiempos = misTiempos;
         this.misColores = misColores;
-        paneles = new LlenadoPaneles(panelColores, tableroColor);
+        lblSeleccionado.setBorder(new LineBorder(Color.black));
+        paneles = new LlenadoPaneles(panelColores, tableroColor, tableroNombreColor, panelNombres);
+        principal = new PanelMatriz(panelMatriz, tableroPrincipal);
         paneles.llenadoPanel1(misTiempos, txtCantidad, txtInicio, txtFin);
         paneles.llenadoPanel2(misTiempos, comboImg);
-        paneles.asignacionColores(misColores);
+        
+        paneles.asignacionColores(misColores, lblSeleccionado);
+        paneles.asignacionNombresColores(misColores);
+        principal.crearTablero(miLienzo, borrador);
      /*   panelColores.setLayout(new GridLayout(misColores.getListColores().size(), 1));
         for (int i = 0; i < misColores.getListColores().size(); i++) {
             for (int j = 0; j < 1; j++) {
@@ -68,13 +80,17 @@ public class PanelGrafico extends javax.swing.JPanel {
         txtInicio = new javax.swing.JTextField();
         txtFin = new javax.swing.JTextField();
         panelCLRS = new javax.swing.JPanel();
-        panelNombres = new javax.swing.JPanel();
         panelColores = new javax.swing.JLabel();
+        panelNombres = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        lblSeleccionado = new javax.swing.JLabel();
+        borrador = new javax.swing.JCheckBox();
         panelLNZ1 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         comboImg = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         txtDuracion = new javax.swing.JTextField();
+        panelMatriz = new javax.swing.JLabel();
 
         jLabel1.setText("Cantidad");
 
@@ -117,36 +133,44 @@ public class PanelGrafico extends javax.swing.JPanel {
                 .addContainerGap(33, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout panelNombresLayout = new javax.swing.GroupLayout(panelNombres);
-        panelNombres.setLayout(panelNombresLayout);
-        panelNombresLayout.setHorizontalGroup(
-            panelNombresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        panelNombresLayout.setVerticalGroup(
-            panelNombresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 153, Short.MAX_VALUE)
-        );
+        jLabel6.setText("Color seleccionado:");
+
+        borrador.setText("Borrador activo");
 
         javax.swing.GroupLayout panelCLRSLayout = new javax.swing.GroupLayout(panelCLRS);
         panelCLRS.setLayout(panelCLRSLayout);
         panelCLRSLayout.setHorizontalGroup(
             panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCLRSLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(panelNombres, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelColores, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31))
+            .addGroup(panelCLRSLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelCLRSLayout.createSequentialGroup()
+                        .addComponent(borrador, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panelCLRSLayout.createSequentialGroup()
+                        .addGroup(panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelNombres, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(panelColores, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
+                            .addComponent(lblSeleccionado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(31, 31, 31))))
         );
         panelCLRSLayout.setVerticalGroup(
             panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelCLRSLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addGroup(panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelNombres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panelColores, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addGroup(panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(panelNombres, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                    .addComponent(panelColores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel6)
+                    .addComponent(lblSeleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(borrador)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel4.setText("Imagen");
@@ -221,11 +245,17 @@ public class PanelGrafico extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(panelArea1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 417, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelMatriz, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(panelArea1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panelMatriz, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -235,18 +265,22 @@ public class PanelGrafico extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox borrador;
     private javax.swing.JComboBox<String> comboImg;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel lblSeleccionado;
     private javax.swing.JPanel panelArea1;
     private javax.swing.JPanel panelCLRS;
     private javax.swing.JLabel panelColores;
     private javax.swing.JPanel panelLNZ;
     private javax.swing.JPanel panelLNZ1;
-    private javax.swing.JPanel panelNombres;
+    private javax.swing.JLabel panelMatriz;
+    private javax.swing.JLabel panelNombres;
     private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtDuracion;
     private javax.swing.JTextField txtFin;

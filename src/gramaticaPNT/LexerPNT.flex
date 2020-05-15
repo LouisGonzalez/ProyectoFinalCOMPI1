@@ -53,6 +53,7 @@ Espacio = {Salto} | [\t\f]
     "+"                                                             {return symbol(sym.MAS);}
     "-"                                                             {return symbol(sym.MENOS);}
     "*"                                                             {return symbol(sym.POR);}
+    "/"                                                             {return symbol(sym.DIV);}
     "/*"                                                            {return symbol(sym.COMENTARIO_B_A);}
     "*/"                                                            {return symbol(sym.COMENTARIO_B_B);}
     "VARS"                                                          {return symbol(sym.VARS);}
@@ -68,8 +69,8 @@ Espacio = {Salto} | [\t\f]
     "if"                                                            {return symbol(sym.IF);}
     "else"                                                          {return symbol(sym.ELSE);}
     "while"                                                         {return symbol(sym.WHILE);}
-    ("(-"{Numero}+")") | {Numero}+                                  {return symbol(sym.NUMERO);}
-    ({Letra}|{EspacioBajo})({Letra}|{EspacioBajo}|{Numero})*        {return symbol(sym.ID);}        
+    ("(-"{Numero}+")") | {Numero}+                                  {return symbol(sym.NUMERO, new Integer(yytext()));}
+    ({Letra}|{EspacioBajo})({Letra}|{EspacioBajo}|{Numero})*        {return symbol(sym.ID, new String(yytext()));}        
     {Espacio}*                                                           {/*Ignore*/}
     .                                                               {}
 }

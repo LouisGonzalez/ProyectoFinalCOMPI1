@@ -1,10 +1,17 @@
 package gramaticaPNT;
 import java_cup.runtime.Symbol;
+import pollitos.*;
+import java.util.ArrayList;
 
 parser code {:
     
-    public SintaxPNT(AnalizadorLexico3 lex){
+    public ArrayList<ValoresPNT> listValores;
+    public TablaSimbolos tabla;
+
+    public SintaxPNT(AnalizadorLexico3 lex, ArrayList<ValoresPNT> listValores, TablaSimbolos tabla){
         super(lex);
+        this.listValores = listValores;
+        this.tabla = tabla;
     }
 
     public void setAccion(String tipo, String mensaje, String accion){
@@ -20,45 +27,52 @@ parser code {:
     terminal COMA, COMENTARIO_A, PUNTO_COMA, COMILLAS, RANGO, DOBLE_IGUAL, IGUAL, MENOR, MAYOR, MENOR_IGUAL,
             MAYOR_IGUAL, DIFERENCIA, LLAVE_A, LLAVE_B, PARENTESIS_A, PARENTESIS_B, AGRUPACION_A, AGRUPACION_B,
             MAS, MENOS, POR, COMENTARIO_B_A, COMENTARIO_B_B, VARS, INT, STRING, BOOLEAN, TRUE, FALSE, 
-            INSTRUCCIONES, PINTAR, IF, ELSE, WHILE, NUMERO, ID, AND, OR;
+            INSTRUCCIONES, PINTAR, IF, ELSE, WHILE, NUMERO, ID, AND, OR, DIV;
 
-    non terminal a, b, b1, b2, b3, b4, b5, b6, b8, c, c1, c2, c3, c4, c5, idColor, idImagen, posX, posY, COMA1, COMA2,
+    non terminal a, b, b3, b4, b6, b8, c, c1, c2, c3, c4, c5, idColor, idImagen, posX, posY, COMA1, COMA2,
                 COMA3, COMA4, ext, relacional;
 
+    non terminal ArrayList<ValoresPNT> b1, b5;
+
+    non terminal ArrayList<OperacionesPNT> b2, b2prima;
+
+   
     start with a;
 
     a ::= b c
 ;
     b ::= VARS AGRUPACION_A b1 AGRUPACION_B
 ;
-    b1 ::= INT ID IGUAL b2 b3 PUNTO_COMA b1 
-    | INT ID b3 PUNTO_COMA b1
-    | STRING ID IGUAL COMILLAS ID COMILLAS b4 PUNTO_COMA b1
-    | STRING ID b4 PUNTO_COMA b1
-    | BOOLEAN ID b5 PUNTO_COMA b1
-    | BOOLEAN ID IGUAL TRUE b5 PUNTO_COMA b1
-    | BOOLEAN ID IGUAL FALSE b5 PUNTO_COMA b1
-    |
+    b1 ::= INT ID:b IGUAL b2:a b3 PUNTO_COMA b1 
+    | INT ID:a {: ValoresPNT valor = new ValoresPNT("Integer", a.toString(), null, null, null); parser.tabla.agregarDato(parser.listValores, valor); :} b3 PUNTO_COMA b1
+    | STRING ID:a IGUAL COMILLAS ID:b COMILLAS {: ValoresPNT valor = new ValoresPNT("String", a.toString(), b.toString(), null, null); parser.tabla.agregarDato(parser.listValores, valor); :} b4 PUNTO_COMA b1
+    | STRING ID:a {: ValoresPNT valor = new ValoresPNT("String", a.toString(), null, null, null);  parser.tabla.agregarDato(parser.listValores, valor); :} b4 PUNTO_COMA b1
+    | BOOLEAN ID:a {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, null); } else { /*Aqui ira un mensaje*/ } :} b5 PUNTO_COMA b1
+    | BOOLEAN ID:a IGUAL TRUE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, true); } else { /*aqui ira un mensaje*/ } :} b5 PUNTO_COMA b1
+    | BOOLEAN ID:a IGUAL FALSE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, false);  } else { /*aqui ira un mensaje*/ } :} b5 PUNTO_COMA b1
+    | 
 ;
-    b2 ::= NUMERO
-    | ID
-    | NUMERO MAS b2
-    | ID MAS b2
-    | NUMERO MENOS b2
-    | ID MENOS b2
-    | c3 IGUAL c3
+    b2 ::= NUMERO:a b2prima:b {: OperacionesPNT op = new OperacionesPNT(); op.setNumero((Integer) a); b.add(op); RESULT=b; :}
+    | ID:a b2prima:b {: OperacionesPNT op = new OperacionesPNT(); if(parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer") == null){ op.setError(true); } else { op.setNumero((Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer")); } b.add(op); RESULT=b; :}
+;
+    b2prima ::= POR b2:a {: OperacionesPNT op = new OperacionesPNT(); op.setOperacion("MULT"); a.add(op); RESULT=a;  :}
+    | MAS b2:a {: OperacionesPNT op = new OperacionesPNT(); op.setOperacion("MAS"); a.add(op); RESULT=a; :}
+    | MENOS b2:a {: OperacionesPNT op = new OperacionesPNT(); op.setOperacion("MENOS"); a.add(op); RESULT=a; :}
+    | DIV b2:a {: OperacionesPNT op = new OperacionesPNT(); op.setOperacion("DIV"); a.add(op); RESULT=a; :}
+    | {: ArrayList<OperacionesPNT> listOperaciones = new ArrayList<>(); RESULT=listOperaciones; :} 
 ;
     b3 ::= COMA b2 b3
+    | COMA c3 IGUAL c3 b3
     |
 ;
-    b4 ::= COMA ID IGUAL COMILLAS ID COMILLAS b4
-    | COMA ID b4
+    b4 ::= COMA ID:a IGUAL COMILLAS ID:b COMILLAS {: ValoresPNT valor = new ValoresPNT("String", a.toString(), b.toString(), null, null); parser.tabla.agregarDato(parser.listValores, valor); :} b4
+    | COMA ID:a {: ValoresPNT valor = new ValoresPNT("String", a.toString(), null, null, null); parser.tabla.agregarDato(parser.listValores, valor);  :} b4
     |
 ;
-    b5 ::= COMA ID b5
-    | COMA ID IGUAL TRUE b5
-    | COMA ID IGUAL FALSE b5
-    |
+    b5 ::= COMA ID:a {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)) { ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, null); parser.listValores.add(valor); } else { /*aqui ira un mensaje*/ } :} b5 
+    | COMA ID:a IGUAL TRUE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)) { ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, true);  parser.listValores.add(valor); } else { /*aqui ira un mensaje*/ } :} b5 
+    | COMA ID:a IGUAL FALSE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)) {  ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, false);  parser.listValores.add(valor); } else { /*aqui ira un mensaje*/ } :} b5 
+    | 
 ;
     c ::= INSTRUCCIONES PARENTESIS_A ID PARENTESIS_B AGRUPACION_A c1 AGRUPACION_B COMA4
 ;

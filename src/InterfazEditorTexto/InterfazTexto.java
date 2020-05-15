@@ -59,6 +59,7 @@ public class InterfazTexto extends javax.swing.JFrame {
         panelTexto = new javax.swing.JTabbedPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtErrores = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuArchivo = new javax.swing.JMenu();
         archivoNuevo = new javax.swing.JMenuItem();
@@ -77,6 +78,13 @@ public class InterfazTexto extends javax.swing.JFrame {
         txtErrores.setColumns(20);
         txtErrores.setRows(5);
         jScrollPane1.setViewportView(txtErrores);
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         menuArchivo.setText("Archivo");
 
@@ -156,13 +164,19 @@ public class InterfazTexto extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 643, Short.MAX_VALUE)
                     .addComponent(panelTexto))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(255, 255, 255)
+                .addComponent(jButton1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(26, 26, 26)
-                .addComponent(panelTexto, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(panelTexto, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15)
+                .addComponent(jButton1)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -296,6 +310,10 @@ public class InterfazTexto extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnAnalizadorActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     private void abrirPanel(String titulo, String[] texto, String path) {
         PanelTexto panel;
         try {
@@ -339,6 +357,7 @@ public class InterfazTexto extends javax.swing.JFrame {
     private javax.swing.JMenuItem btnAnalizador;
     private javax.swing.JMenuItem btnGenerar;
     private javax.swing.JMenuItem btnGrafico;
+    private javax.swing.JButton jButton1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenu menuArchivo;

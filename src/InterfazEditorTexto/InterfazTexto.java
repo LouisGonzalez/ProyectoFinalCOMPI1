@@ -14,6 +14,7 @@ import gramaticaLNZ.AnalizadorLexico2;
 import gramaticaLNZ.SintaxLNZ;
 import gramaticaPNT.AnalizadorLexico3;
 import gramaticaPNT.SintaxPNT;
+import gramaticaPNT.TablaSimbolos;
 import gramaticaTMP.AnalizadorLexico4;
 import gramaticaTMP.SintaxTMP;
 import java.io.*;
@@ -22,8 +23,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import pollitos.Colores;
+import pollitos.CuadrosPintar;
 import pollitos.Lienzos;
 import pollitos.Tiempos;
+import pollitos.ValoresPNT;
 
 /**
  *
@@ -38,6 +41,9 @@ public class InterfazTexto extends javax.swing.JFrame {
     private ArrayList<Lienzos> listLienzos;
     private ArrayList<Colores> listColores;
     private ArrayList<Tiempos> listTiempos;
+    public ArrayList<ValoresPNT> listTabla;
+    public ArrayList<CuadrosPintar> listPintar;
+    private final TablaSimbolos tabla = new TablaSimbolos();
 
     /**
      * Creates new form InterfazTexto
@@ -260,7 +266,7 @@ public class InterfazTexto extends javax.swing.JFrame {
     }//GEN-LAST:event_archivoGuardarActionPerformed
 
     private void btnGraficoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraficoActionPerformed
-      InterfazGrafico grafico = new InterfazGrafico(null, true, listLienzos, listColores, listTiempos);
+        InterfazGrafico grafico = new InterfazGrafico(null, true, listLienzos, listColores, listTiempos);
         grafico.setVisible(true);
     }//GEN-LAST:event_btnGraficoActionPerformed
 
@@ -268,15 +274,28 @@ public class InterfazTexto extends javax.swing.JFrame {
         listLienzos = new ArrayList<>();
         listColores = new ArrayList<>();
         listTiempos = new ArrayList<>();
+        listTabla = new ArrayList<>();
+        listPintar = new ArrayList<>();
         for (int i = 0; i < paths.length; i++) {
             if (paths[i] != null) {
                 if (!paths[i].equals("")) {
                     if (paths[i].endsWith(".pnt")) {
                         AnalizadorLexico3 lexer3 = new AnalizadorLexico3(new StringReader(textos[i]));
                         try {
-                            new SintaxPNT(lexer3).parse();
+                            new SintaxPNT(lexer3, listTabla, tabla, listLienzos, listColores, listTiempos, listPintar).parse();
+                            for (int j = 0; j < listTabla.size(); j++) {
+                                if (listTabla.get(j).getTipo().equals("Integer")) {
+                                    System.out.println(listTabla.get(j).getId() + " - " + listTabla.get(j).getValorEntero());
+                                } else if (listTabla.get(j).getTipo().equals("String")) {
+                                    System.out.println(listTabla.get(j).getId() + " - " + listTabla.get(j).getValorCadena());
+                                } else if (listTabla.get(j).getTipo().equals("Boolean")) {
+                                    System.out.println(listTabla.get(j).getId() + " - " + listTabla.get(j).getValorBoolean());
+
+                                }
+
+                            }
                         } catch (Exception ex) {
-                            
+
                             Logger.getLogger(PanelTexto.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else if (paths[i].endsWith(".clrs")) {
@@ -311,7 +330,7 @@ public class InterfazTexto extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAnalizadorActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void abrirPanel(String titulo, String[] texto, String path) {

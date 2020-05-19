@@ -14,6 +14,7 @@ import java_cup.runtime.Symbol;
 Letra = [a-zA-Z]
 Numero = [0123456789]
 EspacioBajo = [_]
+Menor = [-]
 Salto = \r|\n|\r\n
 Espacio = {Salto} | [\t\f]
 
@@ -69,7 +70,7 @@ Espacio = {Salto} | [\t\f]
     "if"                                                            {return symbol(sym.IF);}
     "else"                                                          {return symbol(sym.ELSE);}
     "while"                                                         {return symbol(sym.WHILE);}
-    ("(-"{Numero}+")") | {Numero}+                                  {return symbol(sym.NUMERO, new Integer(yytext()));}
+    "-"{Numero}+ | {Numero}+                                 {return symbol(sym.NUMERO, new Integer(yytext()));}
     ({Letra}|{EspacioBajo})({Letra}|{EspacioBajo}|{Numero})*        {return symbol(sym.ID, new String(yytext()));}        
     {Espacio}*                                                           {/*Ignore*/}
     .                                                               {}

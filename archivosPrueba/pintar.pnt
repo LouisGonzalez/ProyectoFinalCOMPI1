@@ -1,9 +1,9 @@
 VARS [
-    int uno = 25; 
+    int uno = -25; 
     int dos, tres = 25;
     int cuatro;
     String idImagen="_id1",idImagen2="_id2";
-    int cinco = uno - 25 + 35;
+    int cinco = uno + -25 * 35 + 6;
     boolean verdad=true, falso=false;
 ]
 INSTRUCCIONES(lienzoId1) [

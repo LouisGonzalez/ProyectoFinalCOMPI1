@@ -6,23 +6,29 @@
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorTexto/InterfazTexto.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaCLRS/SintaxCLRS.cup</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorGrafico/PanelGrafico.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/Tiempos.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionEditorGrafico/PanelMatriz.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/OperacionesPNT.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionesEditorTexto/VerificadorPaginas.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaTMP/SintaxTMP.cup</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/Colores.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionEditorGrafico/CreacionObjetosLNZ.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaPNT/LexerPNT.flex</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorGrafico/InterfazGrafico.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/LienzoColor.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/proyectofinal/ProyectoFinal.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/ImagenesTiempo.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionesEditorTexto/Guardado.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaLNZ/SintaxLNZ.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionEditorGrafico/LlenadoPaneles.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorTexto/NuevoArchivo.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaLNZ/LexerLNZ.flex</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaTMP/LexerTMP.flex</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaTMP/SintaxTMP.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/CuadrosPintar.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/Tiempos.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionesPNT/CondicionesLogicas.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaPNT/SintaxPNT.cup</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionEditorGrafico/CreacionObjetosLNZ.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaPNT/LexerPNT.flex</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaPNT/TablaSimbolos.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/proyectofinal/ProyectoFinal.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorTexto/NuevoArchivo.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/ValoresPNT.java</file>
         </group>
     </open-files>
 </project-private>

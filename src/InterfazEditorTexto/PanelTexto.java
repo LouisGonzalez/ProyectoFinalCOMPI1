@@ -39,9 +39,9 @@ public class PanelTexto extends javax.swing.JPanel {
         this.textos = texto;
         System.out.println("hola mundo");
         if(path.endsWith(".clrs")){
-            txtArea.setText(InterfazTexto.textos[0]);
-        } else if(path.endsWith(".lnz")){
             txtArea.setText(InterfazTexto.textos[1]);
+        } else if(path.endsWith(".lnz")){
+            txtArea.setText(InterfazTexto.textos[0]);
         } else if(path.endsWith(".tmp")){
             txtArea.setText(InterfazTexto.textos[2]);
         } else if(path.endsWith(".pnt")){
@@ -85,9 +85,9 @@ public class PanelTexto extends javax.swing.JPanel {
     private void txtAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAreaKeyPressed
         if(evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_S){
             if(path.endsWith(".clrs")){
-                InterfazTexto.textos[0] = txtArea.getText();
-            } else if(path.endsWith(".lnz")){
                 InterfazTexto.textos[1] = txtArea.getText();
+            } else if(path.endsWith(".lnz")){
+                InterfazTexto.textos[0] = txtArea.getText();
                 System.out.println(InterfazTexto.textos[1]);
                 
             } else if(path.endsWith(".tmp")){

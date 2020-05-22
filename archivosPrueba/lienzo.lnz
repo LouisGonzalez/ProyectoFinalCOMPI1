@@ -6,12 +6,12 @@
    		 Fondo:{
    			 Red: 25,
    			 Blue: 89,
-   			 Green: 45		
+   			 Green: 45
    		 },
    		 size:{
    			 cuadro: 50,
    			 dimension_x: 12,
-                                    dimension_y: 10
+                         dimension_y: 10
    		 }
    	 },
    otroLienzo:{
@@ -28,3 +28,4 @@
    	 }
     }
 }
+

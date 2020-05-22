@@ -2,18 +2,38 @@ package gramaticaPNT;
 import java_cup.runtime.Symbol;
 import pollitos.*;
 import java.util.ArrayList;
+import OperacionesPNT.*;
 
 parser code {:
     
     public ArrayList<ValoresPNT> listValores;
+    public ArrayList<Pintados> listPintados;
     public ArrayList<Lienzos> listLienzos;
     public ArrayList<Colores> listColores;
     public ArrayList<Tiempos> listTiempos;
     public ArrayList<CuadrosPintar> listPintar;
+    public ArrayList<While> listWhiles = new ArrayList<>();
+    public While ciclo = new While();
     public TablaSimbolos tabla;
     public boolean esNegativo = false;
+    public CondicionesLogicas cond = new CondicionesLogicas();
+    public ArrayList<OpAritmeticasWhile> listOp = new ArrayList<>();
+    public ArrayList<OpAritmeticasWhile> listOp2 = new ArrayList<>();
+    public ArrayList<OpAritmeticasWhile> listAux = new ArrayList<>();
+    public Boolean booleanIf = null;
+    public Boolean booleanWhile = null;
+    public Boolean entro = true;
+    public Boolean verificador = false;
+    public CondicionWhile condWhile = new CondicionWhile();
+    public ArrayList<CondicionWhile> listCondw = new ArrayList<>();
+    public Integer contIfs = 0;
+    public OpAritmeticaPintar nuevaOpX = null;
+    public OpAritmeticaPintar nuevaOpY = null;
+    public CasillasAPintar pintadas = new CasillasAPintar();
+    public String lienzoActual;
+    
 
-    public SintaxPNT(AnalizadorLexico3 lex, ArrayList<ValoresPNT> listValores, TablaSimbolos tabla, ArrayList<Lienzos> listLienzos, ArrayList<Colores> listColores, ArrayList<Tiempos> listTiempos, ArrayList<CuadrosPintar> listPintar){
+    public SintaxPNT(AnalizadorLexico3 lex, ArrayList<ValoresPNT> listValores, TablaSimbolos tabla, ArrayList<Lienzos> listLienzos, ArrayList<Colores> listColores, ArrayList<Tiempos> listTiempos, ArrayList<CuadrosPintar> listPintar, ArrayList<Pintados> listPintados){
         super(lex);
         this.listValores = listValores;
         this.tabla = tabla;
@@ -21,6 +41,7 @@ parser code {:
         this.listColores = listColores;
         this.listTiempos = listTiempos;
         this.listPintar = listPintar;
+        this.listPintados = listPintados;
     }
 
     public void setAccion(String tipo, String mensaje, String accion){
@@ -31,6 +52,13 @@ parser code {:
         setAccion("ERROR", "Error sintaxis columna: "+s.right+" fila: "+s.left,"");
     }
 
+    public void traspasarDatos(ArrayList<OpAritmeticasWhile> list, ArrayList<OpAritmeticasWhile> aux){
+        for(int i = 0; i < list.size(); i++){
+            aux.add(list.get(i));
+        }
+        
+    }
+
 :}
 
     terminal COMA, COMENTARIO_A, PUNTO_COMA, COMILLAS, RANGO, DOBLE_IGUAL, IGUAL, MENOR, MAYOR, MENOR_IGUAL,
@@ -38,8 +66,8 @@ parser code {:
             MAS, MENOS, POR, COMENTARIO_B_A, COMENTARIO_B_B, VARS, INT, STRING, BOOLEAN, TRUE, FALSE, 
             INSTRUCCIONES, PINTAR, IF, ELSE, WHILE, NUMERO, ID, AND, OR, DIV;
 
-    non terminal a, b, b3, b4, b6, b8, c, c1, c3, c2, c4, c5, idColor, idImagen, posX, posY, COMA1, COMA2,
-                COMA3, COMA4, ext, relacional;
+    non terminal a, b, b3, b4, b6, b8, c, c1, c4, c5, COMA1, COMA2,
+                COMA3, COMA4, else1;
 
     non terminal ArrayList<ValoresPNT> b1, b5;
 
@@ -47,10 +75,17 @@ parser code {:
 
     non terminal Integer b2prima1, b2prima2, relacional;
 
-    non terminal Object c3;
+    non terminal Objeto c3;
+
+    non terminal ArrayList<TipoEncadenamiento> ext, c2;
 
     non terminal Boolean bools;
-   
+
+    non terminal String idColor, idImagen;
+
+    non terminal Object[] posX, posY;
+
+
     start with a;
 
     a ::= b c
@@ -66,26 +101,27 @@ parser code {:
     | BOOLEAN ID:a IGUAL FALSE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, false); parser.tabla.agregarDato(parser.listValores, valor); } else { /*aqui ira un mensaje*/ } :} b5 PUNTO_COMA b1
     | 
 ;
-    b2prima1 ::= ID:a MAS b2prima1:b {: Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(id == null) { System.out.println("Error semantico99"); } else { if(b == null){ RESULT=null; } else { Integer aDevolver = id + b; RESULT=aDevolver; } } :}
-    | NUMERO:a MAS b2prima1:b {: if(b==null){ System.out.println("Error semantico1"); RESULT=null; } else { Integer aDevolver = (Integer) a + b; RESULT=aDevolver; } :}
-    | ID:a POR b2prima1:b {: Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(id==null){ System.out.println("Error semantico4"); } else { if(b==null) { RESULT=null; } else { Integer aDevolver = id * b; RESULT=aDevolver; } } :}
-    | NUMERO:a POR b2prima1:b {: if(b==null) { System.out.println("Error semantico2"); RESULT=null; } else { Integer aDevolver = (Integer) a * b; RESULT=aDevolver; }  :}
-    | ID:a DIV b2prima1:b {: Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(id == null){ System.out.println("Error Semantico5"); } else { if(b == null){ RESULT=null; } else { Integer aDevolver = id / b; RESULT=aDevolver; } } :}
-    | NUMERO:a DIV b2prima1:b {: if(b == null) { System.out.println("error semantico"); RESULT=null; } else { Integer aDevolver = (Integer) a / b; RESULT=aDevolver; }  :}
-    | ID:a {: Integer aDevolver = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(aDevolver == null){ System.out.println("error lexico"); } RESULT=aDevolver; :}
-    | NUMERO:a {: RESULT=(Integer) a; :}
+    b2prima1 ::= ID:a MAS b2prima1:b {: if(parser.booleanWhile != null){ if(parser.booleanWhile){  OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "SUMA", "String");  parser.listOp.add(opWhile);  } }  Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(id == null) { System.out.println("Error semantico99"); } else { if(b == null){ RESULT=null; } else { Integer aDevolver = id + b; RESULT=aDevolver; } } :}
+    | NUMERO:a MAS b2prima1:b {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "SUMA", "Integer");   parser.listOp.add(opWhile);  } } if(b==null){ System.out.println("Error semantico1"); RESULT=null; } else { Integer aDevolver = (Integer) a + b; RESULT=aDevolver; } :}
+    | ID:a POR b2prima1:b {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "MULT", "String");    parser.listOp.add(opWhile); } }  Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(id==null){ System.out.println("Error semantico4"); } else { if(b==null) { RESULT=null; } else { Integer aDevolver = id * b; RESULT=aDevolver; } } :}
+    | NUMERO:a POR b2prima1:b {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "MULT", "Integer");   parser.listOp.add(opWhile);  } }  if(b==null) { System.out.println("Error semantico2"); RESULT=null; } else { Integer aDevolver = (Integer) a * b; RESULT=aDevolver; }  :}
+    | ID:a DIV b2prima1:b {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "DIV", "String");  parser.listOp.add(opWhile);  } } Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(id == null){ System.out.println("Error Semantico5"); } else { if(b == null){ RESULT=null; } else { Integer aDevolver = id / b; RESULT=aDevolver; } } :}
+    | NUMERO:a DIV b2prima1:b {: if(parser.booleanWhile != null){ if(parser.booleanWhile){  OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "DIV", "Integer");   parser.listOp.add(opWhile);  } }  if(b == null) { System.out.println("error semantico"); RESULT=null; } else { Integer aDevolver = (Integer) a / b; RESULT=aDevolver; }  :}
+    | ID:a {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, null, "String");   parser.listOp.add(opWhile); } }  Integer aDevolver = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(aDevolver == null){ System.out.println("error lexico "+a.toString()); } RESULT=aDevolver; :}
+    | NUMERO:a {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, null, "Integer");  parser.listOp.add(opWhile); } }  RESULT=(Integer) a; :}
     |   
 ;
 
-    b2prima2 ::= ID:a POR b2prima1:b {: Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(id==null){ System.out.println("Error semantico"); } else { if(b==null) { RESULT=null; } else { Integer aDevolver = id / b; RESULT=aDevolver; } } :}
-    | NUMERO:a POR b2prima1:b {: if(b==null) { System.out.println("Error semantico"); RESULT=null; } else { Integer aDevolver = (Integer) a / b; RESULT=aDevolver; }  :}
-    | ID:a DIV b2prima1:b {: Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(id == null){ System.out.println("Error Semantico"); } else { if(b == null){ RESULT=null; } else { Integer aDevolver = id / b; RESULT=aDevolver; } } :}
-    | NUMERO:a DIV b2prima1:b {: if(b == null) { System.out.println("error semantico"); RESULT=null; } else { Integer aDevolver = (Integer) a / b; RESULT=aDevolver; }  :}
-    | ID:a {: Integer aDevolver = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(aDevolver == null){ System.out.println("error lexico"); } RESULT=aDevolver; :}
-    | NUMERO:a {: RESULT=(Integer) a; :}
-    | b2prima1:a {: RESULT=a; :}
+    b2prima2 ::=  ID:a MAS b2prima2:b {:   OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "SUMA", "String");  parser.listOp.add(opWhile);   Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(id == null) { System.out.println("Error semantico99"); } else { if(b == null){ RESULT=null; } else { Integer aDevolver = id + b; RESULT=aDevolver; } } :}
+    | NUMERO:a MAS b2prima2:b {: OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "SUMA", "Integer");   parser.listOp.add(opWhile);  if(b==null){ System.out.println("Error semantico1"); RESULT=null; } else { Integer aDevolver = (Integer) a + b; RESULT=aDevolver; } :}
+    | ID:a POR b2prima2:b {: OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "MULT", "String");    parser.listOp.add(opWhile);   Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(id==null){ System.out.println("Error semantico4"); } else { if(b==null) { RESULT=null; } else { Integer aDevolver = id * b; RESULT=aDevolver; } } :}
+    | NUMERO:a POR b2prima2:b {: OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "MULT", "Integer");   parser.listOp.add(opWhile);   if(b==null) { System.out.println("Error semantico2"); RESULT=null; } else { Integer aDevolver = (Integer) a * b; RESULT=aDevolver; }  :}
+    | ID:a DIV b2prima2:b {: OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "DIV", "String");  parser.listOp.add(opWhile);  Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(id == null){ System.out.println("Error Semantico5"); } else { if(b == null){ RESULT=null; } else { Integer aDevolver = id / b; RESULT=aDevolver; } } :}
+    | NUMERO:a DIV b2prima2:b {: System.out.println("Agreagado aqui");  OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "DIV", "Integer");   parser.listOp.add(opWhile);   if(b == null) { System.out.println("error semantico"); RESULT=null; } else { Integer aDevolver = (Integer) a / b; RESULT=aDevolver; }  :}
+    | ID:a {: System.out.println("AGREGADO "+a.toString()); if(parser.booleanIf != null){ if(parser.booleanIf){    OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, null, "String");   parser.listOp.add(opWhile); } } else {  OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, null, "String");   parser.listOp.add(opWhile); }   Integer aDevolver = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer"); if(aDevolver == null){ System.out.println("error lexico "+a.toString()); } RESULT=aDevolver; :}
+    | NUMERO:a {: System.out.println("AGREGADO "+a.toString()); if(parser.booleanIf != null){ if(parser.booleanIf){  OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, null, "Integer");  parser.listOp.add(opWhile); } } else { OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, null, "Integer");  parser.listOp.add(opWhile); }  RESULT=(Integer) a; :}
+    |   
 ;
-
     b3 ::= COMA ID:a IGUAL b2prima1:b {: if(b!=null){ ValoresPNT valor = new ValoresPNT("Integer", a.toString(), null, b, null); parser.tabla.agregarDato(parser.listValores, valor); } :} b3
     |
 ;
@@ -98,52 +134,206 @@ parser code {:
     | COMA ID:a IGUAL FALSE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)) {  ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, false);  parser.listValores.add(valor); } else { /*aqui ira un mensaje*/ } :} b5 
     | 
 ;
-    c ::= INSTRUCCIONES PARENTESIS_A ID PARENTESIS_B AGRUPACION_A c1 AGRUPACION_B COMA4
+    c ::= INSTRUCCIONES PARENTESIS_A ID:a {: parser.lienzoActual = a.toString(); :} PARENTESIS_B AGRUPACION_A c1 AGRUPACION_B COMA4 
 ;
-    c1 ::= PINTAR PARENTESIS_A idColor COMA idImagen COMA posX COMA posX PARENTESIS_B PUNTO_COMA c1
-    | IF PARENTESIS_A c2:a PARENTESIS_B LLAVE_A c1 LLAVE_B c1
-    | IF PARENTESIS_A c2:a PARENTESIS_B LLAVE_A c1 LLAVE_B ELSE LLAVE_A c1 LLAVE_B c1
-    | WHILE PARENTESIS_A c2 PARENTESIS_B LLAVE_A c1 LLAVE_B c1
+    c1 ::= PINTAR PARENTESIS_A idColor:a COMA idImagen:b COMA  posX:c {: if(parser.nuevaOpX != null){ parser.traspasarDatos(parser.listOp, parser.listAux); } parser.listOp = new ArrayList<>();  :}  COMA posY:d PARENTESIS_B PUNTO_COMA 
+        {:  if(parser.booleanIf == null || parser.booleanIf){ 
+            System.out.println("cumplo "+b.toString()); 
+            CuadrosPintar cuadros = new CuadrosPintar(a.toString(), b.toString()); 
+            if(parser.nuevaOpX != null){
+                cuadros.setOpX(parser.listAux);
+            } else {
+                cuadros.setRangoX(c); 
+            }
+            if(parser.nuevaOpY != null){
+                cuadros.setOpY(parser.listOp);
+                parser.listOp = new ArrayList<>();
+            } else {
+                cuadros.setRangoY(d);
+            }
+            parser.nuevaOpX = null;
+            parser.nuevaOpY = null;
+            parser.listAux = new ArrayList<>();
+            parser.pintadas.determinarCasillas(cuadros, parser.listValores, parser.listPintados, parser.tabla, parser.lienzoActual);
+            parser.listPintar.add(cuadros); 
+            if(parser.booleanWhile != null){
+                if(parser.booleanWhile){
+                    cuadros.setEnWhile(true);
+                    cuadros.setNoIf(parser.contIfs);    
+                    parser.ciclo.getListPorPintar().add(cuadros);
+                    System.out.println("aqui si entro moderfocker");
+                }
+            }
+        } else {
+            System.out.println("Habia un valor nulo");
+            parser.listOp = new ArrayList<>();
+            parser.nuevaOpX = null;
+            parser.nuevaOpY = null;
+        }  :} c1
+
+
+
+
+    | IF PARENTESIS_A c2:a 
+        {: 
+        if(parser.booleanWhile != null){
+            if(parser.booleanWhile){ 
+                System.out.println("Entro aquii");
+                CondicionalIf cond = new CondicionalIf(a, parser.contIfs); 
+                parser.ciclo.setCondicional(cond); 
+            }
+        }
+        if( parser.booleanIf == null){ 
+            parser.entro = true; 
+            if(parser.cond.verificar(a) == null){ 
+                parser.verificador = null; 
+                parser.booleanIf = false; 
+            } else { 
+                if(!parser.cond.verificar(a)){ 
+                    parser.verificador = false; 
+                    parser.booleanIf = false; 
+                } else { 
+                    parser.verificador = true; 
+                    parser.booleanIf = true; 
+                } 
+            } 
+        } else if (parser.booleanIf == true){
+            parser.entro = true; 
+            if(parser.cond.verificar(a) == null){ 
+                parser.verificador = null; 
+                parser.booleanIf = false; 
+            } else { 
+                if(!parser.cond.verificar(a)){ 
+                    parser.verificador = false; 
+                    parser.booleanIf = false; 
+                } else { 
+                    parser.verificador = true; 
+                    parser.booleanIf = true; 
+                } 
+            }
+        } else { 
+            parser.entro = false; 
+        } :} PARENTESIS_B LLAVE_A c1:b 
+        {: if(parser.cond.verificar(a) != null){ 
+            if(parser.entro){ 
+                if(!parser.cond.verificar(a)){
+                    parser.booleanIf = false; 
+                } else { 
+                    parser.booleanIf = true; 
+                } 
+            } else { 
+                parser.booleanIf = false; 
+            } 
+        } :}  LLAVE_B else1
+
+
+
+    | WHILE PARENTESIS_A {:parser.booleanWhile = true;:}  c2:a {:  parser.ciclo.setMiCondicional(parser.listCondw);  parser.booleanWhile = null; :}
+        {: if(parser.booleanWhile == null){ 
+            parser.entro = true; 
+            if(parser.cond.verificar(a) == null){ 
+                parser.verificador = null; 
+                parser.booleanWhile = null; 
+            } else { 
+                if(!parser.cond.verificar(a)){ 
+                    parser.verificador = false; 
+                    parser.booleanWhile = false; 
+                } else if(parser.cond.verificar(a)) { 
+                    parser.verificador = true; 
+                    parser.booleanWhile = true; 
+                } 
+            } 
+        } else if(parser.booleanWhile == true){
+            parser.entro = true; 
+            if(parser.cond.verificar(a) == null){ 
+                parser.verificador = null; 
+                parser.booleanWhile = null; 
+            } else { 
+                if(!parser.cond.verificar(a)){ 
+                    parser.verificador = false; 
+                    parser.booleanWhile = false; 
+                } else { 
+                    parser.verificador = true; 
+                    parser.booleanWhile = true; 
+                } 
+            } 
+        } else { 
+            parser.entro = false;   
+        } :} PARENTESIS_B LLAVE_A c1:b {: if(parser.booleanIf != null){ if(parser.booleanIf){   parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual); parser.booleanWhile = false; } } else {  parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual); parser.booleanWhile = false; }  :} LLAVE_B c1
+    
     | b8 c1
     |
 ;
-    b8 ::= ID IGUAL b2  PUNTO_COMA 
-    | ID IGUAL COMILLAS ID COMILLAS PUNTO_COMA 
-    | ID IGUAL TRUE PUNTO_COMA 
-    | ID IGUAL FALSE PUNTO_COMA
+    else1 ::= ELSE LLAVE_A 
+        {: if(parser.verificador != null){ 
+            if(parser.entro){ 
+                if(!parser.verificador){ 
+                    parser.booleanIf = true; 
+                } else { 
+                    parser.booleanIf = false; 
+                } 
+            } 
+        } :}  c1:a 
+        {: if(parser.verificador != null){ 
+            if(parser.entro){ 
+                if(!parser.verificador){
+                    parser.booleanIf = false; 
+                } else { 
+                    parser.booleanIf = true; 
+                }
+            } else { 
+                parser.booleanIf = false; 
+            } 
+        } :} LLAVE_B {: parser.booleanIf = null; if(parser.booleanWhile != null){ if(parser.booleanWhile == true){ parser.contIfs++; } } :} c1:b
+    | {: parser.booleanIf = null; if(parser.booleanWhile !=null){ if(parser.booleanWhile == true){ parser.contIfs++; } } :}  c1:a
 ;
-    c2 ::= bools:a ext:b {: TipoEncadenamiento tipo = new TipoEncadenamiento(null, Boolean.valueOf(a.toString)); b.add(tipo); RESULT=b; :}
+    b8 ::= ID:a IGUAL b2prima1:b PUNTO_COMA {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ Operacion op = new Operacion(a.toString()); op.setMiOperacion(parser.listOp); if(parser.booleanIf!=null){ if(parser.booleanIf){ System.out.println("Valor agreagdo"); op.setNoIf(parser.contIfs); } }  parser.ciclo.getListOp().add(op); parser.listOp = new ArrayList<>(); } }  parser.tabla.modificarValor(a.toString(), parser.listValores, "Integer", b); :} 
+    | ID:a IGUAL COMILLAS ID:b COMILLAS PUNTO_COMA {: parser.tabla.modificarValor(a.toString(), parser.listValores, "String", b); :}
+    | ID:a IGUAL TRUE PUNTO_COMA {: Object objeto = true; parser.tabla.modificarValor(a.toString(), parser.listValores, "Boolean", objeto); :}
+    | ID:a IGUAL FALSE PUNTO_COMA {: Object objeto = false; parser.tabla.modificarValor(a.toString(), parser.listValores, "Boolean", objeto); :}
 ;
-    c3 ::= ID:a {: Objeto nuevo = parser.tabla.devolverUnObjeto(a.toString(), parser.listValores); RESULT=nuevo;  :}
-    | NUMERO:a {: Objeto nuevo = new Objeto(a, "Integer"); RESULT=nuevo; :}
+    c2 ::= bools:a  {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.listCondw.add(parser.condWhile); parser.condWhile = new CondicionWhile(); } } :}   ext:b {: if(a != null){ TipoEncadenamiento tipo = new TipoEncadenamiento(null, Boolean.valueOf(a.toString())); b.add(tipo); } RESULT=b; :}
 ;
-    ext ::= AND bools:a ext:b {: TipoEncadenamiento tipo = new TipoEncadenamiento("AND", Boolean.valueOf(a.toString())); b.add(tipo); RESULT=b; :}
-    | OR bools:a ext:b {: TipoEncadenamiento tipo = new TipoEncadenamiento("OR", Boolean.valueOf(a.toString())); b.add(tipo); RESULT=b; :}
+    c3 ::= ID:a {:  if(parser.booleanWhile != null){ if(parser.booleanWhile){if(parser.condWhile.getDato1()!=null){ parser.condWhile.setDato1(a); } else { parser.condWhile.setDato1(a); } } }           Objeto nuevo = parser.tabla.devolverUnObjeto(a.toString(), parser.listValores);    RESULT=nuevo;  :}
+    | NUMERO:a {:  if(parser.booleanWhile != null){ if(parser.booleanWhile){ if(parser.condWhile.getDato1()!=null){ parser.condWhile.setDato2(a); } else { parser.condWhile.setDato1(a); } } }  Objeto nuevo = new Objeto(a, "Integer");  RESULT=nuevo; :}
+;
+    ext ::= AND bools:a {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.condWhile.setCadena("AND"); parser.listCondw.add(parser.condWhile); parser.condWhile = new CondicionWhile(); } } :}  ext:b {:  TipoEncadenamiento tipo = new TipoEncadenamiento("AND", Boolean.valueOf(a.toString())); b.add(tipo); RESULT=b; :}
+    | OR bools:a  {:  if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.condWhile.setCadena("OR"); parser.listCondw.add(parser.condWhile); parser.condWhile = new CondicionWhile(); } } :}  ext:b {:   TipoEncadenamiento tipo = new TipoEncadenamiento("OR", Boolean.valueOf(a.toString())); b.add(tipo); RESULT=b; :}
     | {: ArrayList<TipoEncadenamiento> booleanos = new ArrayList<>(); RESULT=booleanos;  :}
 ;
-    bools ::= c3:a relacional:b c3:c {: Boolean valor = parser.tabla.comprobarCondicionTipo1(a, (Integer) b, c); RESULT=valor; :}
-    | ID {: Boolean valor = parser.tabla.comprobarCondicionTipo2(a.toString(), parser.listValores); RESULT=valor; :}
-    | TRUE {: Boolean valor = true; RESULT=valor; :}
-    | FALSE {: Boolean valor = true; RESULT=valor; :}
+    bools ::= c3:a relacional:b c3:c {: parser.condWhile.setTipo("Tipo1");   Boolean valor = parser.tabla.comprobarCondicionTipo1(a, (Integer) b, c); RESULT=valor; :}
+    | ID:a {: if(parser.booleanWhile!= null){ if(parser.booleanWhile){ parser.condWhile.setTipo("Tipo2");  parser.condWhile.setDato1(a); } } Boolean valor = parser.tabla.comprobarCondicionTipo2(a.toString(), parser.listValores); RESULT=valor; :}
+    | TRUE {: if(parser.booleanWhile!= null){ if(parser.booleanWhile){ parser.condWhile.setTipo("Tipo2");  parser.condWhile.setDato1(true);  } }  Boolean valor = true; RESULT=valor; :}
+    | FALSE {: if(parser.booleanWhile!= null){ if(parser.booleanWhile){ parser.condWhile.setTipo("Tipo2");  parser.condWhile.setDato1(true); } }  Boolean valor = true; RESULT=valor; :}
 ;
 
-    idColor ::= ID
-    | COMILLAS ID COMILLAS
+    idColor ::= ID:a {: RESULT=a.toString(); :}
+    | COMILLAS ID:a COMILLAS {: RESULT=a.toString(); :}
 ;
-    idImagen ::= ID 
-    | COMILLAS ID COMILLAS
+    idImagen ::= ID:a {: RESULT=a.toString(); :}
+    | COMILLAS ID:a COMILLAS {: RESULT=a.toString(); :}
 ;
-    posX ::= b2
-    | b2 RANGO b2
+    posX ::= ID:a RANGO ID:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}
+    | NUMERO:a RANGO NUMERO:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}
+    | ID:a RANGO NUMERO:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}
+    | NUMERO:a RANGO ID:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}
+    | b2prima2:a {: if(parser.booleanIf!=null){ if(parser.booleanIf){ parser.nuevaOpX = new OpAritmeticaPintar(parser.listOp); } } else { parser.nuevaOpX = new OpAritmeticaPintar(parser.listOp);  } :}
 ;
+    posY ::= ID:a RANGO ID:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}
+    | NUMERO:a RANGO NUMERO:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}
+    | ID:a RANGO NUMERO:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}
+    | NUMERO:a RANGO ID:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}
+    | b2prima2:a {: if(parser.booleanIf!=null){ if(parser.booleanIf){ parser.nuevaOpY = new OpAritmeticaPintar(parser.listOp);  } } else { parser.nuevaOpY = new OpAritmeticaPintar(parser.listOp); }   :}
+;
+
     COMA4 ::= c
     |
 ;
-    relacional ::= DOBLE_IGUAL {: RESULT=1; :}
-    | MENOR {: RESULT=2; :}
-    | MAYOR {: RESULT=3; :}
-    | MENOR_IGUAL {: RESULT=4; :}
-    | MAYOR_IGUAL {: RESULT=5; :}
-    | DIFERENCIA {: RESULT=6; :}
+    relacional ::= DOBLE_IGUAL {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.condWhile.setRelacional(1); } }  RESULT=1; :}
+    | MENOR {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.condWhile.setRelacional(2); } }  RESULT=2; :}
+    | MAYOR {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.condWhile.setRelacional(3); } } RESULT=3; :}
+    | MENOR_IGUAL {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.condWhile.setRelacional(4); } } RESULT=4; :}
+    | MAYOR_IGUAL {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.condWhile.setRelacional(5); } } RESULT=5; :}
+    | DIFERENCIA {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.condWhile.setRelacional(6); } } RESULT=6; :}
 ;
     

@@ -7,6 +7,7 @@ package InterfazEditorTexto;
 
 import InterfazEditorGrafico.InterfazGrafico;
 import OperacionesEditorTexto.Guardado;
+import OperacionesEditorTexto.VerificacionObjetos;
 import OperacionesEditorTexto.VerificadorPaginas;
 import gramaticaCLRS.AnalizadorLexico;
 import gramaticaCLRS.SintaxCLRS;
@@ -25,6 +26,7 @@ import javax.swing.*;
 import pollitos.Colores;
 import pollitos.CuadrosPintar;
 import pollitos.Lienzos;
+import pollitos.Pintados;
 import pollitos.Tiempos;
 import pollitos.ValoresPNT;
 
@@ -43,8 +45,12 @@ public class InterfazTexto extends javax.swing.JFrame {
     private ArrayList<Tiempos> listTiempos;
     public ArrayList<ValoresPNT> listTabla;
     public ArrayList<CuadrosPintar> listPintar;
+    public ArrayList<Pintados> listPintados;
     private final TablaSimbolos tabla = new TablaSimbolos();
-
+    private final VerificacionObjetos verificador2 = new VerificacionObjetos();
+    private boolean todoEnOrden = true;
+    public static String bandejaErrores = "";
+    
     /**
      * Creates new form InterfazTexto
      */
@@ -220,9 +226,9 @@ public class InterfazTexto extends javax.swing.JFrame {
                     reader = new FileReader(archivo.toString());
                     buffer = new BufferedReader(reader);
                     while (buffer.ready()) {
-                        if (path.endsWith(".clrs")) {
+                        if (path.endsWith(".lnz")) {
                             textos[0] += buffer.readLine() + "\n";
-                        } else if (path.endsWith(".lnz")) {
+                        } else if (path.endsWith(".clrs")) {
                             textos[1] += buffer.readLine() + "\n";
                         } else if (path.endsWith(".tmp")) {
                             textos[2] += buffer.readLine() + "\n";
@@ -276,14 +282,16 @@ public class InterfazTexto extends javax.swing.JFrame {
         listTiempos = new ArrayList<>();
         listTabla = new ArrayList<>();
         listPintar = new ArrayList<>();
+        listPintados = new ArrayList<>();
+        txtErrores.setText("");
         for (int i = 0; i < paths.length; i++) {
             if (paths[i] != null) {
                 if (!paths[i].equals("")) {
                     if (paths[i].endsWith(".pnt")) {
                         AnalizadorLexico3 lexer3 = new AnalizadorLexico3(new StringReader(textos[i]));
                         try {
-                            new SintaxPNT(lexer3, listTabla, tabla, listLienzos, listColores, listTiempos, listPintar).parse();
-                            for (int j = 0; j < listTabla.size(); j++) {
+                            new SintaxPNT(lexer3, listTabla, tabla, listLienzos, listColores, listTiempos, listPintar, listPintados).parse();
+                            /*for (int j = 0; j < listTabla.size(); j++) {
                                 if (listTabla.get(j).getTipo().equals("Integer")) {
                                     System.out.println(listTabla.get(j).getId() + " - " + listTabla.get(j).getValorEntero());
                                 } else if (listTabla.get(j).getTipo().equals("String")) {
@@ -293,6 +301,11 @@ public class InterfazTexto extends javax.swing.JFrame {
 
                                 }
 
+                            }*/
+                            JOptionPane.showMessageDialog(null, "Ver");
+                            for (int j = 0; j < listPintados.size(); j++) {
+                                System.out.println(listPintados.get(j).getPosX() + " - " + listPintados.get(j).getPosY() + " - "+listPintados.get(j).getIdColor() + " - "+listPintados.get(j).getIdImagen()+" - "+listPintados.get(j).getNombreLienzo());
+                                
                             }
                         } catch (Exception ex) {
 
@@ -302,14 +315,20 @@ public class InterfazTexto extends javax.swing.JFrame {
                         AnalizadorLexico lexer = new AnalizadorLexico(new StringReader(textos[i]));
                         try {
                             new SintaxCLRS(lexer, listColores).parse();
+                            
+                            if(!verificador2.verificarLienzosColores(listLienzos, listColores)){
+                                todoEnOrden = false;
+                            } 
+                            
+                            
+                            
                         } catch (Exception ex) {
-                            System.out.println(".CLRS");
                             Logger.getLogger(PanelTexto.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else if (paths[i].endsWith(".lnz")) {
                         AnalizadorLexico2 lexer2 = new AnalizadorLexico2(new StringReader(textos[i]));
                         try {
-                            new SintaxLNZ(lexer2, listLienzos).parse();
+                            new SintaxLNZ(lexer2, listLienzos, txtErrores).parse();
                         } catch (Exception ex) {
                             System.out.println(".LNZ");
                             Logger.getLogger(PanelTexto.class.getName()).log(Level.SEVERE, null, ex);
@@ -318,6 +337,12 @@ public class InterfazTexto extends javax.swing.JFrame {
                         AnalizadorLexico4 lexer4 = new AnalizadorLexico4(new StringReader(textos[i]));
                         try {
                             new SintaxTMP(lexer4, listTiempos).parse();
+                            
+                            if(!verificador2.verificarLienzosTiempos(listLienzos, listTiempos)){
+                                todoEnOrden = false;
+                            }
+                            
+                                                        
                         } catch (Exception ex) {
                             System.out.println(".TMP");
                             Logger.getLogger(PanelTexto.class.getName()).log(Level.SEVERE, null, ex);
@@ -326,7 +351,9 @@ public class InterfazTexto extends javax.swing.JFrame {
                 }
             }
         }
-
+        txtErrores.setText(bandejaErrores);
+        bandejaErrores = "";
+       
     }//GEN-LAST:event_btnAnalizadorActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -345,9 +372,9 @@ public class InterfazTexto extends javax.swing.JFrame {
     }
 
     private void limpiarTexto(String path, String[] textos) {
-        if (path.endsWith(".clrs")) {
+        if (path.endsWith(".lnz")) {
             textos[0] = "";
-        } else if (path.endsWith(".lnz")) {
+        } else if (path.endsWith(".clrs")) {
             textos[1] = "";
         } else if (path.endsWith(".tmp")) {
             textos[2] = "";
@@ -357,9 +384,9 @@ public class InterfazTexto extends javax.swing.JFrame {
     }
 
     private void asignacionPaths(String path) {
-        if (path.endsWith(".clrs")) {
+        if (path.endsWith(".lnz")) {
             paths[0] = path;
-        } else if (path.endsWith(".lnz")) {
+        } else if (path.endsWith(".clrs")) {
             paths[1] = path;
         } else if (path.endsWith(".tmp")) {
             paths[2] = path;

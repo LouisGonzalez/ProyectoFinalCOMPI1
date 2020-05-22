@@ -2,14 +2,20 @@ package gramaticaLNZ;
 import pollitos.*;
 import java_cup.runtime.Symbol;
 import java.util.ArrayList;
+import javax.swing.JTextArea;
+import InterfazEditorTexto.*;
 
 parser code {:
 
     public ArrayList<Lienzos> listLienzos;
+    public static String totalErrores = "";
+    public Boolean todoCorrecto = true;
+    public JTextArea panelErrores;
 
-    public SintaxLNZ(AnalizadorLexico2 lex, ArrayList<Lienzos> listLienzos){
+    public SintaxLNZ(AnalizadorLexico2 lex, ArrayList<Lienzos> listLienzos, JTextArea panelErrores){
         super(lex);
         this.listLienzos = listLienzos;
+        this.panelErrores = panelErrores;
     }
 
     public void setAccion(String tipo, String mensaje, String accion){
@@ -18,6 +24,11 @@ parser code {:
 
     public void syntax_error(Symbol s){
         setAccion("ERROR", "Error sintaxis columna: "+s.right+" fila: "+s.left,"");
+        if(totalErrores.equals("")){
+            totalErrores = "ERROR: Error sintaxis. Linea: "+s.left+" Columna: "+s.right+".\n";
+        } else {
+            totalErrores += "ERROR: Error sintaxix. Linea: "+s.left+" Columna: "+s.right+".\n";
+        }
     }
 
     public void traspasarDatosArreglo(ArrayList<Lienzos> listLienzos, ArrayList<Lienzos> listTemporal){
@@ -44,26 +55,29 @@ parser code {:
 
     start with a;
 
-    a ::= LLAVE_A LIENZOS DOS_PUNTOS LLAVE_A b:a LLAVE_B LLAVE_B {: parser.traspasarDatosArreglo(parser.listLienzos, a); :}
+    a ::= LLAVE_A LIENZOS DOS_PUNTOS LLAVE_A b:a LLAVE_B LLAVE_B {:  if(parser.todoCorrecto){ parser.traspasarDatosArreglo(parser.listLienzos, a); } else { parser.totalErrores += "Debido a multiples errores, no se puede continuar con el proceso.\n"; }  if(!parser.totalErrores.equals("")){ InterfazTexto.bandejaErrores += "ERRORES .LNZ:\n"; InterfazTexto.bandejaErrores += parser.totalErrores; InterfazTexto.bandejaErrores += "--------------------------------------------------------\n"; parser.totalErrores = "";  }  :}
 ;
-    b ::= ID:c DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA2:b {: a.setIdentificador(c.toString()); if(a.getTipo()==null || a.getMisColores()==null || a.getMisDimensiones()==null || a.getNombre()==null){ System.out.println("Falta de un archivvo"); } else { b.add(a);  }RESULT=b; :}
+    b ::= ID:c DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA2:b {: a.setIdentificador(c.toString()); if(a.getTipo()==null || a.getMisColores()==null || a.getMisDimensiones()==null || a.getNombre()==null){ parser.totalErrores += "Falta de un atributo principal en lienzo: "+c.toString()+". Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } else { b.add(a);  } RESULT=b; :}
 ;
-    c ::= nombre DOS_PUNTOS COMILLAS PALABRA:e COMILLAS COMA1:a {: if(a.getNombre()==null){ a.setNombre(e.toString()); } else { System.out.println("ya hay un nombre"); } RESULT=a; :}
-    | tipo DOS_PUNTOS COMILLAS png COMILLAS COMA1:a {: if(a.getTipo()==null){ a.setTipo("png"); } else { System.out.println("ya hay un tipo"); } RESULT=a; :} 
-    | tipo DOS_PUNTOS COMILLAS gif COMILLAS COMA1:a {: if(a.getTipo()==null){ a.setTipo("gif"); } else { System.out.println("ya existe un tipo"); } RESULT=a; :}
-    | Fondo DOS_PUNTOS LLAVE_A e:b LLAVE_B COMA1:a {: if(a.getMisColores()==null){ if(b.getRojo()==null || b.getAzul()==null || b.getVerde()==null){ System.out.println("falta de un atributo en colores"); } else {  a.setMisColores(b); } } else { System.out.println("ya existe un fondo"); } RESULT=a; :}
-    | Fondo DOS_PUNTOS LLAVE_A f:b LLAVE_B COMA1:a {: if(a.getMisColores()==null){ a.setMisColores(b); } else { System.out.println("ya existe un fondo"); } RESULT=a; :}
-    | size DOS_PUNTOS LLAVE_A g:b LLAVE_B COMA1:a {: if(a.getMisDimensiones()==null){ if(b.getDimensionCuadros()==null || b.getCuadrosX()==null || b.getCuadrosY()==null){ System.out.println("falta de un atributo en dimensiones"); } else { a.setMisDimensiones(b); } } else { System.out.println("ya existe un size"); } RESULT=a; :}
+    c ::= nombre DOS_PUNTOS COMILLAS PALABRA:e COMILLAS COMA1:a {: if(a.getNombre()==null){ a.setNombre(e.toString()); } else { parser.totalErrores += "Atributo Nombre ya ha sido definido. Linea: "+eleft+" Columna: "+eright+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | tipo DOS_PUNTOS COMILLAS png COMILLAS COMA1:a {: if(a.getTipo()==null){ a.setTipo("png"); } else { parser.totalErrores += "Atributo TIPO ya ha sido definido. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } RESULT=a; :} 
+    | tipo DOS_PUNTOS COMILLAS gif COMILLAS COMA1:a {: if(a.getTipo()==null){ a.setTipo("gif"); } else { parser.totalErrores += "Atributo TIPO ya ha sido definido. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | Fondo DOS_PUNTOS LLAVE_A e:b LLAVE_B COMA1:a {: if(a.getMisColores()==null){ if(b.getRojo()==null || b.getAzul()==null || b.getVerde()==null){ parser.totalErrores += "Falta un atributo RGB. Linea: "+bleft+" Columna: "+bright+".\n"; parser.todoCorrecto = false; } else {  a.setMisColores(b); } } else { parser.totalErrores += "El color de fondo ya ha sido definido previamente. Linea: "+bleft+" Columna: "+bright+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | Fondo DOS_PUNTOS LLAVE_A f:b LLAVE_B COMA1:a {: if(a.getMisColores()==null){ a.setMisColores(b); } else { parser.totalErrores += "El color de fondo ya ha sido definido previamente. Linea: "+bleft+" Columna: "+bright+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | size DOS_PUNTOS LLAVE_A g:b LLAVE_B COMA1:a {: if(a.getMisDimensiones()==null){ if(b.getDimensionCuadros()==null || b.getCuadrosX()==null || b.getCuadrosY()==null){ parser.totalErrores += "Falta un archivo dentro del bloque SIZE. Linea: "+bleft+" Columna: "+bright+".\n"; parser.todoCorrecto = false; } else { a.setMisDimensiones(b); } } else { parser.totalErrores += "El bloque SIZE ya ha sido definido previamente. Linea: "+bleft+" Columna: "+bright+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | error COMA1:e {: parser.totalErrores += "\tAtributo principal definido de forma incorrecta.\n"; RESULT=e; :}
 ;
-    e ::= Red DOS_PUNTOS NUMERO:b COMA3:a {: if(a.getRojo() == null){ a.setRojo((Integer) b); } else { System.out.println("ya hay un rojo"); } RESULT=a; :}
-    | Blue DOS_PUNTOS NUMERO:b COMA3:a {: if(a.getAzul() == null){ a.setAzul((Integer) b); } else { System.out.println("ya hay un azul"); } RESULT=a; :}
-    | Green DOS_PUNTOS NUMERO:b COMA3:a {: if(a.getVerde() == null){ a.setVerde((Integer) b); } else { System.out.println("ya hay un verde"); } RESULT=a; :}
+    e ::= Red DOS_PUNTOS NUMERO:b COMA3:a {: if(a.getRojo() == null){ a.setRojo((Integer) b); } else { parser.totalErrores += "Ya existe un atributo color rojo. Linea: "+bleft+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | Blue DOS_PUNTOS NUMERO:b COMA3:a {: if(a.getAzul() == null){ a.setAzul((Integer) b); } else { parser.totalErrores += "Ya existe un atributo color azul. Linea: "+bleft+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | Green DOS_PUNTOS NUMERO:b COMA3:a {: if(a.getVerde() == null){ a.setVerde((Integer) b); } else { parser.totalErrores += "Ya existe un atributo color verde. Linea: "+bleft+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | error COMA3:a {: parser.totalErrores += "\tAtributo COLORES definido de forma incorrecta.\n"; RESULT=a; :}
 ;
     f ::= HEX DOS_PUNTOS codigoHex:a {: LienzoColor color = new LienzoColor(); color.setColorHex(a.toString()); RESULT=color; :}
 ;
-    g ::= cuadro DOS_PUNTOS NUMERO:b COMA4:a {: if(a.getDimensionCuadros()==null){ a.setDimensionCuadros((Integer) b); } else { System.out.println("ya hay un dimension cuadros"); } RESULT=a; :}
-    | dimension_x DOS_PUNTOS NUMERO:b COMA4:a {: if(a.getCuadrosX() == null){ a.setCuadrosX((Integer) b); } else { System.out.println("ya hay un cuadrosX"); } RESULT=a; :}
-    | dimension_y DOS_PUNTOS NUMERO:b COMA4:a {: if(a.getCuadrosY() == null){ a.setCuadrosY((Integer) b); } else { System.out.println("ya hay un cuadrosY"); } RESULT=a; :}
+    g ::= cuadro DOS_PUNTOS NUMERO:b COMA4:a {: if(a.getDimensionCuadros()==null){ a.setDimensionCuadros((Integer) b); } else { parser.totalErrores += "Ya existe un atributo cuadros. Linea: "+bleft+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | dimension_x DOS_PUNTOS NUMERO:b COMA4:a {: if(a.getCuadrosX() == null){ a.setCuadrosX((Integer) b); } else { parser.totalErrores += "Ya existe un atributo Dimension_X. Linea: "+bleft+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | dimension_y DOS_PUNTOS NUMERO:b COMA4:a {: if(a.getCuadrosY() == null){ a.setCuadrosY((Integer) b); } else { parser.totalErrores += "Ya existe un atributo Dimension_Y. Linea: "+bleft+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | error COMA4:a {: parser.totalErrores += "\tAtributo SIZE definido de forma incorrecta.\n"; RESULT=a; :}
 ;
     COMA1::= COMA c:a {: RESULT=a; :}
     | {: Lienzos lienzo = new Lienzos(); RESULT=lienzo; :}

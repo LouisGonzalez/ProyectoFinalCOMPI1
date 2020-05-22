@@ -1,9 +1,9 @@
 {
     COLORES:{
-   	 lienzoId1:{
+   	 lienzoId1: {
    		 MiAmarillo:{
    			 Red: 255,
-   			 Blue: 12,
+			 Blue: 12,
    			 Green: 75
    		 },
    		 VerdePalido:{

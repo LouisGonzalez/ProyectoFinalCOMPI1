@@ -17,7 +17,16 @@ public class Tiempos {
     private String lienzoInicio;
     private String lienzoFin;
     private ArrayList<ImagenesTiempo> transiciones;
+    private boolean existe = false;
 
+    public boolean isExiste() {
+        return existe;
+    }
+
+    public void setExiste(boolean existe) {
+        this.existe = existe;
+    }
+    
     public String getNombreLienzo() {
         return nombreLienzo;
     }

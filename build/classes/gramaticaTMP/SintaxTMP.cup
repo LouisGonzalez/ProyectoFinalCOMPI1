@@ -2,10 +2,13 @@ package gramaticaTMP;
 import java_cup.runtime.Symbol;
 import pollitos.*;
 import java.util.ArrayList;
+import InterfazEditorTexto.*;
 
 parser code {:
 
     public ArrayList<Tiempos> listTiempos;
+    public static String totalErrores = "";
+    public boolean todoCorrecto = true;
 
     public SintaxTMP(AnalizadorLexico4 lex, ArrayList<Tiempos> listTiempos){
         super(lex);
@@ -18,6 +21,11 @@ parser code {:
 
     public void syntax_error(Symbol s){
         setAccion("ERROR", "Error sintaxis columna: "+s.right+" fila: "+s.left,"");
+        if(totalErrores.equals("")){
+            totalErrores = "ERROR: Error sintaxis. Linea: "+s.left+" Columna: "+s.right+".\n";
+        } else {
+            totalErrores += "ERROR: Error sintaxis. Linea: "+s.left+" Columna: "+s.right+".\n";
+        }
     }
 
     public void traspasarDatosArreglo(ArrayList<Tiempos> listTiempos, ArrayList<Tiempos> listTemporal){
@@ -45,18 +53,20 @@ parser code {:
 
     start with a;
 
-    a ::= LLAVE_A TIEMPOS DOS_PUNTOS LLAVE_A b:a LLAVE_B {: parser.traspasarDatosArreglo(parser.listTiempos, a); :}
+    a ::= LLAVE_A TIEMPOS DOS_PUNTOS LLAVE_A b:a LLAVE_B {: if(parser.todoCorrecto){ parser.traspasarDatosArreglo(parser.listTiempos, a); } else { parser.totalErrores += "Debido a multiples errores, no se puede continuar con el proceso.\n"; }   if(!parser.totalErrores.equals("")){ InterfazTexto.bandejaErrores += "ERRORES .TMP:\n"; InterfazTexto.bandejaErrores += parser.totalErrores; InterfazTexto.bandejaErrores += "--------------------------------------------------------\n"; parser.totalErrores = "";  }  :}
 ;
-    b ::= ID:c DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA1:b {: a.setNombreLienzo(c.toString()); b.add(a); RESULT=b; :}
+    b ::= ID:c DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA1:b {: if(a.getLienzoInicio() == null || a.getLienzoFin() == null || a.getTransiciones() == null){ parser.totalErrores += "Falta de un atributo principal en lienzo: "+c.toString()+". Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } else { a.setNombreLienzo(c.toString()); b.add(a); } RESULT=b; :}
+    | error COMA1:b {: parser.totalErrores += "\tAtributo principal definido de forma incorrecta.\n"; parser.todoCorrecto = false; RESULT=b; :}
 ;
-    c ::= inicio DOS_PUNTOS COMILLAS ID:b COMILLAS COMA2:a {: if(a.getLienzoInicio() == null) { a.setLienzoInicio(b.toString()); } else { System.out.println("ya hay un inicio"); } RESULT=a; :}
-    | fin DOS_PUNTOS COMILLAS ID:b COMILLAS COMA2:a {: if(a.getLienzoFin() == null) { a.setLienzoFin(b.toString()); } else { System.out.println("ya hay un fin"); } RESULT=a; :}
-    | imagenes DOS_PUNTOS AGRUPACION_A d:b AGRUPACION_B COMA2:a {: if(a.getTransiciones() == null) { a.setTransiciones(b); } else { System.out.println("ya hay un transiciones"); } RESULT=a; :}
+    c ::= inicio DOS_PUNTOS COMILLAS ID:b COMILLAS COMA2:a {: if(a.getLienzoInicio() == null) { a.setLienzoInicio(b.toString()); } else { parser.totalErrores += "El atributo Inicio ya ha sido definido previamente. Linea: "+bleft+" Columna: "+bright+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | fin DOS_PUNTOS COMILLAS ID:b COMILLAS COMA2:a {: if(a.getLienzoFin() == null) { a.setLienzoFin(b.toString()); } else { parser.totalErrores += "El atributo Fin ya ha sido definido previamente. Linea: "+bleft+" Columna: "+bright+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | imagenes DOS_PUNTOS AGRUPACION_A d:b AGRUPACION_B COMA2:a {: if(a.getTransiciones() == null)  { a.setTransiciones(b);  } else { parser.totalErrores += "El campo IMAGENES ya ha sido definido previamente. Linea:"+bleft+" Columna: "+bright+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
 ;
-    d ::= LLAVE_A e:b LLAVE_B COMA3:a {: a.add(b); RESULT=a; :}
+    d ::= LLAVE_A e:b LLAVE_B COMA3:a {:   if(b.getId() == null || b.getDuracion() == null){ parser.totalErrores += "Falta de un atributo dentro del bloque IMAGENES. Linea: "+bleft+" Columna: "+bright+".\n"; parser.todoCorrecto = false;  } else { a.add(b); } RESULT=a; :}
 ;
-    e ::= id DOS_PUNTOS COMILLAS ID:b COMILLAS COMA4:a {: if(a.getId() == null){ a.setId(b.toString()); } else { System.out.println("ya hay un id en imagenes"); } RESULT=a; :}
-    | duracion DOS_PUNTOS NUMERO:b COMA4:a {: if(a.getDuracion() == null){ a.setDuracion((Integer) b); } else { System.out.println("ya existe un duracion en imagenes"); } RESULT=a; :}
+    e ::= id DOS_PUNTOS COMILLAS ID:b COMILLAS COMA4:a {: if(a.getId() == null){ a.setId(b.toString()); } else { parser.totalErrores += "Ya existe un atributo Id en campo IMAGENES. Linea: "+bleft+".\n"; parser.todoCorrecto = false; } RESULT=a; :}
+    | duracion DOS_PUNTOS NUMERO:b COMA4:a {: if(a.getDuracion() == null){ a.setDuracion((Integer) b); } else { parser.totalErrores += "Ya existe un atributo duracion en campo IMAGENES. Linea: "+bleft+".\n"; parser.todoCorrecto = false;  } RESULT=a; :}
+    | error COMA4:a {: parser.totalErrores += "\tAtributo en campo IMAGENES definido de forma incorrecta.\n"; parser.todoCorrecto = false; RESULT=a; :}
 ;
     COMA1 ::= COMA b:a {: RESULT=a; :}
     | {: ArrayList<Tiempos> listTiempos = new ArrayList<>(); RESULT=listTiempos; :}

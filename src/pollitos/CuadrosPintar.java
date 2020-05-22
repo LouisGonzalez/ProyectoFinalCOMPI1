@@ -5,6 +5,8 @@
  */
 package pollitos;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author luisGonzalez
@@ -13,14 +15,69 @@ public class CuadrosPintar {
     
     private String idColor;
     private String idImagen;
-    private int posX;
-    private int posY;
+    private Boolean enWhile;
+    private Integer noIf;
+    private Object[] rangoX = new Object[2];
+    private Object[] rangoY = new Object[2];
+    private ArrayList<OpAritmeticasWhile> opX;
+    private ArrayList<OpAritmeticasWhile> opY;
 
-    public CuadrosPintar(String idColor, String idImagen, int posX, int posY) {
+    public CuadrosPintar(String idColor, String idImagen) {
         this.idColor = idColor;
         this.idImagen = idImagen;
-        this.posX = posX;
-        this.posY = posY;
+    }
+
+    public ArrayList<OpAritmeticasWhile> getOpX() {
+        return opX;
+        
+    }
+
+    public void setOpX(ArrayList<OpAritmeticasWhile> opX) {
+        this.opX = opX;
+    }
+
+    public ArrayList<OpAritmeticasWhile> getOpY() {
+        return opY;
+    }
+
+    public void setOpY(ArrayList<OpAritmeticasWhile> opY) {
+        this.opY = opY;
+    }
+
+    public Boolean getEnWhile() {
+        return enWhile;
+    }
+
+    public void setEnWhile(Boolean enWhile) {
+        this.enWhile = enWhile;
+    }
+
+    public Integer getNoIf() {
+        return noIf;
+    }
+
+    public void setNoIf(Integer noIf) {
+        this.noIf = noIf;
+    }
+
+    public Object[] getRangoX() {
+        return rangoX;
+    }
+
+    public void setRangoX(Object[] rangoX) {
+        this.rangoX = rangoX;
+    }
+
+    public Object[] getRangoY() {
+        return rangoY;
+    }
+
+    public void setRangoY(Object[] rangoY) {
+        this.rangoY = rangoY;
+    }
+
+    public void setRangoY(Integer[] rangoY) {
+        this.rangoY = rangoY;
     }
     
     public String getIdColor() {
@@ -39,21 +96,4 @@ public class CuadrosPintar {
         this.idImagen = idImagen;
     }
 
-    public int getPosX() {
-        return posX;
-    }
-
-    public void setPosX(int posX) {
-        this.posX = posX;
-    }
-
-    public int getPosY() {
-        return posY;
-    }
-
-    public void setPosY(int posY) {
-        this.posY = posY;
-    }
-    
-    
 }

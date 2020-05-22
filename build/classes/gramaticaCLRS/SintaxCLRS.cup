@@ -2,10 +2,13 @@ package gramaticaCLRS;
 import pollitos.*;   
 import java_cup.runtime.Symbol;
 import java.util.ArrayList;
+import InterfazEditorTexto.*;
 
 parser code {:
     
     public ArrayList<Colores> listColores;
+    public static String totalErrores = "";
+    public Boolean todoCorrecto = true;
 
     public SintaxCLRS(AnalizadorLexico lex, ArrayList<Colores> listColores){
         super(lex);
@@ -17,7 +20,13 @@ parser code {:
     }
 
     public void syntax_error(Symbol s){
-        setAccion("ERROR", "Error sintaxis columna: "+s.right+" fila: "+s.left,"");
+        //setAccion("ERROR", "Error sintaxis columna: "+s.right+" fila: "+s.left,"");
+        if(totalErrores.equals("")){
+            totalErrores = "ERROR: Error sintaxis. Linea: "+s.left+" Columna: "+s.right+".\n";
+        } else {
+            totalErrores += "ERROR: Error sintaxis. Linea: "+s.left+" Columna: "+s.right+".\n";
+        
+        } 
     }
 
     public void traspasarDatosArreglo(ArrayList<Colores> listColores, ArrayList<Colores> listTemporal){
@@ -40,22 +49,20 @@ parser code {:
 
     start with a;
 
-    a ::= LLAVE_A COLORES DOS_PUNTOS LLAVE_A b:a LLAVE_B LLAVE_B {: parser.traspasarDatosArreglo(parser.listColores, a); :}
+    a ::= LLAVE_A COLORES DOS_PUNTOS LLAVE_A b:a LLAVE_B LLAVE_B {: if(parser.todoCorrecto){ parser.traspasarDatosArreglo(parser.listColores, a); } else { parser.totalErrores += "Debido a multiples errores, no se puede continuar el proceso.\n"; } if(!parser.totalErrores.equals("")){ InterfazTexto.bandejaErrores += "ERRORES .CLRS:\n"; InterfazTexto.bandejaErrores += parser.totalErrores;  InterfazTexto.bandejaErrores += "--------------------------------------------------------\n"; parser.totalErrores = "";  } :}
 ;
     b ::= ID:e DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA1:c {:  Colores color = new Colores(); color.setNombreLienzo(e.toString()); color.setListColores(a); c.add(color); RESULT=c; :}
-    | error b:e {: :}
+    | error COMA1:a {: parser.totalErrores += "Atributo principal mal definido.\n"; RESULT=a; :}
 ;
-    c ::= ID:e DOS_PUNTOS LLAVE_A d:a LLAVE_B COMA2:b  {:  if(a.getRojo()==null || a.getAzul() == null || a.getVerde()==null){ System.out.println("falta de un atributo color"); } else { a.setIdColor(e.toString()); b.add(a); } RESULT=b; :} 
-    | ID:e DOS_PUNTOS LLAVE_A e:a LLAVE_B COMA2:b {: if(a.getColorHex()==null){ System.out.println("Falta archivo hex en color"); } else { a.setIdColor(e.toString()); b.add(a); } RESULT=b; :} 
-    | error c:e {:  :}
+    c ::= ID:e DOS_PUNTOS LLAVE_A d:a LLAVE_B COMA2:b  {:  if(a.getRojo()==null || a.getAzul() == null || a.getVerde()==null){ parser.totalErrores += "Falta un atributo RGB en la estructura de "+e.toString()+". Linea: "+aleft+" Columna: "+aright+"\n"; parser.todoCorrecto = false;  } else { a.setIdColor(e.toString()); b.add(a); } RESULT=b; :} 
+    | ID:e DOS_PUNTOS LLAVE_A e:a LLAVE_B COMA2:b {: if(a.getColorHex()==null){ parser.totalErrores += "Falta llenar atributo Hexadecimal.\n"; parser.todoCorrecto = false; } else { a.setIdColor(e.toString()); b.add(a); } RESULT=b; :} 
 ;
-    d ::= Red DOS_PUNTOS NUMERO:e COMA3:b {: if(b.getRojo()==null){ b.setRojo((Integer) e); } else { System.out.println("ya hay un dato rojo"); } RESULT=b; :}
-    | Blue DOS_PUNTOS NUMERO:e COMA3:b {: if(b.getAzul()==null){ b.setAzul((Integer) e); } else { System.out.println("ya hay un dato azul"); } RESULT=b; :}
-    | Green DOS_PUNTOS NUMERO:e COMA3:b {: if(b.getVerde()==null){ b.setVerde((Integer) e); } else { System.out.println("ya hay un dato en verde"); } RESULT=b;  :}
-    | error d:e {: System.out.println("error prro"); RESULT=e; :}
+    d ::= Red DOS_PUNTOS NUMERO:e COMA3:b {: if(b.getRojo()==null){ b.setRojo((Integer) e); } else { parser.totalErrores += "Ya existe un atributo color rojo. Linea:"+eleft+".\n"; parser.todoCorrecto = false; } RESULT=b; :}
+    | Blue DOS_PUNTOS NUMERO:e COMA3:b {: if(b.getAzul()==null){ b.setAzul((Integer) e); } else { parser.totalErrores += "Ya existe un atributo color azul. Linea:"+eleft+".\n"; parser.todoCorrecto = false; }  RESULT=b; :}
+    | Green DOS_PUNTOS NUMERO:e COMA3:b {: if(b.getVerde()==null){ b.setVerde((Integer) e); } else { parser.totalErrores += "Ya existe un atributo color verde. Linea: "+eleft+".\n";  parser.todoCorrecto = false; }  RESULT=b;  :}
+    | error COMA3:a {: parser.totalErrores += "\tAtributo COLORES definido de forma incorrecta.\n"; RESULT=a; :}
 ;
     e ::= HEX DOS_PUNTOS codigoHex:e {: LienzoColor colores = new LienzoColor(); colores.setColorHex(e.toString()); RESULT=colores; :}
-    | error e:e {: System.out.println("error"); RESULT=e; :}
 ;
     COMA1 ::= COMA b:e {: RESULT=e; :}
     | {: ArrayList<Colores> coloresLienzos = new ArrayList<>(); RESULT=coloresLienzos; :}

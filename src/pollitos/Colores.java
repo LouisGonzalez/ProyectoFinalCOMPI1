@@ -15,6 +15,15 @@ public class Colores {
     
     private String nombreLienzo;
     private ArrayList<LienzoColor> listColores;
+    private boolean existe = false;
+
+    public boolean isExiste() {
+        return existe;
+    }
+
+    public void setExiste(boolean existe) {
+        this.existe = existe;
+    }
 
     public String getNombreLienzo() {
         return nombreLienzo;

@@ -103,50 +103,88 @@ public class TablaSimbolos {
 
     public Boolean comprobarCondicionTipo1(Objeto objeto1, Integer tipo, Objeto objeto2) {
         Boolean aDevolver = null;
-        switch (tipo) {
-            case 1:
-                aDevolver = objeto1.getObjeto().toString().equals(objeto2.getObjeto().toString());
-                break;
-            case 2:
-                if (objeto1.getTipo().equals("Integer") && objeto2.getTipo().equals("Integer")) {
-                    aDevolver = (Integer) objeto1.getObjeto() < (Integer) objeto2.getObjeto();
+        if (objeto1 != null && objeto2 != null) {
+            if (objeto1.getObjeto() != null && objeto2.getObjeto() != null) {
+                switch (tipo) {
+                    case 1:
+
+                        aDevolver = objeto1.getObjeto().toString().equals(objeto2.getObjeto().toString());
+                        
+                        break;
+                    case 2:
+                        if (objeto1.getTipo().equals("Integer") && objeto2.getTipo().equals("Integer")) {
+                            aDevolver = (Integer) objeto1.getObjeto() < (Integer) objeto2.getObjeto();
+                        }
+                        break;
+                    case 3:
+                        if (objeto1.getTipo().equals("Integer") && objeto2.getTipo().equals("Integer")) {
+                            aDevolver = (Integer) objeto1.getObjeto() > (Integer) objeto2.getObjeto();
+                        }
+                        break;
+                    case 4:
+                        if (objeto1.getTipo().equals("Integer") && objeto2.getTipo().equals("Integer")) {
+                            aDevolver = (Integer) objeto1.getObjeto() <= (Integer) objeto2.getObjeto();
+                        }
+                        break;
+                    case 5:
+                        if (objeto1.getTipo().equals("Integer") && objeto2.getTipo().equals("Integer")) {
+                            aDevolver = (Integer) objeto1.getObjeto() >= (Integer) objeto2.getObjeto();
+                        }
+                        break;
+                    case 6:
+                        aDevolver = !objeto1.getObjeto().toString().equals(objeto2.getObjeto().toString());
+                        break;
+                    default:
+
+                        break;
                 }
-                break;
-            case 3:
-                if (objeto1.getTipo().equals("Integer") && objeto2.getTipo().equals("Integer")) {
-                    aDevolver = (Integer) objeto1.getObjeto() > (Integer) objeto2.getObjeto();
-                }
-                break;
-            case 4:
-                if (objeto1.getTipo().equals("Integer") && objeto2.getTipo().equals("Integer")) {
-                    aDevolver = (Integer) objeto1.getObjeto() <= (Integer) objeto2.getObjeto();
-                }
-                break;
-            case 5:
-                if (objeto1.getTipo().equals("Integer") && objeto2.getTipo().equals("Integer")) {
-                    aDevolver = (Integer) objeto1.getObjeto() >= (Integer) objeto2.getObjeto();
-                }
-                break;
-            case 6:
-                aDevolver = !objeto1.getObjeto().toString().equals(objeto2.getObjeto().toString());
-                break;
-            default:
-                
-                break;
+            } else {
+                System.out.println("Un objeto es nulo");
+            }
+        } else {
+            System.out.println("Un objeto es nulo");
+            
         }
+
         return aDevolver;
     }
 
     public Boolean comprobarCondicionTipo2(String id, ArrayList<ValoresPNT> listValores) {
         Boolean aDevolver = null;
         for (int i = 0; i < listValores.size(); i++) {
-            if(listValores.get(i).getId().equals(id)){
-                if(listValores.get(i).getTipo().equals("Boolean")){
+            if (listValores.get(i).getId().equals(id)) {
+                if (listValores.get(i).getTipo().equals("Boolean")) {
                     aDevolver = listValores.get(i).getValorBoolean();
                 }
             }
         }
         return aDevolver;
+    }
+    
+    public void modificarValor(String id, ArrayList<ValoresPNT> listValores, String tipo, Object nuevoValor){
+        boolean encontrado = false;
+        for (int i = 0; i < listValores.size(); i++) {
+            if(listValores.get(i).getId().equals(id)){
+                if(tipo.equals(listValores.get(i).getTipo())){
+                    if(tipo.equals("String")){
+                        listValores.get(i).setValorCadena(nuevoValor.toString());
+                        encontrado = true;
+                        break;
+                    } else if(tipo.equals("Integer")){
+                        listValores.get(i).setValorEntero((Integer) nuevoValor);
+                        encontrado = true;
+                        break;
+                    } else if(tipo.equals("Boolean")){
+                        listValores.get(i).setValorBoolean((Boolean) nuevoValor);
+                        encontrado = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if(!encontrado){
+            System.out.println("este valor no se encuentra en la tabla de simbolos");
+        }
     }
 
 }

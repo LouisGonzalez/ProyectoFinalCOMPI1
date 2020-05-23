@@ -34,14 +34,14 @@ public class AnalizadorLexico3 implements java_cup.runtime.Scanner {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\4\1\4\1\61\1\4\1\4\24\0\1\10\5\0\1\17"+
-    "\1\20\1\24\1\23\1\5\1\3\1\11\1\6\12\2\1\0\1\7"+
-    "\1\13\1\12\1\14\2\0\1\26\1\1\1\52\1\56\1\54\3\1"+
-    "\1\46\4\1\1\47\1\53\1\55\1\1\1\27\1\30\1\50\1\51"+
-    "\1\25\4\1\1\21\1\0\1\22\1\0\1\1\1\0\1\42\1\36"+
-    "\2\1\1\41\1\44\1\35\1\60\1\31\2\1\1\40\1\1\1\32"+
-    "\1\37\2\1\1\34\1\45\1\33\1\43\1\1\1\57\3\1\1\15"+
-    "\1\0\1\16\7\0\1\61\u1fa2\0\1\61\1\61\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
+    "\11\0\1\4\1\4\1\61\1\4\1\4\22\0\1\0\1\0\1\10"+
+    "\5\0\1\17\1\20\1\24\1\23\1\5\1\3\1\11\1\6\12\2"+
+    "\1\0\1\7\1\13\1\12\1\14\2\0\1\26\1\1\1\52\1\56"+
+    "\1\54\3\1\1\46\4\1\1\47\1\53\1\55\1\1\1\27\1\30"+
+    "\1\50\1\51\1\25\4\1\1\21\1\0\1\22\1\0\1\1\1\0"+
+    "\1\42\1\36\2\1\1\41\1\44\1\35\1\60\1\31\2\1\1\40"+
+    "\1\1\1\32\1\37\2\1\1\34\1\45\1\33\1\43\1\1\1\57"+
+    "\3\1\1\15\1\0\1\16\7\0\1\61\u1fa2\0\1\61\1\61\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
 
   /** 
    * Translates characters to character classes
@@ -323,7 +323,7 @@ public class AnalizadorLexico3 implements java_cup.runtime.Scanner {
     char [] map = new char[0x110000];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < 188) {
+    while (i < 192) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);

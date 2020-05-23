@@ -1,7 +1,7 @@
 {
     LIENZOS:{
    	 lienzoId1:{
-   		 nombre:"lienzo 1",
+   		 nombre:"prueba de comentario",
    		 tipo:"png",
    		 Fondo:{
    			 Red: 25,

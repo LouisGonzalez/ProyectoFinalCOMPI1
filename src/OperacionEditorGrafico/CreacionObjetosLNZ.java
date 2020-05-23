@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import pollitos.Colores;
 import pollitos.Lienzos;
+import pollitos.Pintados;
 import pollitos.Tiempos;
 
 /**
@@ -24,13 +25,15 @@ import pollitos.Tiempos;
  */
 public class CreacionObjetosLNZ {
 
-    public void crearLienzos(ArrayList<Lienzos> misLienzos, ArrayList<Colores> listColores, ArrayList<Tiempos> listTiempos, JTabbedPane panelGrafico) {
+    public void crearLienzos(ArrayList<Lienzos> misLienzos, ArrayList<Colores> listColores, ArrayList<Tiempos> listTiempos, JTabbedPane panelGrafico, ArrayList<Pintados> listPintados) {
         for (int i = 0; i < misLienzos.size(); i++) {
+            ArrayList<Pintados> misPintados = new ArrayList<>();
             String nombreLienzo = misLienzos.get(i).getIdentificador();
             Colores miColor = buscarColoresLienzo(nombreLienzo, listColores);
             Tiempos miTiempo = buscarTiemposLienzo(nombreLienzo, listTiempos);
+            clasificarMisCuadrosPintar(nombreLienzo, listPintados, misPintados);
             if (miColor != null && miTiempo != null) {
-                PanelGrafico panel = new PanelGrafico(misLienzos.get(i), miTiempo, miColor);
+                PanelGrafico panel = new PanelGrafico(misLienzos.get(i), miTiempo, miColor, misPintados, listPintados);
                 panelGrafico.addTab(misLienzos.get(i).getNombre(), panel);
                 panelGrafico.setTabComponentAt(panelGrafico.getTabCount() - 1, crearCabecera(misLienzos.get(i).getNombre(), panelGrafico));
             } else {
@@ -61,6 +64,16 @@ public class CreacionObjetosLNZ {
             }
         }
         return tiempoLienzo;
+    }
+    
+    public void clasificarMisCuadrosPintar(String nombreLienzo, ArrayList<Pintados> listPintados, ArrayList<Pintados> misPintados){
+        for (int i = 0; i < listPintados.size(); i++) {
+            if(listPintados.get(i).getFunciono()){
+                if(listPintados.get(i).getNombreLienzo().equals(nombreLienzo)){
+                    misPintados.add(listPintados.get(i));
+                }
+            }
+        }
     }
 
     public JPanel crearCabecera(String texto, JTabbedPane panelTexto) {

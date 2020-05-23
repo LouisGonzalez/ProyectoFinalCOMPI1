@@ -6,13 +6,8 @@
 package InterfazEditorGrafico;
 
 import OperacionEditorGrafico.CreacionObjetosLNZ;
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import OperacionEditorGrafico.NuevosArchivos;
 import java.util.ArrayList;
-import javax.swing.JLabel;
-import javax.swing.border.LineBorder;
 import pollitos.*;
 
 /**
@@ -25,19 +20,21 @@ public class InterfazGrafico extends javax.swing.JDialog {
     private ArrayList<Colores> listColores;
     private ArrayList<Tiempos> listTiempos;
     private CreacionObjetosLNZ creacion = new CreacionObjetosLNZ();
+    private ArrayList<Pintados> listPintados;
+    private final NuevosArchivos nuevos = new NuevosArchivos();
     
     /**
      * Creates new form InterfazGrafico
      */
-    public InterfazGrafico(java.awt.Frame parent, boolean modal, ArrayList<Lienzos> listLienzos, ArrayList<Colores> listColores, ArrayList<Tiempos> listTiempos) {
+    public InterfazGrafico(java.awt.Frame parent, boolean modal, ArrayList<Lienzos> listLienzos, ArrayList<Colores> listColores, ArrayList<Tiempos> listTiempos, ArrayList<Pintados> listPintados) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
         this.listLienzos = listLienzos;
         this.listColores = listColores;
         this.listTiempos = listTiempos;
-        creacion.crearLienzos(listLienzos, listColores, listTiempos, panelGrafico);
-
+        this.listPintados = listPintados;
+        creacion.crearLienzos(listLienzos, listColores, listTiempos, panelGrafico, listPintados);
     }
 
     /**
@@ -52,11 +49,21 @@ public class InterfazGrafico extends javax.swing.JDialog {
         panelGrafico = new javax.swing.JTabbedPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jMenu1.setText("File");
+
+        jMenuItem1.setText("Guardar");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Edit");
@@ -84,11 +91,19 @@ public class InterfazGrafico extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        System.out.println(nuevos.creacionArchivoCLRS(listColores));
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("\n");
+        System.out.println(nuevos.creacionArchivoPNT(listPintados, listLienzos));
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JTabbedPane panelGrafico;
     // End of variables declaration//GEN-END:variables
 }

@@ -45,6 +45,7 @@ public class LlenadoPaneles {
     }
 
     public void llenadoPanel2(Tiempos misTiempos, JComboBox comboImg) {
+        comboImg.removeAllItems();
         for (int i = 0; i < misTiempos.getTransiciones().size(); i++) {
             String idImagen = misTiempos.getTransiciones().get(i).getId();
             comboImg.addItem(idImagen);
@@ -61,6 +62,7 @@ public class LlenadoPaneles {
     }
 
     public void asignacionColores(Colores misColores, JLabel lblSeleccionado) {
+        panelColores.removeAll();
         int filas = misColores.getListColores().size();
         int columnas = 1;
         tableroColor = new JLabel[filas][columnas];
@@ -90,6 +92,7 @@ public class LlenadoPaneles {
                     public void mouseClicked(MouseEvent event) {
                         System.out.println(posY + "     :D");
                         if (misColores.getListColores().get(posY).getColorHex() == null) {
+                            PanelGrafico.nombreColor = misColores.getListColores().get(posY).getIdColor();
                             int rojo = misColores.getListColores().get(posY).getRojo();
                             int azul = misColores.getListColores().get(posY).getAzul();
                             int verde = misColores.getListColores().get(posY).getVerde();
@@ -99,6 +102,7 @@ public class LlenadoPaneles {
                             PanelGrafico.color = Integer.toString(rojo)+","+Integer.toString(verde)+","+Integer.toString(azul);
                             System.out.println(PanelGrafico.color);
                         } else {
+                            PanelGrafico.nombreColor = misColores.getListColores().get(posY).getIdColor();
                             int color = conversionHex(misColores.getListColores().get(posY).getColorHex());
                             System.out.println(misColores.getListColores().get(posY).getColorHex());
                             lblSeleccionado.setOpaque(true);
@@ -121,6 +125,7 @@ public class LlenadoPaneles {
     }
 
     public void asignacionNombresColores(Colores misColores) {
+        panelNombreColor.removeAll();
         int filas = misColores.getListColores().size();
         int columnas = 1;
         tableroNombreColor = new JLabel[filas][columnas];
@@ -130,6 +135,7 @@ public class LlenadoPaneles {
                 JLabel matriz = new JLabel();
                 matriz.setOpaque(true);
                 matriz.setText(misColores.getListColores().get(x).getIdColor());
+                
                 tableroNombreColor[x][y] = matriz;
                 tableroNombreColor[x][y].addMouseListener(new MouseAdapter() {
                     @Override

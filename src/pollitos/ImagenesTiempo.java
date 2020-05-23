@@ -5,6 +5,8 @@
  */
 package pollitos;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author luisGonzalez
@@ -13,6 +15,15 @@ public class ImagenesTiempo {
     
     private String id;
     private Integer duracion;
+    private ArrayList<Pintados> auxiliar = new ArrayList<>();
+
+    public ArrayList<Pintados> getAuxiliar() {
+        return auxiliar;
+    }
+
+    public void setAuxiliar(ArrayList<Pintados> auxiliar) {
+        this.auxiliar = auxiliar;
+    }
 
     public String getId() {
         return id;

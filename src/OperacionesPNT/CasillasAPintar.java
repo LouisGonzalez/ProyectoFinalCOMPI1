@@ -18,7 +18,7 @@ import pollitos.ValoresPNT;
  */
 public class CasillasAPintar {
 
-    public void determinarCasillas(CuadrosPintar lista, ArrayList<ValoresPNT> listValores, ArrayList<Pintados> listPintados, TablaSimbolos tabla, String idLienzo) {
+    public void determinarCasillas(CuadrosPintar lista, ArrayList<ValoresPNT> listValores, ArrayList<Pintados> listPintados, TablaSimbolos tabla, String idLienzo, Integer linea, Integer columna) {
 
         Integer[] valorVarx = new Integer[2];
         Integer[] valorVary = new Integer[2];
@@ -28,7 +28,7 @@ public class CasillasAPintar {
             for (int i = 0; i < lista.getOpX().size(); i++) {
                 System.out.println(lista.getOpX().get(i).getDato() + "      2");
             }
-            valorVarx[0] = calcularOperacion(lista.getOpX(), tabla, listValores);
+            valorVarx[0] = calcularOperacion(lista.getOpX(), tabla, listValores, linea, columna);
             System.out.println(valorVarx[0] + " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEO");
         } else {
             valorVarx[0] = verificarValor(lista.getRangoX()[0], listValores);
@@ -43,7 +43,7 @@ public class CasillasAPintar {
                 System.out.println(lista.getOpY().get(i).getDato() + "        1");
 
             }
-            valorVary[0] = calcularOperacion(lista.getOpY(), tabla, listValores);
+            valorVary[0] = calcularOperacion(lista.getOpY(), tabla, listValores, linea, columna);
 
             System.out.println(valorVary[0] + " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEOoooooooooo");
         } else {
@@ -93,13 +93,13 @@ public class CasillasAPintar {
         return valor;
     }
 
-    public Integer calcularOperacion(ArrayList<OpAritmeticasWhile> listOp, TablaSimbolos tabla, ArrayList<ValoresPNT> listValores) {
+    public Integer calcularOperacion(ArrayList<OpAritmeticasWhile> listOp, TablaSimbolos tabla, ArrayList<ValoresPNT> listValores, Integer linea, Integer columna) {
         Integer suma = 0;
         CondicionesLogicas cond = new CondicionesLogicas();
         if (listOp.size() == 1) {
             if (listOp.get(0).getTipo().equals("String")) {
                 if (listOp.get(0).getDato() != null) {
-                    suma = (Integer) tabla.verificarUnValor(listOp.get(0).getDato().toString(), listValores, "Integer");
+                    suma = (Integer) tabla.verificarUnValor(listOp.get(0).getDato().toString(), listValores, "Integer", linea, columna);
                 } else {
                     suma = null;
                 }
@@ -112,16 +112,16 @@ public class CasillasAPintar {
                     Integer nodo1 = null;
                     Integer nodo2 = null;
                     if (listOp.get(i).getTipo().equals("String")) {
-                        nodo1 = (Integer) tabla.verificarUnValor(listOp.get(i).getDato().toString(), listValores, "Integer");
+                        nodo1 = (Integer) tabla.verificarUnValor(listOp.get(i).getDato().toString(), listValores, "Integer", linea, columna);
                         if (listOp.get(i + 1).getTipo().equals("String")) {
-                            nodo2 = (Integer) tabla.verificarUnValor(listOp.get(i + 1).getDato().toString(), listValores, "Integer");
+                            nodo2 = (Integer) tabla.verificarUnValor(listOp.get(i + 1).getDato().toString(), listValores, "Integer", linea, columna);
                         } else {
                             nodo2 = (Integer) listOp.get(i + 1).getDato();
                         }
                     } else {
                         nodo1 = (Integer) listOp.get(i).getDato();
                         if (listOp.get(i + 1).getTipo().equals("String")) {
-                            nodo2 = (Integer) tabla.verificarUnValor(listOp.get(i + 1).getDato().toString(), listValores, "Integer");
+                            nodo2 = (Integer) tabla.verificarUnValor(listOp.get(i + 1).getDato().toString(), listValores, "Integer", linea, columna);
                         } else {
                             nodo2 = (Integer) listOp.get(i + 1).getDato();
                         }
@@ -130,7 +130,7 @@ public class CasillasAPintar {
                 } else {
                     Integer nodo = null;
                     if (listOp.get(i + 1).getTipo().equals("String")) {
-                        nodo = (Integer) tabla.verificarUnValor(listOp.get(i + 1).getDato().toString(), listValores, "Integer");
+                        nodo = (Integer) tabla.verificarUnValor(listOp.get(i + 1).getDato().toString(), listValores, "Integer", linea, columna);
                     } else {
                         nodo = (Integer) listOp.get(i + 1).getDato();
                     }

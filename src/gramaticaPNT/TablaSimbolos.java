@@ -41,7 +41,7 @@ public class TablaSimbolos {
     }
 
     //verifica si un id ya ha sido asignado antes
-    public Object verificarUnValor(String id, ArrayList<ValoresPNT> listValores, String tipo2) {
+    public Object verificarUnValor(String id, ArrayList<ValoresPNT> listValores, String tipo2, Integer linea, Integer columna) {
         Object aDevolver = null;
         for (int i = 0; i < listValores.size(); i++) {
             if (listValores.get(i).getId().equals(id)) {
@@ -66,6 +66,9 @@ public class TablaSimbolos {
                 }
 
             }
+        }
+        if(aDevolver  == null){
+            SintaxPNT.totalErrores += "Variable: "+id+" no existe dentro del archivo PNT. Linea: "+linea+" Columna: "+columna+".\n";
         }
         return aDevolver;
     }

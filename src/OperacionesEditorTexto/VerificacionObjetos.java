@@ -61,9 +61,8 @@ public class VerificacionObjetos {
         }
         return todoCorrecto;
     }
-    
-    //MANANA METER ESTE METODO DE ABAJO PARA DEPURAR LOS CUADROS QUE DEBERIAN SER PINTADOS, YA CON ESO SOLO QUEDARIA PINTAR, RECUERDA QUE HAY ALGUNAS CONDICIONES EN EL WHILE QUE AUN NO HAS TERMINADO DE ARREGLAR PARA QUE FUNCIONE AL 100
 
+    //MANANA METER ESTE METODO DE ABAJO PARA DEPURAR LOS CUADROS QUE DEBERIAN SER PINTADOS, YA CON ESO SOLO QUEDARIA PINTAR, RECUERDA QUE HAY ALGUNAS CONDICIONES EN EL WHILE QUE AUN NO HAS TERMINADO DE ARREGLAR PARA QUE FUNCIONE AL 100
     public void verificarCuadrosPorPintar(ArrayList<Pintados> listPintados, ArrayList<Lienzos> listLienzos, ArrayList<Tiempos> listTiempos, ArrayList<Colores> listColores) {
         //DEPURACION 1
         for (int i = 0; i < listPintados.size(); i++) {
@@ -77,34 +76,43 @@ public class VerificacionObjetos {
         for (int i = 0; i < listPintados.size(); i++) {
             if (listPintados.get(i).getFunciono()) {
                 Lienzos aUsar = buscarLienzo(listPintados.get(i).getNombreLienzo(), listLienzos);
-                if (listPintados.get(i).getPosX() < 0 || listPintados.get(i).getPosX() >= aUsar.getMisDimensiones().getCuadrosX()){
-                    listPintados.get(i).setFunciono(false);
-                } 
-                if(listPintados.get(i).getPosY() < 0 || listPintados.get(i).getPosY() >= aUsar.getMisDimensiones().getCuadrosY()){
+                if (listPintados.get(i).getPosX() != null) {
+                    if (listPintados.get(i).getPosX() < 0 || listPintados.get(i).getPosX() >= aUsar.getMisDimensiones().getCuadrosX()) {
+                        listPintados.get(i).setFunciono(false);
+                    }
+                } else {
                     listPintados.get(i).setFunciono(false);
                 }
-            } 
+                if (listPintados.get(i).getPosY() != null) {
+                    if (listPintados.get(i).getPosY() < 0 || listPintados.get(i).getPosY() >= aUsar.getMisDimensiones().getCuadrosY()) {
+                        listPintados.get(i).setFunciono(false);
+                    }
+                } else {
+                    listPintados.get(i).setFunciono(false);
+                }
+            }
         }
         //DEPURACION 3
         for (int i = 0; i < listPintados.size(); i++) {
-            if(listPintados.get(i).getFunciono()){
+            if (listPintados.get(i).getFunciono()) {
                 Colores aUsar = buscarColores(listPintados.get(i).getNombreLienzo(), listColores);
-                if(!buscarColorEspecifico(listPintados.get(i).getIdColor(), aUsar.getListColores())){
+                if (!buscarColorEspecifico(listPintados.get(i).getIdColor(), aUsar.getListColores())) {
                     listPintados.get(i).setFunciono(false);
                 }
             }
         }
         //DEPURACION 4
         for (int i = 0; i < listPintados.size(); i++) {
-            if(listPintados.get(i).getFunciono()){
+            if (listPintados.get(i).getFunciono()) {
                 Tiempos aUsar = buscarImagen(listPintados.get(i).getNombreLienzo(), listTiempos);
-                if(!buscarImagenEspecifica(listPintados.get(i).getIdImagen(), aUsar.getTransiciones())){
+                if (!buscarImagenEspecifica(listPintados.get(i).getIdImagen(), aUsar.getTransiciones())) {
                     listPintados.get(i).setFunciono(false);
                 }
             }
         }
-        
-        
+
+        mostrarCuadrosFalsos(listPintados);
+
     }
 
     public Lienzos buscarLienzo(String id, ArrayList<Lienzos> listLienzos) {
@@ -117,48 +125,57 @@ public class VerificacionObjetos {
         }
         return aDevolver;
     }
-    
-    public Colores buscarColores(String id, ArrayList<Colores> listColores){
+
+    public Colores buscarColores(String id, ArrayList<Colores> listColores) {
         Colores aDevolver = null;
         for (int i = 0; i < listColores.size(); i++) {
-            if(listColores.get(i).getNombreLienzo().equals(id)){
+            if (listColores.get(i).getNombreLienzo().equals(id)) {
                 aDevolver = listColores.get(i);
                 break;
             }
         }
         return aDevolver;
     }
-    
-    public boolean buscarColorEspecifico(String id, ArrayList<LienzoColor> listColores){
+
+    public boolean buscarColorEspecifico(String id, ArrayList<LienzoColor> listColores) {
         boolean encontrado = false;
         for (int i = 0; i < listColores.size(); i++) {
-            if(listColores.get(i).getIdColor().equals(id)){
+            if (listColores.get(i).getIdColor().equals(id)) {
                 encontrado = true;
                 break;
             }
         }
         return encontrado;
     }
-    
-    public Tiempos buscarImagen(String id, ArrayList<Tiempos> listTiempos){
+
+    public Tiempos buscarImagen(String id, ArrayList<Tiempos> listTiempos) {
         Tiempos aDevolver = null;
         for (int i = 0; i < listTiempos.size(); i++) {
-            if(listTiempos.get(i).getNombreLienzo().equals(id)){
+            if (listTiempos.get(i).getNombreLienzo().equals(id)) {
                 aDevolver = listTiempos.get(i);
                 break;
             }
         }
         return aDevolver;
     }
-    
-    public Boolean buscarImagenEspecifica(String id, ArrayList<ImagenesTiempo> listImagenes){
-       boolean encontrado = false;
+
+    public Boolean buscarImagenEspecifica(String id, ArrayList<ImagenesTiempo> listImagenes) {
+        boolean encontrado = false;
         for (int i = 0; i < listImagenes.size(); i++) {
-            if(listImagenes.get(i).getId().equals(id)){
+            if (listImagenes.get(i).getId().equals(id)) {
                 encontrado = true;
                 break;
             }
         }
         return encontrado;
     }
+
+    public void mostrarCuadrosFalsos(ArrayList<Pintados> listPintados) {
+        for (int i = 0; i < listPintados.size(); i++) {
+            if (!listPintados.get(i).getFunciono()) {
+                InterfazTexto.bandejaErrores += "El cuadro a pintar no. " + i + " no existe dentro de ningun lienzo.\n";
+            }
+        }
+    }
+    
 }

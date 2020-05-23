@@ -272,7 +272,7 @@ public class InterfazTexto extends javax.swing.JFrame {
     }//GEN-LAST:event_archivoGuardarActionPerformed
 
     private void btnGraficoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGraficoActionPerformed
-        InterfazGrafico grafico = new InterfazGrafico(null, true, listLienzos, listColores, listTiempos);
+        InterfazGrafico grafico = new InterfazGrafico(null, true, listLienzos, listColores, listTiempos, listPintados);
         grafico.setVisible(true);
     }//GEN-LAST:event_btnGraficoActionPerformed
 
@@ -291,7 +291,8 @@ public class InterfazTexto extends javax.swing.JFrame {
                         AnalizadorLexico3 lexer3 = new AnalizadorLexico3(new StringReader(textos[i]));
                         try {
                             new SintaxPNT(lexer3, listTabla, tabla, listLienzos, listColores, listTiempos, listPintar, listPintados).parse();
-                            /*for (int j = 0; j < listTabla.size(); j++) {
+                                 JOptionPane.showMessageDialog(null, "Ver");
+                    /*   for (int j = 0; j < listTabla.size(); j++) {
                                 if (listTabla.get(j).getTipo().equals("Integer")) {
                                     System.out.println(listTabla.get(j).getId() + " - " + listTabla.get(j).getValorEntero());
                                 } else if (listTabla.get(j).getTipo().equals("String")) {
@@ -302,11 +303,21 @@ public class InterfazTexto extends javax.swing.JFrame {
                                 }
 
                             }*/
-                            JOptionPane.showMessageDialog(null, "Ver");
                             for (int j = 0; j < listPintados.size(); j++) {
-                                System.out.println(listPintados.get(j).getPosX() + " - " + listPintados.get(j).getPosY() + " - "+listPintados.get(j).getIdColor() + " - "+listPintados.get(j).getIdImagen()+" - "+listPintados.get(j).getNombreLienzo());
+                                System.out.println("id: "+j+" - "+listPintados.get(j).getPosX() + " - " + listPintados.get(j).getPosY() + " - "+listPintados.get(j).getIdColor() + " - "+listPintados.get(j).getIdImagen()+" - "+listPintados.get(j).getNombreLienzo());
                                 
                             }
+                            
+                            verificador2.verificarCuadrosPorPintar(listPintados, listLienzos, listTiempos, listColores);
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
                         } catch (Exception ex) {
 
                             Logger.getLogger(PanelTexto.class.getName()).log(Level.SEVERE, null, ex);

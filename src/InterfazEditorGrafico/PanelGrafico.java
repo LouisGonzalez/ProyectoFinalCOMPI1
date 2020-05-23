@@ -9,12 +9,19 @@ import OperacionEditorGrafico.LlenadoPaneles;
 import OperacionEditorGrafico.PanelMatriz;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.JColorChooser;
 import pollitos.Colores;
 import pollitos.Lienzos;
 import pollitos.Tiempos;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.border.LineBorder;
+import pollitos.ImagenesTiempo;
+import pollitos.LienzoColor;
+import pollitos.Pintados;
 
 /**
  *
@@ -31,25 +38,44 @@ public class PanelGrafico extends javax.swing.JPanel {
     public JLabel[][] tableroNombreColor;
     public JLabel[][] tableroPrincipal;
     public static String color;
+    public static String nombreColor;
+    private ArrayList<Pintados> misPintados;
+    private ArrayList<Pintados> listPintados;
 
     /**
      * Creates new form PanelGrafico
      */
-    public PanelGrafico(Lienzos miLienzo, Tiempos misTiempos, Colores misColores) {
+    public PanelGrafico(Lienzos miLienzo, Tiempos misTiempos, Colores misColores, ArrayList<Pintados> misPintados, ArrayList<Pintados> listPintados) {
         initComponents();
         this.miLienzo = miLienzo;
         this.misTiempos = misTiempos;
         this.misColores = misColores;
+        this.misPintados = misPintados;
+        this.listPintados = listPintados;
         lblSeleccionado.setBorder(new LineBorder(Color.black));
         paneles = new LlenadoPaneles(panelColores, tableroColor, tableroNombreColor, panelNombres);
         principal = new PanelMatriz(panelMatriz, tableroPrincipal);
         paneles.llenadoPanel1(misTiempos, txtCantidad, txtInicio, txtFin);
         paneles.llenadoPanel2(misTiempos, comboImg);
-        
+
         paneles.asignacionColores(misColores, lblSeleccionado);
         paneles.asignacionNombresColores(misColores);
-        principal.crearTablero(miLienzo, borrador);
-     /*   panelColores.setLayout(new GridLayout(misColores.getListColores().size(), 1));
+        ImagenesTiempo aUsar = buscarImagen(comboImg.getSelectedItem().toString(), misTiempos);
+        principal.crearTablero(miLienzo, borrador, misPintados, misColores, aUsar, listPintados);
+
+        comboImg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (comboImg.getSelectedItem() != null) {
+                    ImagenesTiempo aUsar = buscarImagen(comboImg.getSelectedItem().toString(), misTiempos);
+
+                    principal.crearTablero(miLienzo, borrador, misPintados, misColores, aUsar, listPintados);
+                }
+            }
+
+        });
+
+        /*   panelColores.setLayout(new GridLayout(misColores.getListColores().size(), 1));
         for (int i = 0; i < misColores.getListColores().size(); i++) {
             for (int j = 0; j < 1; j++) {
                 panelColores.add(tableroColor[i][j]);
@@ -57,9 +83,17 @@ public class PanelGrafico extends javax.swing.JPanel {
                 panelColores.repaint();
             }
         }*/
-     
-     
-     
+    }
+
+    public ImagenesTiempo buscarImagen(String id, Tiempos miTiempo) {
+        ImagenesTiempo aDevolver = null;
+        for (int i = 0; i < miTiempo.getTransiciones().size(); i++) {
+            if (miTiempo.getTransiciones().get(i).getId().equals(id)) {
+                aDevolver = miTiempo.getTransiciones().get(i);
+                break;
+            }
+        }
+        return aDevolver;
     }
 
     /**
@@ -85,11 +119,13 @@ public class PanelGrafico extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         lblSeleccionado = new javax.swing.JLabel();
         borrador = new javax.swing.JCheckBox();
+        btnNuevoColor = new javax.swing.JButton();
         panelLNZ1 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         comboImg = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         txtDuracion = new javax.swing.JTextField();
+        btnImagen = new javax.swing.JButton();
         panelMatriz = new javax.swing.JLabel();
 
         jLabel1.setText("Cantidad");
@@ -130,12 +166,20 @@ public class PanelGrafico extends javax.swing.JPanel {
                 .addGroup(panelLNZLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel6.setText("Color seleccionado:");
 
+        borrador.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         borrador.setText("Borrador activo");
+
+        btnNuevoColor.setText("Nuevo color");
+        btnNuevoColor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoColorActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelCLRSLayout = new javax.swing.GroupLayout(panelCLRS);
         panelCLRS.setLayout(panelCLRSLayout);
@@ -145,8 +189,9 @@ public class PanelGrafico extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelCLRSLayout.createSequentialGroup()
-                        .addComponent(borrador, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(borrador, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnNuevoColor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(panelCLRSLayout.createSequentialGroup()
                         .addGroup(panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -154,8 +199,8 @@ public class PanelGrafico extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addGroup(panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(panelColores, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
-                            .addComponent(lblSeleccionado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(31, 31, 31))))
+                            .addComponent(lblSeleccionado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(31, 31, 31))
         );
         panelCLRSLayout.setVerticalGroup(
             panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,7 +214,9 @@ public class PanelGrafico extends javax.swing.JPanel {
                     .addComponent(jLabel6)
                     .addComponent(lblSeleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(borrador)
+                .addGroup(panelCLRSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(borrador)
+                    .addComponent(btnNuevoColor))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -182,6 +229,14 @@ public class PanelGrafico extends javax.swing.JPanel {
         });
 
         jLabel5.setText("Duracion:");
+
+        btnImagen.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        btnImagen.setText("Nueva imagen");
+        btnImagen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImagenActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelLNZ1Layout = new javax.swing.GroupLayout(panelLNZ1);
         panelLNZ1.setLayout(panelLNZ1Layout);
@@ -196,7 +251,8 @@ public class PanelGrafico extends javax.swing.JPanel {
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 24, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(btnImagen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panelLNZ1Layout.setVerticalGroup(
@@ -210,6 +266,8 @@ public class PanelGrafico extends javax.swing.JPanel {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnImagen)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -246,7 +304,7 @@ public class PanelGrafico extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(panelArea1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelMatriz, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
+                .addComponent(panelMatriz, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -255,17 +313,31 @@ public class PanelGrafico extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(panelMatriz, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void comboImgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboImgActionPerformed
-        paneles.cambioDuracion(misTiempos, comboImg.getSelectedItem().toString(), txtDuracion);
+        if (comboImg.getSelectedItem() != null) {
+            paneles.cambioDuracion(misTiempos, comboImg.getSelectedItem().toString(), txtDuracion);
+        }
     }//GEN-LAST:event_comboImgActionPerformed
+
+    private void btnNuevoColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoColorActionPerformed
+        NuevoColor nuevo = new NuevoColor(null, true, misColores, lblSeleccionado, paneles);
+        nuevo.setVisible(true);
+    }//GEN-LAST:event_btnNuevoColorActionPerformed
+
+    private void btnImagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagenActionPerformed
+        NuevaImagen nuevo = new NuevaImagen(null, true, misTiempos, paneles, comboImg);
+        nuevo.setVisible(true);
+    }//GEN-LAST:event_btnImagenActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox borrador;
+    private javax.swing.JButton btnImagen;
+    private javax.swing.JButton btnNuevoColor;
     private javax.swing.JComboBox<String> comboImg;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

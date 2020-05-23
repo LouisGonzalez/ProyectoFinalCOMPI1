@@ -9,6 +9,10 @@
 				duracion:2
 			},
 			{
+				id:"_id3",
+				duracion:2
+			},
+			{
 				id:"_id2",
 				duracion: 1000
 			}

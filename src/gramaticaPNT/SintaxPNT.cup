@@ -148,39 +148,36 @@ parser code {:
 ;
     c1 ::= PINTAR PARENTESIS_A idColor:a COMA idImagen:b COMA  posX:c {: if(parser.nuevaOpX != null){ parser.traspasarDatos(parser.listOp, parser.listAux); } parser.listOp = new ArrayList<>();  :}  COMA posY:d PARENTESIS_B PUNTO_COMA 
         {:  if(parser.booleanIf == null || parser.booleanIf){ 
-            System.out.println("cumplo "+b.toString()); 
-            CuadrosPintar cuadros = new CuadrosPintar(a.toString(), b.toString()); 
-            if(parser.nuevaOpX != null){
-                cuadros.setOpX(parser.listAux);
-            } else {
-                cuadros.setRangoX(c); 
-            }
-            if(parser.nuevaOpY != null){
-                cuadros.setOpY(parser.listOp);
-                parser.listOp = new ArrayList<>();
-            } else {
-                cuadros.setRangoY(d);
-            }
-            parser.nuevaOpX = null;
-            parser.nuevaOpY = null;
-            parser.listAux = new ArrayList<>();
-            parser.pintadas.determinarCasillas(cuadros, parser.listValores, parser.listPintados, parser.tabla, parser.lienzoActual, (Integer) cleft, (Integer) cright);
-            parser.listPintar.add(cuadros); 
-            if(parser.booleanWhile != null){
-                if(parser.booleanWhile){
-                    cuadros.setEnWhile(true);
-                    cuadros.setNoIf(parser.contIfs);    
-                    parser.ciclo.getListPorPintar().add(cuadros);
+                System.out.println("cumplo "+b.toString()); 
+                CuadrosPintar cuadros = new CuadrosPintar(a.toString(), b.toString()); 
+                if(parser.nuevaOpX != null){                    
+                    cuadros.setOpX(parser.listAux);                 
+                } else {     
+                    cuadros.setRangoX(c);                       
                 }
-            }
-        } else {
-            parser.listOp = new ArrayList<>();
-            parser.nuevaOpX = null;
-            parser.nuevaOpY = null;
-        }  :} c1
-
-
-
+                if(parser.nuevaOpY != null){
+                    cuadros.setOpY(parser.listOp);
+                    parser.listOp = new ArrayList<>();
+                } else {
+                    cuadros.setRangoY(d);
+                }
+                    parser.nuevaOpX = null;
+                    parser.nuevaOpY = null;
+                    parser.listAux = new ArrayList<>();
+                    parser.pintadas.determinarCasillas(cuadros, parser.listValores, parser.listPintados, parser.tabla, parser.lienzoActual, (Integer) cleft, (Integer) cright);
+                    parser.listPintar.add(cuadros); 
+                if(parser.booleanWhile != null){
+                    if(parser.booleanWhile){
+                        cuadros.setEnWhile(true);
+                        cuadros.setNoIf(parser.contIfs);    
+                        parser.ciclo.getListPorPintar().add(cuadros);
+                    }
+                }
+            } else {  
+                parser.listOp = new ArrayList<>();
+                parser.nuevaOpX = null;
+                parser.nuevaOpY = null;
+            }  :} c1
 
     | IF PARENTESIS_A c2:a 
         {: 
@@ -236,38 +233,79 @@ parser code {:
 
 
 
-    | WHILE PARENTESIS_A {:parser.booleanWhile = true;:}  c2:a {:  parser.ciclo.setMiCondicional(parser.listCondw);  parser.booleanWhile = null; :}
-        {: if(parser.booleanWhile == null){ 
-            parser.entro = true; 
-            if(parser.cond.verificar(a) == null){ 
-                parser.verificador = null; 
-                parser.booleanWhile = null; 
-            } else { 
-                if(!parser.cond.verificar(a)){ 
-                    parser.verificador = false; 
-                    parser.booleanWhile = false; 
-                } else if(parser.cond.verificar(a)) { 
-                    parser.verificador = true; 
-                    parser.booleanWhile = true; 
-                } 
-            } 
-        } else if(parser.booleanWhile == true){
-            parser.entro = true; 
-            if(parser.cond.verificar(a) == null){ 
-                parser.verificador = null; 
-                parser.booleanWhile = null; 
-            } else { 
-                if(!parser.cond.verificar(a)){ 
-                    parser.verificador = false; 
-                    parser.booleanWhile = false; 
+    | WHILE PARENTESIS_A {:parser.booleanWhile = true;:}  c2:a {: if(parser.booleanIf != null){ if(parser.booleanIf){ parser.ciclo.setMiCondicional(parser.listCondw);  parser.booleanWhile = null; } } else { parser.ciclo.setMiCondicional(parser.listCondw);  parser.booleanWhile = null; } :}
+        {:
+        if(parser.booleanIf != null){
+            if(parser.booleanIf){
+                if(parser.booleanWhile == null){ 
+                    parser.entro = true; 
+                    if(parser.cond.verificar(a) == null){ 
+                        parser.verificador = null; 
+                        parser.booleanWhile = null; 
+                    } else { 
+                        if(!parser.cond.verificar(a)){ 
+                            parser.verificador = false; 
+                            parser.booleanWhile = false; 
+                        } else if(parser.cond.verificar(a)) { 
+                            parser.verificador = true; 
+                            parser.booleanWhile = true; 
+                        } 
+                    } 
+                } else if(parser.booleanWhile == true){
+                    parser.entro = true; 
+                    if(parser.cond.verificar(a) == null){ 
+                        parser.verificador = null; 
+                        parser.booleanWhile = null; 
+                    } else { 
+                        if(!parser.cond.verificar(a)){ 
+                            parser.verificador = false; 
+                            parser.booleanWhile = false; 
+                        } else { 
+                            parser.verificador = true; 
+                            parser.booleanWhile = true; 
+                        }    
+                    } 
                 } else { 
-                    parser.verificador = true; 
-                    parser.booleanWhile = true; 
+                    parser.entro = false;   
                 } 
-            } 
-        } else { 
-            parser.entro = false;   
-        } :} PARENTESIS_B LLAVE_A c1:b {: if(parser.booleanIf != null){ if(parser.booleanIf){   parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual, (Integer) aleft, (Integer) aright); parser.booleanWhile = false; } } else {  parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual, (Integer) aleft, (Integer) aright); parser.booleanWhile = false; }  :} LLAVE_B c1
+            }    
+        } else {
+            if(parser.booleanIf){
+                if(parser.booleanWhile == null){ 
+                    parser.entro = true; 
+                    if(parser.cond.verificar(a) == null){ 
+                        parser.verificador = null; 
+                        parser.booleanWhile = null; 
+                    } else { 
+                        if(!parser.cond.verificar(a)){ 
+                            parser.verificador = false; 
+                            parser.booleanWhile = false; 
+                        } else if(parser.cond.verificar(a)) { 
+                            parser.verificador = true; 
+                            parser.booleanWhile = true; 
+                        } 
+                    } 
+                } else if(parser.booleanWhile == true){
+                    parser.entro = true; 
+                    if(parser.cond.verificar(a) == null){ 
+                        parser.verificador = null; 
+                        parser.booleanWhile = null; 
+                    } else { 
+                        if(!parser.cond.verificar(a)){ 
+                            parser.verificador = false; 
+                            parser.booleanWhile = false; 
+                        } else { 
+                            parser.verificador = true; 
+                            parser.booleanWhile = true; 
+                        } 
+                    } 
+                } else { 
+                    parser.entro = false;   
+                }
+
+            }
+        }    
+         :} PARENTESIS_B LLAVE_A c1:b {: if(parser.booleanIf != null){ if(parser.booleanIf){   parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual, (Integer) aleft, (Integer) aright); parser.booleanWhile = false; } } else {  parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual, (Integer) aleft, (Integer) aright); parser.booleanWhile = false; }  :} LLAVE_B c1
     
     | b8 c1
     |

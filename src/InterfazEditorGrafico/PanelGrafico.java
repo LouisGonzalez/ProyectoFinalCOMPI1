@@ -5,13 +5,45 @@
  */
 package InterfazEditorGrafico;
 
+import Animaciones.CreacionGifs;
+import Animaciones.CreacionGifs2;
 import OperacionEditorGrafico.LlenadoPaneles;
 import OperacionEditorGrafico.PanelMatriz;
 import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ImageObserver;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderableImage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import pollitos.Colores;
 import pollitos.Lienzos;
@@ -22,6 +54,7 @@ import javax.swing.border.LineBorder;
 import pollitos.ImagenesTiempo;
 import pollitos.LienzoColor;
 import pollitos.Pintados;
+import sun.awt.image.codec.JPEGImageEncoderImpl;
 
 /**
  *
@@ -57,7 +90,6 @@ public class PanelGrafico extends javax.swing.JPanel {
         principal = new PanelMatriz(panelMatriz, tableroPrincipal);
         paneles.llenadoPanel1(misTiempos, txtCantidad, txtInicio, txtFin);
         paneles.llenadoPanel2(misTiempos, comboImg);
-
         paneles.asignacionColores(misColores, lblSeleccionado);
         paneles.asignacionNombresColores(misColores);
         ImagenesTiempo aUsar = buscarImagen(comboImg.getSelectedItem().toString(), misTiempos);
@@ -74,15 +106,6 @@ public class PanelGrafico extends javax.swing.JPanel {
             }
 
         });
-
-        /*   panelColores.setLayout(new GridLayout(misColores.getListColores().size(), 1));
-        for (int i = 0; i < misColores.getListColores().size(); i++) {
-            for (int j = 0; j < 1; j++) {
-                panelColores.add(tableroColor[i][j]);
-                panelColores.validate();
-                panelColores.repaint();
-            }
-        }*/
     }
 
     public ImagenesTiempo buscarImagen(String id, Tiempos miTiempo) {
@@ -127,6 +150,7 @@ public class PanelGrafico extends javax.swing.JPanel {
         txtDuracion = new javax.swing.JTextField();
         btnImagen = new javax.swing.JButton();
         panelMatriz = new javax.swing.JLabel();
+        btnGif = new javax.swing.JButton();
 
         jLabel1.setText("Cantidad");
 
@@ -297,6 +321,13 @@ public class PanelGrafico extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        btnGif.setText("Generar GIF");
+        btnGif.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGifActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -304,7 +335,11 @@ public class PanelGrafico extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(panelArea1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelMatriz, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelMatriz, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnGif, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -313,7 +348,9 @@ public class PanelGrafico extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(panelMatriz, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnGif)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -333,9 +370,44 @@ public class PanelGrafico extends javax.swing.JPanel {
         nuevo.setVisible(true);
     }//GEN-LAST:event_btnImagenActionPerformed
 
+    private void btnGifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGifActionPerformed
+     
+        metodo();
+     
+    }//GEN-LAST:event_btnGifActionPerformed
 
+  
+    public void metodo(){
+        CreacionGifs gif = new CreacionGifs();
+        File file = new File("/home/luisitopapurey/Escritorio/Compiladores 1/ProyectoFinal/src/gramaticaTMP/prueba.gif");
+        try {
+            file.createNewFile();
+            FileOutputStream os = new FileOutputStream(file);
+            gif.start(os);
+            gif.setSize(panelMatriz.getWidth(), panelMatriz.getHeight());
+            gif.setRepeat(20);
+            gif.setQuality(30);
+            for (int i = 0; i < misTiempos.getTransiciones().size(); i++) {
+                BufferedImage image = new BufferedImage(panelMatriz.getWidth(), panelMatriz.getHeight(), BufferedImage.TYPE_INT_RGB);
+                Graphics2D g2d = image.createGraphics();
+                g2d.fillRect(0, 0, panelMatriz.getWidth(), panelMatriz.getHeight());
+                principal.crearTablero2(miLienzo, borrador, misPintados, misColores, misTiempos.getTransiciones().get(i), listPintados, g2d);
+                g2d.dispose();
+                gif.setDelay(misTiempos.getTransiciones().get(i).getDuracion());
+                gif.addFrame(image);
+              //  ImageIO.write(image, "jpg", new File("/home/luisitopapurey/Escritorio/Compiladores 1/ProyectoFinal/src/gramaticaTMP/pruebas"+i+".jpg"));
+            }
+            gif.finish();
+            os.close();
+        } catch (IOException ex) {
+            Logger.getLogger(PanelGrafico.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox borrador;
+    private javax.swing.JButton btnGif;
     private javax.swing.JButton btnImagen;
     private javax.swing.JButton btnNuevoColor;
     private javax.swing.JComboBox<String> comboImg;

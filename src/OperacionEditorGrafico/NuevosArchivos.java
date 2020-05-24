@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import pollitos.Colores;
 import pollitos.Lienzos;
 import pollitos.Pintados;
+import pollitos.Tiempos;
 
 /**
  *
@@ -52,8 +53,6 @@ public class NuevosArchivos {
     
     public String creacionArchivoPNT(ArrayList<Pintados> listPintados, ArrayList<Lienzos> listLienzos){
         String texto = "";  
-        
-        
         texto += "VARS [\n";
         texto += "]\n";
         for (int i = 0; i < listLienzos.size(); i++) {
@@ -67,8 +66,49 @@ public class NuevosArchivos {
             }
             texto += "]\n";
         }
-        
-     
         return texto;
+    }
+    
+    public String creacionArchivoTMP(ArrayList<Lienzos> listLienzos, ArrayList<Tiempos> listTiempos){
+        String texto = "";
+        texto += "{\n";
+        texto += "\tTIEMPOS:{\n";
+        for (int i = 0; i < listLienzos.size(); i++) {
+            texto += "\t\t"+listLienzos.get(i).getIdentificador()+":{\n";
+            Tiempos aUsar = buscarTiempo(listTiempos, listLienzos.get(i).getIdentificador());
+            texto += "\t\t\tinicio:\""+aUsar.getLienzoInicio()+"\",\n";
+            texto += "\t\t\tfin:\""+aUsar.getLienzoFin()+"\",\n";
+            texto += "\t\t\timagenes:[\n";
+            for (int j = 0; j < aUsar.getTransiciones().size(); j++) {
+                texto += "\t\t\t{\n";
+                texto += "\t\t\t\tid:\""+aUsar.getTransiciones().get(j).getId()+"\",\n";
+                texto += "\t\t\t\tduracion:\""+aUsar.getTransiciones().get(j).getDuracion()+"\"\n";
+                if(j == aUsar.getTransiciones().size() - 1){
+                    texto += "\t\t\t}\n";
+                } else {
+                    texto += "\t\t\t},\n";
+                }
+            }
+            texto += "\t\t\t]\n";
+            if(i == listLienzos.size() - 1){
+                texto += "\t\t}\n";        
+            } else {
+                texto += "\t\t},\n";
+            }
+            texto += "\t}\n";
+            texto += "}";
+        }
+        return texto;
+    }
+    
+    public Tiempos buscarTiempo(ArrayList<Tiempos> listTiempos, String id){
+        Tiempos aDevolver = null;
+        for (int i = 0; i < listTiempos.size(); i++) {
+            if(listTiempos.get(i).getNombreLienzo().equals(id)){
+                aDevolver = listTiempos.get(i);
+                break;
+            }
+        }
+        return aDevolver;
     }
 }

@@ -1,0 +1,3 @@
+Animaciones.LZWEncoder
+Animaciones.NeuQuant
+Animaciones.CreacionGifs

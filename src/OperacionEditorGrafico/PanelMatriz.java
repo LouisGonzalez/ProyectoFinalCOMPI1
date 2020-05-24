@@ -7,6 +7,8 @@ package OperacionEditorGrafico;
 
 import InterfazEditorGrafico.PanelGrafico;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -97,8 +99,43 @@ public class PanelMatriz {
                 panelMatriz.add(tableroPrincipal[i][j]);
                 panelMatriz.validate();
                 panelMatriz.repaint();
+
             }
         }
+    }
+
+    public void crearTablero2(Lienzos miLienzo, JCheckBox borrador, ArrayList<Pintados> misPintados, Colores misColores, ImagenesTiempo imagen, ArrayList<Pintados> listPintados, Graphics2D grafo) {
+        panelMatriz.removeAll();
+        int filas = miLienzo.getMisDimensiones().getCuadrosY();
+        int columnas = miLienzo.getMisDimensiones().getCuadrosX();
+        int dimensiones = miLienzo.getMisDimensiones().getDimensionCuadros();
+        tableroPrincipal = new JLabel[filas][columnas];
+        panelMatriz.setLayout(new GridLayout(filas, columnas));
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                JLabel matriz = new JLabel();
+                matriz.setOpaque(true);
+                matriz.setBorder(new LineBorder(Color.black));
+                matriz.setSize(dimensiones, dimensiones);
+                if (miLienzo.getMisColores().getColorHex() == null) {
+                    int rojo = miLienzo.getMisColores().getRojo();
+                    int verde = miLienzo.getMisColores().getVerde();
+                    int azul = miLienzo.getMisColores().getAzul();
+                    matriz.setBackground(new Color(rojo, verde, azul));
+                } else {
+                    int color = conversionHex(miLienzo.getMisColores().getColorHex());
+                    matriz.setBackground(new Color(color));
+                }
+                pintarCuadros(misPintados, j, i, misColores, matriz, imagen.getId());
+                tableroPrincipal[i][j] = matriz;
+                panelMatriz.add(tableroPrincipal[i][j]);
+                panelMatriz.validate();
+                panelMatriz.repaint();
+                grafo.setColor(tableroPrincipal[i][j].getBackground());
+                grafo.fillRect(j, i, matriz.getWidth(), matriz.getHeight());
+            }
+        }
+        
     }
 
     public void pintarCuadros(ArrayList<Pintados> misPintados, int x, int y, Colores misColores, JLabel actual, String idImagen) {
@@ -112,6 +149,7 @@ public class PanelMatriz {
                             int azul = aUsar.getAzul();
                             int verde = aUsar.getVerde();
                             actual.setBackground(new Color(rojo, verde, azul));
+
                         } else {
                             int color = conversionHex(aUsar.getColorHex());
                             actual.setBackground(new Color(color));
@@ -122,18 +160,16 @@ public class PanelMatriz {
         }
     }
 
-    
-    
     public void borrarCasillaArchivo(ArrayList<Pintados> misPintados, int x, int y, String idImagen, ArrayList<Pintados> listPintados) {
         for (int i = 0; i < misPintados.size(); i++) {
             if (misPintados.get(i).getFunciono()) {
                 if (y == misPintados.get(i).getPosY() && x == misPintados.get(i).getPosX()) {
                     if (misPintados.get(i).getIdImagen().equals(idImagen)) {
                         misPintados.get(i).setFunciono(false);
-                        
+
                         for (int j = 0; j < listPintados.size(); j++) {
-                            if(listPintados.get(j).getPosX() == x && listPintados.get(j).getPosY() == y){
-                                if(listPintados.get(j).getIdImagen().equals(idImagen)){
+                            if (listPintados.get(j).getPosX() == x && listPintados.get(j).getPosY() == y) {
+                                if (listPintados.get(j).getIdImagen().equals(idImagen)) {
                                     listPintados.get(j).setFunciono(false);
                                 }
                             }

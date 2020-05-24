@@ -50,6 +50,7 @@ public class InterfazGrafico extends javax.swing.JDialog {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -63,6 +64,9 @@ public class InterfazGrafico extends javax.swing.JDialog {
             }
         });
         jMenu1.add(jMenuItem1);
+
+        jMenu3.setText("Generar GIF");
+        jMenu1.add(jMenu3);
 
         jMenuBar1.add(jMenu1);
 
@@ -96,12 +100,16 @@ public class InterfazGrafico extends javax.swing.JDialog {
         System.out.println("--------------------------------------------------------------------------------");
         System.out.println("\n");
         System.out.println(nuevos.creacionArchivoPNT(listPintados, listLienzos));
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("\n");
+        System.out.println(nuevos.creacionArchivoTMP(listLienzos, listTiempos));
     }//GEN-LAST:event_jMenuItem1ActionPerformed
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JTabbedPane panelGrafico;

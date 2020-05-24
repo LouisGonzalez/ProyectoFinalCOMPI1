@@ -53,7 +53,7 @@ parser code {:
 
     start with a;
 
-    a ::= LLAVE_A TIEMPOS DOS_PUNTOS LLAVE_A b:a LLAVE_B {: if(parser.todoCorrecto){ parser.traspasarDatosArreglo(parser.listTiempos, a); } else { parser.totalErrores += "Debido a multiples errores, no se puede continuar con el proceso.\n"; }   if(!parser.totalErrores.equals("")){ InterfazTexto.bandejaErrores += "ERRORES .TMP:\n"; InterfazTexto.bandejaErrores += parser.totalErrores; InterfazTexto.bandejaErrores += "--------------------------------------------------------\n"; parser.totalErrores = "";  }  :}
+    a ::= LLAVE_A TIEMPOS DOS_PUNTOS LLAVE_A b:a LLAVE_B LLAVE_B {: if(parser.todoCorrecto){ parser.traspasarDatosArreglo(parser.listTiempos, a); } else { parser.totalErrores += "Debido a multiples errores, no se puede continuar con el proceso.\n"; }   if(!parser.totalErrores.equals("")){ InterfazTexto.bandejaErrores += "ERRORES .TMP:\n"; InterfazTexto.bandejaErrores += parser.totalErrores; InterfazTexto.bandejaErrores += "--------------------------------------------------------\n"; parser.totalErrores = "";  }  :}
 ;
     b ::= ID:c DOS_PUNTOS LLAVE_A c:a LLAVE_B COMA1:b {: if(a.getLienzoInicio() == null || a.getLienzoFin() == null || a.getTransiciones() == null){ parser.totalErrores += "Falta de un atributo principal en lienzo: "+c.toString()+". Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } else { a.setNombreLienzo(c.toString()); b.add(a); } RESULT=b; :}
     | error COMA1:b {: parser.totalErrores += "\tAtributo principal definido de forma incorrecta.\n"; parser.todoCorrecto = false; RESULT=b; :}

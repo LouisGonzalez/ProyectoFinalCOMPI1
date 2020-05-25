@@ -21,7 +21,6 @@ public class VerificadorPaginas {
 
     //verifica si ya hay algun archivo con esta extension
     public void verificarExtensiones(JTabbedPane panelTexto, String titulo, JPanel panel) {
-        boolean encontrado = false;
         String[] extensiones = titulo.split("\\.");
         String extension = extensiones[extensiones.length - 1];
         if (panelTexto.getTabCount() > 0) {
@@ -30,18 +29,15 @@ public class VerificadorPaginas {
                 String extension2 = extensiones2[extensiones2.length - 1];
                 if (extension.equals(extension2)) {
                     System.out.println("IGUALES");
+                    System.out.println("Tab a remover " + i);
                     panelTexto.removeTabAt(i);
-                    panelTexto.addTab(titulo, panel);
-                    panelTexto.setTabComponentAt(i, crearCabecera(titulo, panelTexto));
-                    encontrado = true;
                     break;
                 }
             }
         }
-        if (encontrado == false) {
-            panelTexto.addTab(titulo, panel);
-            panelTexto.setTabComponentAt(panelTexto.getTabCount() - 1, crearCabecera(titulo, panelTexto));
-        }
+        panelTexto.addTab(titulo, panel);
+        panelTexto.setTabComponentAt(panelTexto.getTabCount() - 1, crearCabecera(titulo, panelTexto));
+
     }
 
     public JPanel crearCabecera(String texto, JTabbedPane panelTexto) {

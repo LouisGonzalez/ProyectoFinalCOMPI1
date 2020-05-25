@@ -67,8 +67,8 @@ public class TablaSimbolos {
 
             }
         }
-        if(aDevolver  == null){
-            SintaxPNT.totalErrores += "Variable: "+id+" no existe dentro del archivo PNT. Linea: "+linea+" Columna: "+columna+".\n";
+        if (aDevolver == null) {
+            SintaxPNT.totalErrores += "Variable: " + id + " no existe dentro del archivo PNT. Linea: " + linea + " Columna: " + columna + ".\n";
         }
         return aDevolver;
     }
@@ -112,7 +112,7 @@ public class TablaSimbolos {
                     case 1:
 
                         aDevolver = objeto1.getObjeto().toString().equals(objeto2.getObjeto().toString());
-                        
+
                         break;
                     case 2:
                         if (objeto1.getTipo().equals("Integer") && objeto2.getTipo().equals("Integer")) {
@@ -146,7 +146,7 @@ public class TablaSimbolos {
             }
         } else {
             System.out.println("Un objeto es nulo");
-            
+
         }
 
         return aDevolver;
@@ -163,21 +163,21 @@ public class TablaSimbolos {
         }
         return aDevolver;
     }
-    
-    public void modificarValor(String id, ArrayList<ValoresPNT> listValores, String tipo, Object nuevoValor){
+
+    public void modificarValor(String id, ArrayList<ValoresPNT> listValores, String tipo, Object nuevoValor, Integer linea, Integer columna) {
         boolean encontrado = false;
         for (int i = 0; i < listValores.size(); i++) {
-            if(listValores.get(i).getId().equals(id)){
-                if(tipo.equals(listValores.get(i).getTipo())){
-                    if(tipo.equals("String")){
+            if (listValores.get(i).getId().equals(id)) {
+                if (tipo.equals(listValores.get(i).getTipo())) {
+                    if (tipo.equals("String")) {
                         listValores.get(i).setValorCadena(nuevoValor.toString());
                         encontrado = true;
                         break;
-                    } else if(tipo.equals("Integer")){
+                    } else if (tipo.equals("Integer")) {
                         listValores.get(i).setValorEntero((Integer) nuevoValor);
                         encontrado = true;
                         break;
-                    } else if(tipo.equals("Boolean")){
+                    } else if (tipo.equals("Boolean")) {
                         listValores.get(i).setValorBoolean((Boolean) nuevoValor);
                         encontrado = true;
                         break;
@@ -185,8 +185,13 @@ public class TablaSimbolos {
                 }
             }
         }
-        if(!encontrado){
-            System.out.println("este valor no se encuentra en la tabla de simbolos");
+        if (!encontrado) {
+            if (linea != null && columna != null) {
+                SintaxPNT.totalErrores += "La variable " + id + " no se encuentra en el archivo PNT. Linea: " + linea + " Columna: " + columna + ".\n";
+            } else {
+                SintaxPNT.totalErrores += "La variable " + id + " no se encuentra en el archivo PNT.\n";
+            }
+            SintaxPNT.todoCorrecto = false;
         }
     }
 

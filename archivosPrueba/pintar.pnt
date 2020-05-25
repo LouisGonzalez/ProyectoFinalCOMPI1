@@ -3,33 +3,34 @@ VARS [
     int dos, tres = 25;
     int cuatro;
     String idImagen="_id1",idImagen2="_id2";
-    int cinco = uno + -25 + 35;
+    int cinco =  -5;
     boolean verdad=true, falso=false;
 ]
 INSTRUCCIONES(lienzoId1) [
      dos = cinco + 3;
      PINTAR("MiAmarillo",idImagen, 2..5, 2);
      if(verdad AND tres == 25){
-           PINTAR(MiAmarillo,idImagen,2..3, cuatro);
+           PINTAR("MiAmarillo",idImagen,2..3, cuatro);
      }else{
-          PINTAR(MiAmarillo,"_id2",1, 2);
+          PINTAR("MiAmarillo","_id2",1, 2);
      }
 ]
 INSTRUCCIONES(otroLienzo) [
     if(tres==26){
-            PINTAR(otroColor,idImagen2,uno,uno);
+            PINTAR("otroColor",idImagen2,uno,uno);
      }else{
 	if(1==1){
 		while(dos<=20){
-	     	PINTAR(otroColor,"_id1",8,dos);   
-             	dos=dos+1;
+	     	PINTAR("otroColor","_id1",8*2+14,dos);   
+             	dos=dos+1*2;
 		}
         } else {
-	   PINTAR(otroColor,"_id1",0,4545);
+	   PINTAR("otroColor","_id1",0,4545);
 	}
 	
      }	
     cuatro = 25;
-    PINTAR(MiAmarillo, "_id3",2,tres..26);
+    PINTAR("MiAmarillo", "_id3",2,tres..26);
 ]
+
 

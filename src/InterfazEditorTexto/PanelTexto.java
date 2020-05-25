@@ -88,8 +88,6 @@ public class PanelTexto extends javax.swing.JPanel {
                 InterfazTexto.textos[1] = txtArea.getText();
             } else if(path.endsWith(".lnz")){
                 InterfazTexto.textos[0] = txtArea.getText();
-                System.out.println(InterfazTexto.textos[1]);
-                
             } else if(path.endsWith(".tmp")){
                 InterfazTexto.textos[2] = txtArea.getText();
             } else if(path.endsWith(".pnt")){

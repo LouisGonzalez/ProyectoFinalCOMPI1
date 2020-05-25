@@ -107,7 +107,7 @@ public class CasillasAPintar {
                 suma = (Integer) listOp.get(0).getDato();
             }
         } else {
-            for (int i = 0; i < listOp.size() - 1; i++) {
+          /*  for (int i = 0; i < listOp.size() - 1; i++) {
                 if (i == 0) {
                     Integer nodo1 = null;
                     Integer nodo2 = null;
@@ -136,7 +136,19 @@ public class CasillasAPintar {
                     }
                     suma = cond.devolverResultado(listOp.get(i + 1), suma, nodo, suma);
                 }
+            }*/
+          
+            for (int i = 0; i < listOp.size(); i++) {
+                System.out.println(listOp.get(i).getDato().toString()+"         ESTE ES EL DATO MODERFUCKER "+listOp.get(i).getOperacion());
             }
+            
+            ArrayList<OpAritmeticasWhile> listAux = new ArrayList<>();
+            for (int i = 0; i < listOp.size(); i++) {
+                listAux.add(listOp.get(i));
+            }
+            suma = cond.calculoValorVariable(listAux, tabla, listValores, linea, columna);
+          
+          
         }
         System.out.println("El valor de suma para pintar es de " + suma);
         return suma;

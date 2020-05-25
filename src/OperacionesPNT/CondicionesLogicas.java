@@ -154,15 +154,13 @@ public class CondicionesLogicas {
     }
 
     public void repetirCiclo(ArrayList<TipoEncadenamiento> a, While ciclo, ArrayList<ValoresPNT> listValores, ArrayList<Pintados> listPintados, String idLienzo, Integer linea, Integer columna) {
-
+        int contador = 0;
         ArrayList<TipoEncadenamiento> listAux = new ArrayList<>();
         TablaSimbolos tabla = new TablaSimbolos();
-
         listAux = devolverArreglo(ciclo, tabla, listValores);
         if (verificar2(listAux) == null) {
-            SintaxPNT.totalErrores += "El ciclo no ha podido inicializarse debido a un valor. Linea: "+linea+" Columna: "+columna+".\n";
+            SintaxPNT.totalErrores += "El ciclo no ha podido inicializarse debido a un valor. Linea: " + linea + " Columna: " + columna + ".\n";
         } else {
-
             while (!verificar2(listAux)) {
                 System.out.println("ENTRO MI BROTHER");
                 if (ciclo.getCondicional() != null) {
@@ -194,8 +192,7 @@ public class CondicionesLogicas {
                                                     }
                                                 }
                                                 suma = devolverResultado(ciclo.getListOp().get(i).getMiOperacion().get(j + 1), nodo1, nodo2, suma);
-                                                tabla.modificarValor(ciclo.getListOp().get(i).getIdCambio(), listValores, "Integer", suma);
-
+                                                tabla.modificarValor(ciclo.getListOp().get(i).getIdCambio(), listValores, "Integer", suma, null, null);
                                             } else {
                                                 Integer nodo = null;
                                                 if (ciclo.getListOp().get(i).getMiOperacion().get(j + 1).getTipo().equals("String")) {
@@ -204,25 +201,18 @@ public class CondicionesLogicas {
                                                     nodo = (Integer) ciclo.getListOp().get(i).getMiOperacion().get(j + 1).getDato();
                                                 }
                                                 suma = devolverResultado(ciclo.getListOp().get(i).getMiOperacion().get(j + 1), suma, nodo, suma);
-                                                tabla.modificarValor(ciclo.getListOp().get(i).getIdCambio(), listValores, "Integer", suma);
+                                                tabla.modificarValor(ciclo.getListOp().get(i).getIdCambio(), listValores, "Integer", suma, null, null);
                                             }
                                         }
                                     }
-
                                 }
-
                             }
                         }
                     }
-
                 } else {
                     for (int i = 0; i < ciclo.getListOp().size(); i++) {
-                        int suma = 0;
-
-                        for (int j = 0; j < ciclo.getListOp().get(i).getMiOperacion().size() - 1; j++) {
-                            System.out.println(ciclo.getListPorPintar().size() + "  total cuadros");
-                            System.out.println(ciclo.getListPorPintar().get(0).getOpX().get(0).getDato() + "  xxx");
-                            System.out.println(ciclo.getListPorPintar().get(0).getOpY().get(0).getDato() + "     yyy");
+                        //Integer suma = 0;
+                        /*       for (int j = 0; j < ciclo.getListOp().get(i).getMiOperacion().size() - 1; j++) {
                             //AQUI NO SE SABE MYY BIEN SI ES I O J DEPENDIENDO COMO SE EJECUTE SE DECIDI
                             if (i == 0) {
                                 Integer nodo1 = null;
@@ -246,7 +236,6 @@ public class CondicionesLogicas {
                                 System.out.println(suma);
                                 tabla.modificarValor(ciclo.getListOp().get(i).getIdCambio(), listValores, "Integer", suma);
                                 agregarPintadosWhile(ciclo, listValores, listPintados, tabla, idLienzo, linea, columna);
-
                             } else {
                                 Integer nodo = null;
                                 if (ciclo.getListOp().get(i).getMiOperacion().get(j + 1).getTipo().equals("String")) {
@@ -261,22 +250,35 @@ public class CondicionesLogicas {
 
                             }
 
+                        }*/
+                        ArrayList<OpAritmeticasWhile> listAux2 = new ArrayList<>();
+                        for (int j = 0; j < ciclo.getListOp().get(i).getMiOperacion().size(); j++) {
+                            listAux2.add(ciclo.getListOp().get(i).getMiOperacion().get(j));
                         }
-
+                        Integer suma = calculoValorVariable(listAux2, tabla, listValores, linea, columna);
+                        if (suma != null) {
+                            System.out.println(ciclo.getListOp().get(i).getIdCambio());
+                            if(contador == 0){
+                                agregarPintadosWhile(ciclo, listValores, listPintados, tabla, idLienzo, linea, columna);
+                            }
+                            tabla.modificarValor(ciclo.getListOp().get(i).getIdCambio(), listValores, "Integer", suma, null, null);
+                            agregarPintadosWhile(ciclo, listValores, listPintados, tabla, idLienzo, linea, columna);
+                        }
                     }
                 }
                 listAux = devolverArreglo(ciclo, tabla, listValores);
+                contador++;
             }
         }
     }
 
     public ArrayList<TipoEncadenamiento> devolverArreglo(While ciclo, TablaSimbolos tabla, ArrayList<ValoresPNT> listValores) {
         ArrayList<TipoEncadenamiento> listAux = new ArrayList<>();
-        for (int i = 0; i < ciclo.getMiCondicional().size(); i++) {
-
-            if (ciclo.getMiCondicional().get(i).getTipo().equals("Tipo1")) {
-                Objeto nuevo = null;
-                Objeto nuevo2 = null;
+        for (int i = 0; i < ciclo.getMiCondicional().size(); i++) { 
+                                                                    
+            if (ciclo.getMiCondicional().get(i).getTipo().equals("Tipo1")){     
+                Objeto nuevo = null;                        
+                Objeto nuevo2 = null;               
                 if (isNumeric(ciclo.getMiCondicional().get(i).getDato2().toString())) {
                     nuevo = new Objeto(ciclo.getMiCondicional().get(i).getDato2(), "Integer");
                     if (isNumeric(ciclo.getMiCondicional().get(i).getDato1().toString())) {
@@ -299,15 +301,17 @@ public class CondicionesLogicas {
                 TipoEncadenamiento tipo = new TipoEncadenamiento(cadena, valor);
                 listAux.add(tipo);
             } else if (ciclo.getMiCondicional().get(i).getTipo().equals("Tipo2")) {
-                //FFALTA COMPROBAR AQI SI EN UN IF O UN WHILE VIENE SOLAMENTE UN TRUE O; FALSE
-
                 Boolean valor = tabla.comprobarCondicionTipo2(ciclo.getMiCondicional().get(i).getDato1().toString(), listValores);
                 System.out.println(valor + "    soy el valor tipo2 :D");
                 String cadena = ciclo.getMiCondicional().get(i).getCadena();
                 TipoEncadenamiento tipo = new TipoEncadenamiento(cadena, valor);
                 listAux.add(tipo);
+            } else if(ciclo.getMiCondicional().get(i).getTipo().equals("Tipo3")){
+                Boolean valor = Boolean.valueOf(ciclo.getMiCondicional().get(i).getDato1().toString());
+                String cadena = ciclo.getMiCondicional().get(i).getCadena();
+                TipoEncadenamiento tipo = new TipoEncadenamiento(cadena, valor);
+                listAux.add(tipo);
             }
-
         }
         return listAux;
     }
@@ -330,6 +334,181 @@ public class CondicionesLogicas {
         return total;
     }
 
+    public Integer calculoValorVariable(ArrayList<OpAritmeticasWhile> listOp, TablaSimbolos tabla, ArrayList<ValoresPNT> listValores, Integer linea, Integer columna) {
+        if (listOp.size() > 1) {
+            int nodoARemover = 0;
+            Boolean aRemover = false;
+            for (int i = 1; i < listOp.size(); i++) {
+                if (listOp.get(i).getOperacion().equals("MULT")) {
+                    Integer nodo1 = null, nodo2 = null;
+                    if (listOp.get(i).getTipo().equals("String")) {
+                        nodo1 = (Integer) tabla.verificarUnValor(listOp.get(i).getDato().toString(), listValores, "Integer", linea, columna);
+                        if (listOp.get(i - 1).getTipo().equals("String")) {
+                            nodo2 = (Integer) tabla.verificarUnValor(listOp.get(i - 1).toString(), listValores, "Integer", linea, columna);
+                        } else {
+                            nodo2 = (Integer) listOp.get(i - 1).getDato();
+                        }
+                    } else {
+                        nodo1 = (Integer) listOp.get(i).getDato();
+                        if (listOp.get(i - 1).getTipo().equals("String")) {
+                            nodo2 = (Integer) tabla.verificarUnValor(listOp.get(i - 1).toString(), listValores, "Integer", linea, columna);
+                        } else {
+                            nodo2 = (Integer) listOp.get(i - 1).getDato();
+                        }
+                    }
+                    if (nodo1 != null && nodo2 != null) {
+                        Integer nuevoValor = nodo2 * nodo1;
+                        String operacion = listOp.get(i - 1).getOperacion();
+                        OpAritmeticasWhile nuevo = new OpAritmeticasWhile(nuevoValor, operacion, "Integer");
+                        listOp.set(i, nuevo);
+                        nodoARemover = i - 1;
+                        aRemover = true;
+                        break;
+                    } else {
+                        aRemover = null;
+                        break;
+                    }
+                } else if (listOp.get(i).getOperacion().equals("DIV")) {
+                    Integer nodo1 = null, nodo2 = null;
+                    if (listOp.get(i).getTipo().equals("String")) {
+                        nodo1 = (Integer) tabla.verificarUnValor(listOp.get(i).getDato().toString(), listValores, "Integer", linea, columna);
+                        if (listOp.get(i - 1).getTipo().equals("String")) {
+                            nodo2 = (Integer) tabla.verificarUnValor(listOp.get(i - 1).toString(), listValores, "Integer", linea, columna);
+                        } else {
+                            nodo2 = (Integer) listOp.get(i - 1).getDato();
+                        }
+                    } else {
+                        nodo1 = (Integer) listOp.get(i).getDato();
+                        if (listOp.get(i - 1).getTipo().equals("String")) {
+                            nodo2 = (Integer) tabla.verificarUnValor(listOp.get(i).getDato().toString(), listValores, "Integer", linea, columna);
+                        } else {
+                            nodo2 = (Integer) listOp.get(i - 1).getDato();
+                        }
+                    }
+                    if (nodo1 != null && nodo2 != null) {
+                        Integer nuevoValor = nodo2 / nodo1;
+                        String operacion = listOp.get(i - 1).getOperacion();
+                        OpAritmeticasWhile nuevo = new OpAritmeticasWhile(nuevoValor, operacion, "Integer");
+                        listOp.set(i, nuevo);
+                        nodoARemover = i - 1;
+                        aRemover = true;
+                        break;
+                    } else {
+                        aRemover = null;
+                        break;
+                    }
+                }
+            }
+            if (aRemover != null) {
+                if (aRemover) {
+                    listOp.remove(nodoARemover);
+                    calculoValorVariable(listOp, tabla, listValores, linea, columna);
+                } else {
+                    segundaRondaVariable(listOp, tabla, listValores, linea, columna);
+                }
+            } else {
+                return null;
+            }
+        }
+        if (listOp.get(0).getTipo().equals("Integer")) {
+            return (Integer) listOp.get(0).getDato();
+        } else {
+            return null;
+        }
+
+    }
+
+    public void segundaRondaVariable(ArrayList<OpAritmeticasWhile> listOp, TablaSimbolos tabla, ArrayList<ValoresPNT> listValores, Integer linea, Integer columna) {
+        if (listOp.size() > 1) {
+            Boolean aRemover = false;
+            Integer nodoARemover = null;
+            for (int i = 1; i < listOp.size(); i++) {
+                if (listOp.get(i).getOperacion().equals("SUMA")) {
+                    Integer nodo1 = null, nodo2 = null;
+                    if (listOp.get(i).getTipo().equals("String")) {
+                        nodo1 = (Integer) tabla.verificarUnValor(listOp.get(i).getDato().toString(), listValores, "Integer", linea, columna);
+                        if (listOp.get(i - 1).getTipo().equals("String")) {
+                            nodo2 = (Integer) tabla.verificarUnValor(listOp.get(i - 1).getDato().toString(), listValores, "Integer", linea, columna);
+                        } else {
+                            nodo2 = (Integer) listOp.get(i - 1).getDato();
+                        }
+                    } else {
+                        nodo1 = (Integer) listOp.get(i).getDato();
+                        if (listOp.get(i - 1).getTipo().equals("String")) {
+                            nodo2 = (Integer) tabla.verificarUnValor(listOp.get(i - 1).getDato().toString(), listValores, "Integer", linea, columna);
+                        } else {
+                            nodo2 = (Integer) listOp.get(i - 1).getDato();
+                        }
+                    }
+
+                    if (nodo1 != null && nodo2 != null) {
+                        Integer nuevoValor = nodo2 + nodo1;
+                        System.out.println("dato1:  " + nodo2 + " dato2:  " + nodo1);
+                        System.out.println("suma: " + nuevoValor);
+                        String operacion = listOp.get(i - 1).getOperacion();
+                        OpAritmeticasWhile nuevo = new OpAritmeticasWhile(nuevoValor, operacion, "Integer");
+                        listOp.set(i, nuevo);
+                        aRemover = true;
+                        nodoARemover = i - 1;
+                        break;
+                    } else {
+                        aRemover = null;
+                        break;
+                    }
+
+                } else if (listOp.get(i).getOperacion().equals("RESTA")) {
+                    Integer nodo1 = null, nodo2 = null;
+                    if (listOp.get(i).getTipo().equals("String")) {
+                        nodo1 = (Integer) tabla.verificarUnValor(listOp.get(1).getDato().toString(), listValores, "Integer", linea, columna);
+                        if (listOp.get(i - 1).getTipo().equals("String")) {
+                            nodo2 = (Integer) tabla.verificarUnValor(listOp.get(i - 1).getDato().toString(), listValores, "Integer", linea, columna);
+                        } else {
+                            nodo2 = (Integer) listOp.get(i - 1).getDato();
+                        }
+                    } else {
+                        nodo1 = (Integer) listOp.get(i).getDato();
+                        if (listOp.get(i - 1).getTipo().equals("String")) {
+                            nodo2 = (Integer) tabla.verificarUnValor(listOp.get(i - 1).getDato().toString(), listValores, "Integer", linea, columna);
+                        } else {
+                            nodo2 = (Integer) listOp.get(i - 1).getDato();
+                        }
+                    }
+                    if (nodo1 != null && nodo2 != null) {
+                        Integer nuevoValor = nodo2 - nodo1;
+                        String operacion = listOp.get(i - 1).getOperacion();
+                        OpAritmeticasWhile nuevo = new OpAritmeticasWhile(nuevoValor, operacion, "Integer");
+                        listOp.set(i, nuevo);
+                        aRemover = true;
+                        nodoARemover = i - 1;
+                        break;
+                    } else {
+                        aRemover = null;
+                        break;
+                    }
+                }
+            }
+            if (aRemover != null) {
+                if (aRemover) {
+                    System.out.println("soy el nodo a remover " + nodoARemover);
+                    System.out.println(listOp.size() + "    SIZE");
+                    for (int i = 0; i < listOp.size(); i++) {
+                        System.out.println(listOp.get(i).getDato().toString()+" DATAZO"+"   "+i);
+                    }
+                    
+                    listOp.remove(0);
+                    System.out.println("------------------------------------------------------------------------");
+                    System.out.println(listOp.size() + "    SIZE");
+                    for (int i = 0; i < listOp.size(); i++) {
+                        System.out.println(listOp.get(i).getDato().toString()+" DATAZO"+"   "+i);
+                    }
+                    segundaRondaVariable(listOp, tabla, listValores, linea, columna);
+                }
+            }
+        }
+    }
+
+    //HACER DOS METODOS, EL PRIMERO QUE OPERE UNICAMENTE MULTIPLICACIONES Y DIVISIONES
+    //EL SEGUNDO QUE SE EJECUTE JUSTO DESPUES Y QUE YA OPERE SUMAS Y RESTAS
     private boolean isNumeric(String cadena) {
         try {
             Integer.parseInt(cadena);

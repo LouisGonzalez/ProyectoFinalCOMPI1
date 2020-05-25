@@ -243,7 +243,6 @@ public class InterfazTexto extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(InterfazTexto.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
             } else {
                 JOptionPane.showMessageDialog(null, "Archivo no compatible.");
             }
@@ -292,7 +291,7 @@ public class InterfazTexto extends javax.swing.JFrame {
                         try {
                             new SintaxPNT(lexer3, listTabla, tabla, listLienzos, listColores, listTiempos, listPintar, listPintados).parse();
                                  JOptionPane.showMessageDialog(null, "Ver");
-                    /*   for (int j = 0; j < listTabla.size(); j++) {
+                       for (int j = 0; j < listTabla.size(); j++) {
                                 if (listTabla.get(j).getTipo().equals("Integer")) {
                                     System.out.println(listTabla.get(j).getId() + " - " + listTabla.get(j).getValorEntero());
                                 } else if (listTabla.get(j).getTipo().equals("String")) {
@@ -302,7 +301,7 @@ public class InterfazTexto extends javax.swing.JFrame {
 
                                 }
 
-                            }*/
+                            }
                             for (int j = 0; j < listPintados.size(); j++) {
                                 System.out.println("id: "+j+" - "+listPintados.get(j).getPosX() + " - " + listPintados.get(j).getPosY() + " - "+listPintados.get(j).getIdColor() + " - "+listPintados.get(j).getIdImagen()+" - "+listPintados.get(j).getNombreLienzo());
                                 
@@ -311,7 +310,7 @@ public class InterfazTexto extends javax.swing.JFrame {
                             verificador2.verificarCuadrosPorPintar(listPintados, listLienzos, listTiempos, listColores);
                             
                             
-                            
+                           
                             
                             
                             
@@ -330,8 +329,6 @@ public class InterfazTexto extends javax.swing.JFrame {
                             if(!verificador2.verificarLienzosColores(listLienzos, listColores)){
                                 todoEnOrden = false;
                             } 
-                            
-                            
                             
                         } catch (Exception ex) {
                             Logger.getLogger(PanelTexto.class.getName()).log(Level.SEVERE, null, ex);

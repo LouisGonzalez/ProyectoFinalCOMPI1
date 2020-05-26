@@ -68,6 +68,7 @@ public class TablaSimbolos {
             }
         }
         if (aDevolver == null) {
+            SintaxPNT.todoCorrecto = false;
             SintaxPNT.totalErrores += "Variable: " + id + " no existe dentro del archivo PNT. Linea: " + linea + " Columna: " + columna + ".\n";
         }
         return aDevolver;
@@ -117,6 +118,7 @@ public class TablaSimbolos {
                     case 2:
                         if (objeto1.getTipo().equals("Integer") && objeto2.getTipo().equals("Integer")) {
                             aDevolver = (Integer) objeto1.getObjeto() < (Integer) objeto2.getObjeto();
+                            System.out.println(aDevolver+   "  A DEVOLVER PERRAS");
                         }
                         break;
                     case 3:

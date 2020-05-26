@@ -132,7 +132,7 @@ public class PanelMatriz {
                 panelMatriz.validate();
                 panelMatriz.repaint();
                 grafo.setColor(tableroPrincipal[i][j].getBackground());
-                grafo.fillRect(j, i, matriz.getWidth(), matriz.getHeight());
+                grafo.fillRect(j*(panelMatriz.getWidth()/columnas), i*(panelMatriz.getHeight()/filas), panelMatriz.getWidth()/columnas, panelMatriz.getHeight()/filas);
             }
         }
         

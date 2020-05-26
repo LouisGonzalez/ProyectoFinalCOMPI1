@@ -8,6 +8,7 @@ package InterfazEditorGrafico;
 import OperacionEditorGrafico.CreacionObjetosLNZ;
 import OperacionEditorGrafico.NuevosArchivos;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import pollitos.*;
 
 /**
@@ -96,6 +97,12 @@ public class InterfazGrafico extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+       
+        
+        
+        
+        GuardarArchivos guardar = new GuardarArchivos(null, true, nuevos.creacionArchivoLNZ(listLienzos), nuevos.creacionArchivoCLRS(listColores), nuevos.creacionArchivoPNT(listPintados, listLienzos), nuevos.creacionArchivoTMP(listLienzos, listTiempos));
+        guardar.setVisible(true);
         System.out.println(nuevos.creacionArchivoCLRS(listColores));
         System.out.println("--------------------------------------------------------------------------------");
         System.out.println("\n");
@@ -103,9 +110,13 @@ public class InterfazGrafico extends javax.swing.JDialog {
         System.out.println("--------------------------------------------------------------------------------");
         System.out.println("\n");
         System.out.println(nuevos.creacionArchivoTMP(listLienzos, listTiempos));
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println(nuevos.creacionArchivoLNZ(listLienzos));
+        
+        
     }//GEN-LAST:event_jMenuItem1ActionPerformed
     
-
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;

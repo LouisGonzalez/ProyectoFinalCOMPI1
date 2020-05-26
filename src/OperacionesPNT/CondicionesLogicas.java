@@ -71,7 +71,7 @@ public class CondicionesLogicas {
                                     verificador = true;
                                 }
                             } else if (booleanos.get(i).getEncadenamiento().equals("OR")) {
-                                if (!booleanos.get(i).getValor() || booleanos.get(i + 1).getValor()) {
+                                if (booleanos.get(i).getValor() || booleanos.get(i + 1).getValor()) {
                                     trayectoria.add(true);
                                     verificador = true;
                                 } else {
@@ -98,22 +98,23 @@ public class CondicionesLogicas {
             if (booleanos.size() == 1) {
                 verificador = booleanos.get(booleanos.size() - 1).getValor();
             } else {
-                for (int i = 1; i < booleanos.size(); i++) {
+                for (int i = 0; i < booleanos.size(); i++) {
                     if (i > 1) {
                         if (booleanos.get(i).getValor() == null) {
                             verificador = null;
                             break;
                         } else {
                             if (booleanos.get(i).getEncadenamiento().equals("AND")) {
-                                if (!booleanos.get(i).getValor() || !trayectoria.get(trayectoria.size() - 1)) {
-                                    trayectoria.add(false);
-                                    verificador = false;
-                                } else {
+                                System.out.println(booleanos.get(i).getValor()+"   PUTO    "+trayectoria.get(trayectoria.size()-1)+"    PUTO2   "+verificador);
+                                if (booleanos.get(i).getValor() && trayectoria.get(trayectoria.size() - 1)) {
                                     trayectoria.add(true);
                                     verificador = true;
+                                } else {
+                                    trayectoria.add(false);
+                                    verificador = false;
                                 }
                             } else if (booleanos.get(i).getEncadenamiento().equals("OR")) {
-                                if (!booleanos.get(i).getValor() || trayectoria.get(trayectoria.size() - 1)) {
+                                if (booleanos.get(i).getValor() || trayectoria.get(trayectoria.size() - 1)) {
                                     trayectoria.add(true);
                                     verificador = true;
                                 } else {
@@ -127,16 +128,18 @@ public class CondicionesLogicas {
                             verificador = null;
                             break;
                         } else {
+                                System.out.println(booleanos.get(i).getValor()+"   MIERDA2    "+booleanos.get(i-1).getValor()+"    MIERDA2   "+verificador);
+                            
                             if (booleanos.get(i).getEncadenamiento().equals("AND")) {
-                                if (!booleanos.get(i).getValor() || !booleanos.get(i - 1).getValor()) {
-                                    trayectoria.add(false);
-                                    verificador = false;
-                                } else {
+                                if (booleanos.get(i).getValor() && booleanos.get(i - 1).getValor()) {
                                     trayectoria.add(true);
                                     verificador = true;
+                                } else {
+                                    trayectoria.add(false);
+                                    verificador = false;
                                 }
                             } else if (booleanos.get(i).getEncadenamiento().equals("OR")) {
-                                if (!booleanos.get(i).getValor() || booleanos.get(i - 1).getValor()) {
+                                if (booleanos.get(i).getValor() || booleanos.get(i - 1).getValor()) {
                                     trayectoria.add(true);
                                     verificador = true;
                                 } else {
@@ -154,6 +157,7 @@ public class CondicionesLogicas {
     }
 
     public void repetirCiclo(ArrayList<TipoEncadenamiento> a, While ciclo, ArrayList<ValoresPNT> listValores, ArrayList<Pintados> listPintados, String idLienzo, Integer linea, Integer columna) {
+        System.out.println(ciclo.getListOp().size()+"              zzzzzzzzzzzzzzzzZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
         int contador = 0;
         ArrayList<TipoEncadenamiento> listAux = new ArrayList<>();
         TablaSimbolos tabla = new TablaSimbolos();
@@ -161,9 +165,10 @@ public class CondicionesLogicas {
         if (verificar2(listAux) == null) {
             SintaxPNT.totalErrores += "El ciclo no ha podido inicializarse debido a un valor. Linea: " + linea + " Columna: " + columna + ".\n";
         } else {
-            while (!verificar2(listAux)) {
+            while (verificar2(listAux)) {
                 System.out.println("ENTRO MI BROTHER");
                 if (ciclo.getCondicional() != null) {
+                    System.out.println("AQUI SI ENTRO ME VEN O QUE PUTAS");
                     Boolean cicloIf = verificar2(ciclo.getCondicional().getCondicion());
                     Integer noIf = ciclo.getCondicional().getNoIf();
                     if (cicloIf != null) {
@@ -210,6 +215,8 @@ public class CondicionesLogicas {
                         }
                     }
                 } else {
+                    System.out.println(ciclo.getListOp().size()+"       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                    System.out.println(ciclo.getListPorPintar().size()+"        YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
                     for (int i = 0; i < ciclo.getListOp().size(); i++) {
                         //Integer suma = 0;
                         /*       for (int j = 0; j < ciclo.getListOp().get(i).getMiOperacion().size() - 1; j++) {
@@ -251,6 +258,7 @@ public class CondicionesLogicas {
                             }
 
                         }*/
+                        System.out.println("ENTRO AQUI ABAJO ME VENSIONO            xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                         ArrayList<OpAritmeticasWhile> listAux2 = new ArrayList<>();
                         for (int j = 0; j < ciclo.getListOp().get(i).getMiOperacion().size(); j++) {
                             listAux2.add(ciclo.getListOp().get(i).getMiOperacion().get(j));
@@ -295,7 +303,7 @@ public class CondicionesLogicas {
                         nuevo2 = tabla.devolverUnObjeto(ciclo.getMiCondicional().get(i).getDato1().toString(), listValores);
                     }
                 }
-                Boolean valor = tabla.comprobarCondicionTipo1(nuevo, (Integer) ciclo.getMiCondicional().get(i).getRelacional(), nuevo2);
+                Boolean valor = tabla.comprobarCondicionTipo1(nuevo2, (Integer) ciclo.getMiCondicional().get(i).getRelacional(), nuevo);
                 System.out.println(valor + "    soy el valor ;D");
                 String cadena = ciclo.getMiCondicional().get(i).getCadena();
                 TipoEncadenamiento tipo = new TipoEncadenamiento(cadena, valor);

@@ -95,19 +95,19 @@ parser code {:
 
     start with a;
 
-    a ::= b c {: if(parser.todoCorrecto) { System.out.println(parser.totalErrores);  InterfazTexto.bandejaErrores += "ERRORES .PNT:\n"; InterfazTexto.bandejaErrores += parser.totalErrores; InterfazTexto.bandejaErrores += "--------------------------------------------------------\n"; parser.totalErrores = ""; } :}
+    a ::= b c {: if(!parser.todoCorrecto) { System.out.println(parser.totalErrores);  InterfazTexto.bandejaErrores += "ERRORES .PNT:\n"; InterfazTexto.bandejaErrores += parser.totalErrores; InterfazTexto.bandejaErrores += "--------------------------------------------------------\n"; parser.totalErrores = ""; } :}
     | error {: parser.todoCorrecto = false; :}
 ;
     b ::= VARS AGRUPACION_A b1 AGRUPACION_B
     | error {: parser.todoCorrecto = false; :}
 ;
-    b1 ::= INT ID:a IGUAL b2prima3:b   {:    if(b != null){ ValoresPNT valor = new ValoresPNT("Integer", a.toString(), null, b, null); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.todoCorrecto = false; } :} b3 PUNTO_COMA b1:e
-    | INT ID:a {: ValoresPNT valor = new ValoresPNT("Integer", a.toString(), null, null, null); parser.tabla.agregarDato(parser.listValores, valor); :} b3 PUNTO_COMA b1:e
-    | STRING ID:a IGUAL COMILLAS ID:b COMILLAS {: ValoresPNT valor = new ValoresPNT("String", a.toString(), b.toString(), null, null); parser.tabla.agregarDato(parser.listValores, valor); :} b4 PUNTO_COMA b1:e
-    | STRING ID:a {: ValoresPNT valor = new ValoresPNT("String", a.toString(), null, null, null);  parser.tabla.agregarDato(parser.listValores, valor); :} b4 PUNTO_COMA b1:e 
-    | BOOLEAN ID:a {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, null); parser.tabla.agregarDato(parser.listValores, valor); } else { /*Aqui ira un mensaje*/ } :} b5 PUNTO_COMA b1:e
-    | BOOLEAN ID:a IGUAL TRUE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, true); parser.tabla.agregarDato(parser.listValores, valor); } else { /*aqui ira un mensaje*/ } :} b5 PUNTO_COMA b1:e
-    | BOOLEAN ID:a IGUAL FALSE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, false); parser.tabla.agregarDato(parser.listValores, valor); } else { /*aqui ira un mensaje*/ } :} b5 PUNTO_COMA b1:e 
+    b1 ::= INT ID:a IGUAL b2prima3:b   {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){   if(b != null){ ValoresPNT valor = new ValoresPNT("Integer", a.toString(), null, b, null); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.todoCorrecto = false; } } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida anteriormente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b3 PUNTO_COMA b1:e
+    | INT ID:a {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Integer", a.toString(), null, null, null); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida previamente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b3 PUNTO_COMA b1:e
+    | STRING ID:a IGUAL COMILLAS ID:b COMILLAS {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("String", a.toString(), b.toString(), null, null); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida previamente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b4 PUNTO_COMA b1:e
+    | STRING ID:a {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("String", a.toString(), null, null, null);  parser.tabla.agregarDato(parser.listValores, valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida previamente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b4 PUNTO_COMA b1:e 
+    | BOOLEAN ID:a {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, null); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida anteriormente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b5 PUNTO_COMA b1:e
+    | BOOLEAN ID:a IGUAL TRUE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, true); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida anteriormente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b5 PUNTO_COMA b1:e
+    | BOOLEAN ID:a IGUAL FALSE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, false); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida anteriormente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b5 PUNTO_COMA b1:e 
     |    
     | error b1:a {: parser.totalErrores += "Declaracion de variable incorrecta.\n"; parser.todoCorrecto = false; RESULT=a; :} 
 ;
@@ -151,16 +151,16 @@ parser code {:
     |
     | error b2prima2:a {: parser.totalErrores += "Declaracion de variable incorrecta.\n"; parser.todoCorrecto = false; RESULT=a; :}
 ;
-    b3 ::= COMA ID:a IGUAL b2prima3:b {: if(b!=null){ ValoresPNT valor = new ValoresPNT("Integer", a.toString(), null, b, null); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.todoCorrecto = false; } :} b3
+    b3 ::= COMA ID:a IGUAL b2prima3:b {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ if(b!=null){ ValoresPNT valor = new ValoresPNT("Integer", a.toString(), null, b, null); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.todoCorrecto = false; } } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida previamente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b3
     |
 ;
-    b4 ::= COMA ID:a IGUAL COMILLAS ID:b COMILLAS {: ValoresPNT valor = new ValoresPNT("String", a.toString(), b.toString(), null, null); parser.tabla.agregarDato(parser.listValores, valor); :} b4
-    | COMA ID:a {: ValoresPNT valor = new ValoresPNT("String", a.toString(), null, null, null); parser.tabla.agregarDato(parser.listValores, valor);  :} b4
+    b4 ::= COMA ID:a IGUAL COMILLAS ID:b COMILLAS {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){  ValoresPNT valor = new ValoresPNT("String", a.toString(), b.toString(), null, null); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida previamente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b4
+    | COMA ID:a {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){  ValoresPNT valor = new ValoresPNT("String", a.toString(), null, null, null); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida anteriormente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; }  :} b4
     |
 ;
-    b5 ::= COMA ID:a {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)) { ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, null); parser.listValores.add(valor); } else { /*aqui ira un mensaje*/ } :} b5 
-    | COMA ID:a IGUAL TRUE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)) { ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, true);  parser.listValores.add(valor); } else { /*aqui ira un mensaje*/ } :} b5 
-    | COMA ID:a IGUAL FALSE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)) {  ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, false);  parser.listValores.add(valor); } else { /*aqui ira un mensaje*/ } :} b5 
+    b5 ::= COMA ID:a {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)) { ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, null); parser.listValores.add(valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida previamente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b5 
+    | COMA ID:a IGUAL TRUE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)) { ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, true);  parser.listValores.add(valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida previamente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b5 
+    | COMA ID:a IGUAL FALSE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)) {  ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, false);  parser.listValores.add(valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida previamente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b5 
     | 
 ;
     c ::= INSTRUCCIONES PARENTESIS_A ID:a {: parser.lienzoActual = a.toString(); :} PARENTESIS_B AGRUPACION_A c1 AGRUPACION_B COMA4 
@@ -200,6 +200,11 @@ parser code {:
 
     | IF PARENTESIS_A c2:a 
         {: 
+        ArrayList<TipoEncadenamiento> listAux = new ArrayList<>();
+        for(int i = a.size()-1; i >= 0; i--){
+            listAux.add(a.get(i));
+        }
+        
         if(parser.booleanWhile != null){
             if(parser.booleanWhile){ 
                 System.out.println("Entro aquii");
@@ -209,11 +214,11 @@ parser code {:
         }
         if( parser.booleanIf == null){ 
             parser.entro = true; 
-            if(parser.cond.verificar(a) == null){ 
+            if(parser.cond.verificar2(listAux) == null){ 
                 parser.verificador = null; 
                 parser.booleanIf = false; 
             } else { 
-                if(!parser.cond.verificar(a)){ 
+                if(!parser.cond.verificar2(listAux)){ 
                     parser.verificador = false; 
                     parser.booleanIf = false; 
                 } else { 
@@ -223,11 +228,11 @@ parser code {:
             } 
         } else if (parser.booleanIf == true){
             parser.entro = true; 
-            if(parser.cond.verificar(a) == null){ 
+            if(parser.cond.verificar2(listAux) == null){ 
                 parser.verificador = null; 
                 parser.booleanIf = false; 
             } else { 
-                if(!parser.cond.verificar(a)){ 
+                if(!parser.cond.verificar2(listAux)){ 
                     parser.verificador = false; 
                     parser.booleanIf = false; 
                 } else { 
@@ -238,9 +243,14 @@ parser code {:
         } else { 
             parser.entro = false; 
         } :} PARENTESIS_B LLAVE_A c1:b 
-        {: if(parser.cond.verificar(a) != null){ 
+        {:
+        ArrayList<TipoEncadenamiento> listAux = new ArrayList<>();
+        for(int i = a.size()-1; i >= 0; i--){
+            listAux.add(a.get(i));
+        }
+        if(parser.cond.verificar2(listAux) != null){ 
             if(parser.entro){ 
-                if(!parser.cond.verificar(a)){
+                if(!parser.cond.verificar2(listAux)){
                     parser.booleanIf = false; 
                 } else { 
                     parser.booleanIf = true; 
@@ -248,35 +258,50 @@ parser code {:
             } else { 
                 parser.booleanIf = false; 
             } 
-        } :}  LLAVE_B else1
+        } :}  LLAVE_B {: 
+        ArrayList<TipoEncadenamiento> listAux = new ArrayList<>();
+        for(int i = a.size()-1; i >= 0; i--){
+            listAux.add(a.get(i));
+        }
+        if(parser.booleanIf==null){ 
+            if(parser.cond.verificar2(listAux)!= null){
+                if(!parser.cond.verificar2(listAux)){
+                    parser.booleanIf = false; 
+                } else { 
+                    parser.booleanIf = true; 
+                } 
+            }
+        } :}else1
 
 
 
     | WHILE PARENTESIS_A {:parser.booleanWhile = true;:}  c2:a {: if(parser.booleanIf != null){ if(parser.booleanIf){ parser.ciclo.setMiCondicional(parser.listCondw);  parser.booleanWhile = null; } } else { parser.ciclo.setMiCondicional(parser.listCondw);  parser.booleanWhile = null; } :}
         {:
+        ArrayList<TipoEncadenamiento> listAux = new ArrayList<>();
+        listAux = parser.cond.devolverArreglo(parser.ciclo, parser.tabla, parser.listValores);
         if(parser.booleanIf != null){
             if(parser.booleanIf){
                 if(parser.booleanWhile == null){ 
                     parser.entro = true; 
-                    if(parser.cond.verificar(a) == null){ 
+                    if(parser.cond.verificar2(listAux) == null){ 
                         parser.verificador = null; 
                         parser.booleanWhile = null; 
                     } else { 
-                        if(!parser.cond.verificar(a)){ 
+                        if(!parser.cond.verificar2(listAux)){ 
                             parser.verificador = false; 
                             parser.booleanWhile = false; 
-                        } else if(parser.cond.verificar(a)) { 
+                        } else if(parser.cond.verificar2(listAux)) { 
                             parser.verificador = true; 
                             parser.booleanWhile = true; 
                         } 
                     } 
                 } else if(parser.booleanWhile == true){
                     parser.entro = true; 
-                    if(parser.cond.verificar(a) == null){ 
+                    if(parser.cond.verificar2(listAux) == null){ 
                         parser.verificador = null; 
                         parser.booleanWhile = null; 
                     } else { 
-                        if(!parser.cond.verificar(a)){ 
+                        if(!parser.cond.verificar2(listAux)){ 
                             parser.verificador = false; 
                             parser.booleanWhile = false; 
                         } else { 
@@ -292,25 +317,25 @@ parser code {:
             if(parser.booleanIf){
                 if(parser.booleanWhile == null){ 
                     parser.entro = true; 
-                    if(parser.cond.verificar(a) == null){ 
+                    if(parser.cond.verificar2(listAux) == null){ 
                         parser.verificador = null; 
                         parser.booleanWhile = null; 
                     } else { 
-                        if(!parser.cond.verificar(a)){ 
+                        if(!parser.cond.verificar2(listAux)){ 
                             parser.verificador = false; 
                             parser.booleanWhile = false; 
-                        } else if(parser.cond.verificar(a)) { 
+                        } else if(parser.cond.verificar2(listAux)) { 
                             parser.verificador = true; 
                             parser.booleanWhile = true; 
                         } 
                     } 
                 } else if(parser.booleanWhile == true){
                     parser.entro = true; 
-                    if(parser.cond.verificar(a) == null){ 
+                    if(parser.cond.verificar2(listAux) == null){ 
                         parser.verificador = null; 
                         parser.booleanWhile = null; 
                     } else { 
-                        if(!parser.cond.verificar(a)){ 
+                        if(!parser.cond.verificar2(listAux)){ 
                             parser.verificador = false; 
                             parser.booleanWhile = false; 
                         } else { 
@@ -324,7 +349,7 @@ parser code {:
 
             }
         }    
-         :} PARENTESIS_B LLAVE_A c1:b {: if(parser.booleanIf != null){ if(parser.booleanIf){   parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual, (Integer) aleft, (Integer) aright); parser.booleanWhile = false; } } else {  parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual, (Integer) aleft, (Integer) aright); parser.booleanWhile = false; }  :} LLAVE_B c1
+         :} PARENTESIS_B LLAVE_A {: System.out.println("VALOR DEL WHILE JUSTO AHORA "+parser.booleanWhile); :} c1:b {: if(parser.booleanIf != null){ if(parser.booleanIf){   parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual, (Integer) aleft, (Integer) aright); parser.booleanWhile = false; } } else {  parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual, (Integer) aleft, (Integer) aright); parser.booleanWhile = false; }  :} LLAVE_B c1
     
     | b8 c1
     |
@@ -350,17 +375,17 @@ parser code {:
             } else { 
                 parser.booleanIf = false; 
             } 
-        } :} LLAVE_B {: parser.booleanIf = null; if(parser.booleanWhile != null){ if(parser.booleanWhile == true){ parser.contIfs++; } } :} c1:b
+        } :} LLAVE_B {:  parser.booleanIf = null; if(parser.booleanWhile != null){ if(parser.booleanWhile == true){ parser.contIfs++; } } :} c1:b
     | {: parser.booleanIf = null; if(parser.booleanWhile !=null){ if(parser.booleanWhile == true){ parser.contIfs++; } } :}  c1:a
 ;
-    b8 ::= ID:a IGUAL b2prima3:b PUNTO_COMA {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ Operacion op = new Operacion(a.toString()); op.setMiOperacion(parser.listOp); if(parser.booleanIf!=null){ if(parser.booleanIf){ System.out.println("Valor agreagdo"); op.setNoIf(parser.contIfs); } }  parser.ciclo.getListOp().add(op); parser.listOp = new ArrayList<>(); } }  parser.tabla.modificarValor(a.toString(), parser.listValores, "Integer", b, (Integer) aleft, (Integer) aright); :} 
+    b8 ::= ID:a IGUAL b2prima3:b PUNTO_COMA {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ Operacion op = new Operacion(a.toString()); op.setMiOperacion(parser.listOp); if(parser.booleanIf!=null){ if(parser.booleanIf){ op.setNoIf(parser.contIfs); } } System.out.println("SE HA AGREGADO LA OPERACION"); parser.ciclo.getListOp().add(op); parser.listOp = new ArrayList<>(); } }  parser.tabla.modificarValor(a.toString(), parser.listValores, "Integer", b, (Integer) aleft, (Integer) aright); :} 
     | ID:a IGUAL COMILLAS ID:b COMILLAS PUNTO_COMA {: parser.tabla.modificarValor(a.toString(), parser.listValores, "String", b, (Integer) aleft, (Integer) aright); :}
     | ID:a IGUAL TRUE PUNTO_COMA {: Object objeto = true; parser.tabla.modificarValor(a.toString(), parser.listValores, "Boolean", objeto, (Integer) aleft, (Integer) aright); :}
     | ID:a IGUAL FALSE PUNTO_COMA {: Object objeto = false; parser.tabla.modificarValor(a.toString(), parser.listValores, "Boolean", objeto, (Integer) aleft, (Integer) aright); :}
 ;
     c2 ::= bools:a  {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.listCondw.add(parser.condWhile); parser.condWhile = new CondicionWhile(); } } :}   ext:b     {: if(a != null){ TipoEncadenamiento tipo = new TipoEncadenamiento(null, Boolean.valueOf(a.toString())); b.add(tipo); } RESULT=b; :}
 ;
-    c3 ::= ID:a {:  if(parser.booleanWhile != null){ if(parser.booleanWhile){if(parser.condWhile.getDato1()!=null){ parser.condWhile.setDato1(a); } else { parser.condWhile.setDato1(a); } } }           Objeto nuevo = parser.tabla.devolverUnObjeto(a.toString(), parser.listValores);    RESULT=nuevo;  :}
+    c3 ::= ID:a {:  if(parser.booleanWhile != null){ if(parser.booleanWhile){if(parser.condWhile.getDato1()!=null){ parser.condWhile.setDato2(a); } else { parser.condWhile.setDato1(a); } } }   Objeto nuevo = parser.tabla.devolverUnObjeto(a.toString(), parser.listValores); if(nuevo==null){ parser.totalErrores += "La variable "+a.toString()+" no existe dentro del archivo PNT. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; }    RESULT=nuevo;  :}
     | NUMERO:a {:  if(parser.booleanWhile != null){ if(parser.booleanWhile){ if(parser.condWhile.getDato1()!=null){ parser.condWhile.setDato2(a); } else { parser.condWhile.setDato1(a); } } }  Objeto nuevo = new Objeto(a, "Integer");  RESULT=nuevo; :}
 ;
     ext ::= AND bools:a {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.condWhile.setCadena("AND"); parser.listCondw.add(parser.condWhile); parser.condWhile = new CondicionWhile(); } } :}  ext:b {:  TipoEncadenamiento tipo = new TipoEncadenamiento("AND", Boolean.valueOf(a.toString())); b.add(tipo); RESULT=b; :}
@@ -382,10 +407,10 @@ parser code {:
     | COMILLAS ID:a COMILLAS {: RESULT=a.toString(); :}
 ;
 
-    posX ::= ID:a RANGO ID:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}
-    | NUMERO:a RANGO NUMERO:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}
-    | ID:a RANGO NUMERO:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}
-    | NUMERO:a RANGO ID:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}
+    posX ::= ID:a RANGO ID:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b;   if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ parser.totalErrores += "La variable "+a.toString()+" no existe dentro del archivo PNT. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } if(!parser.tabla.verificarId(b.toString(), parser.listValores)){ parser.totalErrores += "La variable "+b.toString()+" no existen dentro del archivo PNT. Linea: "+bleft+" Columna: "+bright+".\n"; parser.todoCorrecto = false; }        RESULT=objeto; :}
+    | NUMERO:a RANGO NUMERO:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b;  RESULT=objeto; :}
+    | ID:a RANGO NUMERO:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b;  if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ parser.totalErrores += "La variable "+a.toString()+" no existe dentro del archivo PNT. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false;  }     RESULT=objeto; :}
+    | NUMERO:a RANGO ID:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b;  if(!parser.tabla.verificarId(b.toString(), parser.listValores)){ parser.totalErrores += "La variable "+b.toString()+" no existe dentro del archivo PNT. Linea: "+bleft+" Columna: "+bright+".\n"; parser.todoCorrecto = false; }    RESULT=objeto; :}
     | b2prima4:a {: parser.signoActual2 = ""; if(parser.booleanIf!=null){ if(parser.booleanIf){ parser.nuevaOpX = new OpAritmeticaPintar(parser.listOp); } } else { parser.nuevaOpX = new OpAritmeticaPintar(parser.listOp);  } :}
 ;
     posY ::= ID:a RANGO ID:b {: Object[] objeto = new Object[2]; objeto[0] = a; objeto[1] = b; RESULT=objeto; :}

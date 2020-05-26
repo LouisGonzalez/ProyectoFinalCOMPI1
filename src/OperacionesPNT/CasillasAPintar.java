@@ -22,12 +22,8 @@ public class CasillasAPintar {
 
         Integer[] valorVarx = new Integer[2];
         Integer[] valorVary = new Integer[2];
-
         if (lista.getOpX() != null) {
-            System.out.println(lista.getOpX().size() + "   tamanio lista X");
-            for (int i = 0; i < lista.getOpX().size(); i++) {
-                System.out.println(lista.getOpX().get(i).getDato() + "      2");
-            }
+
             valorVarx[0] = calcularOperacion(lista.getOpX(), tabla, listValores, linea, columna);
             System.out.println(valorVarx[0] + " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEO");
         } else {
@@ -38,11 +34,7 @@ public class CasillasAPintar {
 
         }
         if (lista.getOpY() != null) {
-            System.out.println(lista.getOpY().size() + "   tamanio lista Y");
-            for (int i = 0; i < lista.getOpY().size(); i++) {
-                System.out.println(lista.getOpY().get(i).getDato() + "        1");
 
-            }
             valorVary[0] = calcularOperacion(lista.getOpY(), tabla, listValores, linea, columna);
 
             System.out.println(valorVary[0] + " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEOoooooooooo");
@@ -54,29 +46,30 @@ public class CasillasAPintar {
             }
 
         }
+        if (valorVarx[0] != null && valorVary[0] != null) {
 
-        if (lista.getRangoX()[1] != null && lista.getRangoY()[1] != null) {
-            for (int i = valorVarx[0]; i <= valorVarx[1]; i++) {
-                for (int j = valorVary[0]; j <= valorVary[1]; j++) {
-                    Pintados pintado = new Pintados(i, j, lista.getIdColor(), lista.getIdImagen(), idLienzo);
+            if (lista.getRangoX()[1] != null && lista.getRangoY()[1] != null) {
+                for (int i = valorVarx[0]; i <= valorVarx[1]; i++) {
+                    for (int j = valorVary[0]; j <= valorVary[1]; j++) {
+                        Pintados pintado = new Pintados(i, j, lista.getIdColor(), lista.getIdImagen(), idLienzo);
+                        listPintados.add(pintado);
+                    }
+                }
+            } else if (lista.getRangoX()[1] != null && lista.getRangoY()[1] == null) {
+                for (int i = valorVarx[0]; i <= valorVarx[1]; i++) {
+                    Pintados pintado = new Pintados(i, valorVary[0], lista.getIdColor(), lista.getIdImagen(), idLienzo);
                     listPintados.add(pintado);
                 }
-            }
-        } else if (lista.getRangoX()[1] != null && lista.getRangoY()[1] == null) {
-            for (int i = valorVarx[0]; i <= valorVarx[1]; i++) {
-                Pintados pintado = new Pintados(i, valorVary[0], lista.getIdColor(), lista.getIdImagen(), idLienzo);
+            } else if (lista.getRangoX()[1] == null && lista.getRangoY()[1] != null) {
+                for (int i = valorVary[0]; i <= valorVary[1]; i++) {
+                    Pintados pintado = new Pintados(valorVarx[0], i, lista.getIdColor(), lista.getIdImagen(), idLienzo);
+                    listPintados.add(pintado);
+                }
+            } else if (lista.getRangoX()[1] == null && lista.getRangoY()[1] == null) {
+                Pintados pintado = new Pintados(valorVarx[0], valorVary[0], lista.getIdColor(), lista.getIdImagen(), idLienzo);
                 listPintados.add(pintado);
             }
-        } else if (lista.getRangoX()[1] == null && lista.getRangoY()[1] != null) {
-            for (int i = valorVary[0]; i <= valorVary[1]; i++) {
-                Pintados pintado = new Pintados(valorVarx[0], i, lista.getIdColor(), lista.getIdImagen(), idLienzo);
-                listPintados.add(pintado);
-            }
-        } else if (lista.getRangoX()[1] == null && lista.getRangoY()[1] == null) {
-            Pintados pintado = new Pintados(valorVarx[0], valorVary[0], lista.getIdColor(), lista.getIdImagen(), idLienzo);
-            listPintados.add(pintado);
         }
-
     }
 
     public Integer verificarValor(Object pos, ArrayList<ValoresPNT> listValores) {
@@ -107,7 +100,7 @@ public class CasillasAPintar {
                 suma = (Integer) listOp.get(0).getDato();
             }
         } else {
-          /*  for (int i = 0; i < listOp.size() - 1; i++) {
+            /*  for (int i = 0; i < listOp.size() - 1; i++) {
                 if (i == 0) {
                     Integer nodo1 = null;
                     Integer nodo2 = null;
@@ -137,18 +130,17 @@ public class CasillasAPintar {
                     suma = cond.devolverResultado(listOp.get(i + 1), suma, nodo, suma);
                 }
             }*/
-          
+
             for (int i = 0; i < listOp.size(); i++) {
-                System.out.println(listOp.get(i).getDato().toString()+"         ESTE ES EL DATO MODERFUCKER "+listOp.get(i).getOperacion());
+                System.out.println(listOp.get(i).getDato().toString() + "         ESTE ES EL DATO MODERFUCKER " + listOp.get(i).getOperacion());
             }
-            
+
             ArrayList<OpAritmeticasWhile> listAux = new ArrayList<>();
             for (int i = 0; i < listOp.size(); i++) {
                 listAux.add(listOp.get(i));
             }
             suma = cond.calculoValorVariable(listAux, tabla, listValores, linea, columna);
-          
-          
+
         }
         System.out.println("El valor de suma para pintar es de " + suma);
         return suma;

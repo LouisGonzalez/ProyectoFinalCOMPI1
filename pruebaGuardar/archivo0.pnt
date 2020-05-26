@@ -1,0 +1,27 @@
+VARS [
+	int primero = 2 * 5 / 5;
+	int segundo = 4;
+	int cuatro;
+	String id = "otroColor",id2 = "otroColor";
+	boolean verdad = true;
+]
+INSTRUCCIONES(otroLienzo) [
+	cuatro = segundo - 2 * 2;
+	if(14 > primero AND 1==1 AND 2==2){
+		PINTAR(id,"_id1",8,8);
+		if(1==1){
+			PINTAR(id,"_id1",7,7);
+		} else {
+			PINTAR(id,"_id1",7,7);
+		}
+	} else {
+		PINTAR(id,"_id1",1,1);
+	}
+]
+INSTRUCCIONES(lienzoId1) [
+	PINTAR("MiAmarillo","_id1",2,2);
+	PINTAR("MiAmarillo","_id1",3,2);
+	PINTAR("MiAmarillo","_id1",4,2);
+	PINTAR("MiAmarillo","_id1",5,2);
+	PINTAR("MiAmarillo","_id2",5,4);
+]

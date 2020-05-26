@@ -21,7 +21,7 @@ INSTRUCCIONES(otroLienzo) [
      }else{
 	if(1==1){
 		while(dos<=20){
-	     	PINTAR("otroColor","_id1",8*2+14,dos);   
+	     	PINTAR("otroColor","_id1",8,dos);   
              	dos=dos+1*2;
 		}
         } else {

@@ -272,7 +272,7 @@ public class InterfazTexto extends javax.swing.JFrame {
     }//GEN-LAST:event_archivoNuevoActionPerformed
 
     private void archivoGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archivoGuardarActionPerformed
-        JOptionPane.showMessageDialog(null, "hola");
+        JOptionPane.showMessageDialog(null, "Guardado");
         for (int i = 0; i < paths.length; i++) {
             if (paths[i] != null) {
                 if (!paths[i].equals("")) {

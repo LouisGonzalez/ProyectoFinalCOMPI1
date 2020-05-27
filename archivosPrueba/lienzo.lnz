@@ -2,7 +2,7 @@
     LIENZOS:{
    	 lienzoId1:{
    		 nombre:"prueba de comentario",
-   		 tipo:"png",
+   		 tipo:"gif",
    		 Fondo:{
    			 Red: 25,
    			 Blue: 89,

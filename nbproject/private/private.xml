@@ -7,6 +7,7 @@
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorGrafico/PanelGrafico.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionEditorGrafico/PanelMatriz.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/Animaciones/CreacionGifs.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionesEditorTexto/VerificadorPaginas.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/Operacion.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaTMP/SintaxTMP.cup</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/Colores.java</file>
@@ -20,29 +21,25 @@
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/CuadrosPintar.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionesPNT/CondicionesLogicas.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorGrafico/NuevoGif.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/CondicionalIf.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/TipoEncadenamiento.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/Pintados.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/CondicionWhile.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaPNT/SintaxPNT.cup</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaPNT/LexerPNT.flex</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/Objeto.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaPNT/TablaSimbolos.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/While.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaLNZ/SintaxLNZ.cup</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/proyectofinal/ProyectoFinal.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorGrafico/NuevaImagen.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionesPNT/CasillasAPintar.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaPNT/AnalizadorLexico3.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionEditorGrafico/CreacionNuevosArchivos.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/OpAritmeticaPintar.java</file>
+            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorGrafico/GuardarArchivos.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaPNT/SintaxPNT.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/InterfazEditorTexto/NuevoArchivo.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/ValoresPNT.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/gramaticaLNZ/LexerLNZ.flex</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionEditorGrafico/NuevosArchivos.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/pollitos/CicloWhile.java</file>
             <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/Animaciones/CreacionGifs2.java</file>
-            <file>file:/home/luisitopapurey/Escritorio/Compiladores%201/ProyectoFinal/src/OperacionesEditorTexto/VerificacionObjetos.java</file>
         </group>
     </open-files>
 </project-private>

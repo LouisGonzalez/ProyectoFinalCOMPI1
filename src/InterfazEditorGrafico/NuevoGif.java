@@ -5,19 +5,50 @@
  */
 package InterfazEditorGrafico;
 
+import OperacionEditorGrafico.Animaciones;
+import OperacionEditorGrafico.PanelMatriz;
+import java.io.File;
+import java.util.ArrayList;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import pollitos.Colores;
+import pollitos.Lienzos;
+import pollitos.Pintados;
+import pollitos.Tiempos;
+
 /**
  *
  * @author luisGonzalez
  */
 public class NuevoGif extends javax.swing.JDialog {
 
+    private String path;
+    private JLabel panelMatriz;
+    private Tiempos misTiempos;
+    private Lienzos miLienzo;
+    private PanelMatriz principal;
+    private ArrayList<Pintados> misPintados;
+    private ArrayList<Pintados> listPintados;
+    private Colores misColores;
+    private JCheckBox borrador;
+    
     /**
      * Creates new form NuevoGif
      */
-    public NuevoGif(java.awt.Frame parent, boolean modal) {
+    public NuevoGif(java.awt.Frame parent, boolean modal, JLabel panelMatriz, Tiempos misTiempos, Lienzos miLienzo, PanelMatriz principal, ArrayList<Pintados> misPintados, Colores misColores, ArrayList<Pintados> listPintados, JCheckBox borrador) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
+        this.panelMatriz = panelMatriz;
+        this.misTiempos = misTiempos;
+        this.miLienzo = miLienzo;
+        this.principal = principal;
+        this.misPintados = misPintados;
+        this.listPintados = listPintados;
+        this.misColores = misColores;
+        this.borrador = borrador;
     }
 
     /**
@@ -33,12 +64,25 @@ public class NuevoGif extends javax.swing.JDialog {
         txtNombre = new javax.swing.JTextField();
         lblNombre = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        btnPath = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         lblNombre.setText("Nombre:");
 
         jButton1.setText("Confirmar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        btnPath.setText("Selecciona un path");
+        btnPath.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPathActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -46,9 +90,6 @@ public class NuevoGif extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(35, 35, 35)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -56,13 +97,20 @@ public class NuevoGif extends javax.swing.JDialog {
                                 .addComponent(lblNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtPath, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtPath, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnPath, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(52, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
+                .addGap(10, 10, 10)
+                .addComponent(btnPath, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -76,8 +124,35 @@ public class NuevoGif extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-   
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if(txtPath.getText().equals("") || txtNombre.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "Debes llenar todos los parametros.");
+        } else {
+            Animaciones animacion = new Animaciones();
+            animacion.crearGif(txtPath.getText(), txtNombre.getText(), panelMatriz, misTiempos, miLienzo, principal, misPintados, misColores, listPintados, borrador);
+            JOptionPane.showMessageDialog(null, "GIF creado en la ruta indicada.");
+            this.dispose();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnPathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPathActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        String seleccion = "Selecciona un directorio";
+        chooser.setCurrentDirectory(new File("."));
+        chooser.setDialogTitle(seleccion);
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
+            System.out.println("getSelectedFile(): " + chooser.getSelectedFile());
+            path = chooser.getSelectedFile().toString();
+            txtPath.setText(path);
+        }
+    }//GEN-LAST:event_btnPathActionPerformed
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnPath;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JTextField txtNombre;

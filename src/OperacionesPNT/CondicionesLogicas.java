@@ -24,77 +24,10 @@ public class CondicionesLogicas {
 
     private ArrayList<Boolean> trayectoria;
 
-    //AGREGAR EN TRAYECTORIA CADA CONDICION QUE SE LLEGUE A CUMPLIR O NO, ASI EN LA SIGUIENTE ITERACION DEL FOR SE COMPARA
-    //CON LA ULTIMA AGREGADA DE TRAYECTORIA
-    public Boolean verificar(ArrayList<TipoEncadenamiento> booleanos) {
-        trayectoria = new ArrayList<>();
-        Boolean verificador = null;
-        if (!booleanos.isEmpty()) {
-            if (booleanos.size() == 1) {
-                verificador = booleanos.get(booleanos.size() - 1).getValor();
-            } else {
-                for (int i = booleanos.size() - 2; i == 0; i--) {
-                    if (i < booleanos.size() - 2) {
-                        if (booleanos.get(i).getValor() == null) {
-                            verificador = null;
-                            break;
-                        } else {
-                            if (booleanos.get(i).getEncadenamiento().equals("AND")) {
-                                if (!booleanos.get(i).getValor() || !trayectoria.get(trayectoria.size() - 1)) {
-                                    trayectoria.add(false);
-                                    verificador = false;
-                                } else {
-                                    trayectoria.add(true);
-                                    verificador = true;
-                                }
-                            } else if (booleanos.get(i).getEncadenamiento().equals("OR")) {
-                                if (!booleanos.get(i).getValor() || trayectoria.get(trayectoria.size() - 1)) {
-                                    trayectoria.add(true);
-                                    verificador = true;
-                                } else {
-                                    trayectoria.add(false);
-                                    verificador = false;
-                                }
-                            }
-                        }
-                    } else if (i == booleanos.size() - 2) {
-                        if (booleanos.get(i).getValor() == null || booleanos.get(i + 1) == null) {
-                            verificador = null;
-                            break;
-                        } else {
-                            if (booleanos.get(i).getEncadenamiento().equals("AND")) {
-                                if (!booleanos.get(i).getValor() || !booleanos.get(i + 1).getValor()) {
-                                    trayectoria.add(false);
-                                    verificador = false;
-                                } else {
-                                    trayectoria.add(true);
-                                    verificador = true;
-                                }
-                            } else if (booleanos.get(i).getEncadenamiento().equals("OR")) {
-                                if (booleanos.get(i).getValor() || booleanos.get(i + 1).getValor()) {
-                                    trayectoria.add(true);
-                                    verificador = true;
-                                } else {
-                                    trayectoria.add(false);
-                                    verificador = false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        System.out.println(verificador + "    verificador");
-        return verificador;
-    }
-
     public Boolean verificar2(ArrayList<TipoEncadenamiento> booleanos) {
         trayectoria = new ArrayList<>();
         Boolean verificador = null;
         if (!booleanos.isEmpty()) {
-            for (int i = 0; i < booleanos.size(); i++) {
-                System.out.println(booleanos.get(i).getEncadenamiento() + "         YYY");
-            }
             if (booleanos.size() == 1) {
                 verificador = booleanos.get(booleanos.size() - 1).getValor();
             } else {
@@ -105,7 +38,6 @@ public class CondicionesLogicas {
                             break;
                         } else {
                             if (booleanos.get(i).getEncadenamiento().equals("AND")) {
-                                System.out.println(booleanos.get(i).getValor()+"   PUTO    "+trayectoria.get(trayectoria.size()-1)+"    PUTO2   "+verificador);
                                 if (booleanos.get(i).getValor() && trayectoria.get(trayectoria.size() - 1)) {
                                     trayectoria.add(true);
                                     verificador = true;
@@ -128,8 +60,7 @@ public class CondicionesLogicas {
                             verificador = null;
                             break;
                         } else {
-                                System.out.println(booleanos.get(i).getValor()+"   MIERDA2    "+booleanos.get(i-1).getValor()+"    MIERDA2   "+verificador);
-                            
+
                             if (booleanos.get(i).getEncadenamiento().equals("AND")) {
                                 if (booleanos.get(i).getValor() && booleanos.get(i - 1).getValor()) {
                                     trayectoria.add(true);
@@ -152,12 +83,10 @@ public class CondicionesLogicas {
                 }
             }
         }
-        System.out.println(verificador + "    verificador2");
         return verificador;
     }
 
     public void repetirCiclo(ArrayList<TipoEncadenamiento> a, While ciclo, ArrayList<ValoresPNT> listValores, ArrayList<Pintados> listPintados, String idLienzo, Integer linea, Integer columna) {
-        System.out.println(ciclo.getListOp().size()+"              zzzzzzzzzzzzzzzzZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
         int contador = 0;
         ArrayList<TipoEncadenamiento> listAux = new ArrayList<>();
         TablaSimbolos tabla = new TablaSimbolos();
@@ -166,9 +95,7 @@ public class CondicionesLogicas {
             SintaxPNT.totalErrores += "El ciclo no ha podido inicializarse debido a un valor. Linea: " + linea + " Columna: " + columna + ".\n";
         } else {
             while (verificar2(listAux)) {
-                System.out.println("ENTRO MI BROTHER");
                 if (ciclo.getCondicional() != null) {
-                    System.out.println("AQUI SI ENTRO ME VEN O QUE PUTAS");
                     Boolean cicloIf = verificar2(ciclo.getCondicional().getCondicion());
                     Integer noIf = ciclo.getCondicional().getNoIf();
                     if (cicloIf != null) {
@@ -215,65 +142,22 @@ public class CondicionesLogicas {
                         }
                     }
                 } else {
-                    System.out.println(ciclo.getListOp().size()+"       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-                    System.out.println(ciclo.getListPorPintar().size()+"        YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
                     for (int i = 0; i < ciclo.getListOp().size(); i++) {
-                        //Integer suma = 0;
-                        /*       for (int j = 0; j < ciclo.getListOp().get(i).getMiOperacion().size() - 1; j++) {
-                            //AQUI NO SE SABE MYY BIEN SI ES I O J DEPENDIENDO COMO SE EJECUTE SE DECIDI
-                            if (i == 0) {
-                                Integer nodo1 = null;
-                                Integer nodo2 = null;
-                                if (ciclo.getListOp().get(i).getMiOperacion().get(j).getTipo().equals("String")) {
-                                    nodo1 = (Integer) tabla.verificarUnValor(ciclo.getListOp().get(i).getMiOperacion().get(j).getDato().toString(), listValores, "Integer", linea, columna);
-                                    if (ciclo.getListOp().get(i).getMiOperacion().get(j + 1).getTipo().equals("String")) {
-                                        nodo2 = (Integer) tabla.verificarUnValor(ciclo.getListOp().get(i).getMiOperacion().get(j + 1).getDato().toString(), listValores, "Integer", linea, columna);
-                                    } else {
-                                        nodo2 = (Integer) ciclo.getListOp().get(i).getMiOperacion().get(j + 1).getDato();
-                                    }
-                                } else {
-                                    nodo1 = (Integer) ciclo.getListOp().get(i).getMiOperacion().get(j).getDato();
-                                    if (ciclo.getListOp().get(i).getMiOperacion().get(j + 1).getTipo().equals("String")) {
-                                        nodo2 = (Integer) tabla.verificarUnValor(ciclo.getListOp().get(i).getMiOperacion().get(j + 1).getDato().toString(), listValores, "Integer", linea, columna);
-                                    } else {
-                                        nodo2 = (Integer) ciclo.getListOp().get(i).getMiOperacion().get(j + 1).getDato();
-                                    }
-                                }
-                                suma = devolverResultado(ciclo.getListOp().get(i).getMiOperacion().get(j + 1), nodo1, nodo2, suma);
-                                System.out.println(suma);
-                                tabla.modificarValor(ciclo.getListOp().get(i).getIdCambio(), listValores, "Integer", suma);
-                                agregarPintadosWhile(ciclo, listValores, listPintados, tabla, idLienzo, linea, columna);
-                            } else {
-                                Integer nodo = null;
-                                if (ciclo.getListOp().get(i).getMiOperacion().get(j + 1).getTipo().equals("String")) {
-                                    nodo = (Integer) tabla.verificarUnValor(ciclo.getListOp().get(i).getMiOperacion().get(j + 1).getDato().toString(), listValores, "Integer", linea, columna);
-                                } else {
-                                    nodo = (Integer) ciclo.getListOp().get(i).getMiOperacion().get(j + 1).getDato();
-                                }
-                                suma = devolverResultado(ciclo.getListOp().get(i).getMiOperacion().get(j + 1), suma, nodo, suma);
-                                System.out.println(suma);
-                                tabla.modificarValor(ciclo.getListOp().get(i).getIdCambio(), listValores, "Integer", suma);
-                                agregarPintadosWhile(ciclo, listValores, listPintados, tabla, idLienzo, linea, columna);
-
-                            }
-
-                        }*/
-                        System.out.println("ENTRO AQUI ABAJO ME VENSIONO            xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                         ArrayList<OpAritmeticasWhile> listAux2 = new ArrayList<>();
                         for (int j = 0; j < ciclo.getListOp().get(i).getMiOperacion().size(); j++) {
                             listAux2.add(ciclo.getListOp().get(i).getMiOperacion().get(j));
                         }
                         Integer suma = calculoValorVariable(listAux2, tabla, listValores, linea, columna);
                         if (suma != null) {
-                            System.out.println(ciclo.getListOp().get(i).getIdCambio());
-                            if(contador == 0){
+                            if (contador == 0) {
                                 agregarPintadosWhile(ciclo, listValores, listPintados, tabla, idLienzo, linea, columna);
                             }
                             tabla.modificarValor(ciclo.getListOp().get(i).getIdCambio(), listValores, "Integer", suma, null, null);
-                            agregarPintadosWhile(ciclo, listValores, listPintados, tabla, idLienzo, linea, columna);
                         }
                     }
                 }
+                agregarPintadosWhile(ciclo, listValores, listPintados, tabla, idLienzo, linea, columna);
+
                 listAux = devolverArreglo(ciclo, tabla, listValores);
                 contador++;
             }
@@ -282,11 +166,11 @@ public class CondicionesLogicas {
 
     public ArrayList<TipoEncadenamiento> devolverArreglo(While ciclo, TablaSimbolos tabla, ArrayList<ValoresPNT> listValores) {
         ArrayList<TipoEncadenamiento> listAux = new ArrayList<>();
-        for (int i = 0; i < ciclo.getMiCondicional().size(); i++) { 
-                                                                    
-            if (ciclo.getMiCondicional().get(i).getTipo().equals("Tipo1")){     
-                Objeto nuevo = null;                        
-                Objeto nuevo2 = null;               
+        for (int i = 0; i < ciclo.getMiCondicional().size(); i++) {
+
+            if (ciclo.getMiCondicional().get(i).getTipo().equals("Tipo1")) {
+                Objeto nuevo = null;
+                Objeto nuevo2 = null;
                 if (isNumeric(ciclo.getMiCondicional().get(i).getDato2().toString())) {
                     nuevo = new Objeto(ciclo.getMiCondicional().get(i).getDato2(), "Integer");
                     if (isNumeric(ciclo.getMiCondicional().get(i).getDato1().toString())) {
@@ -304,17 +188,15 @@ public class CondicionesLogicas {
                     }
                 }
                 Boolean valor = tabla.comprobarCondicionTipo1(nuevo2, (Integer) ciclo.getMiCondicional().get(i).getRelacional(), nuevo);
-                System.out.println(valor + "    soy el valor ;D");
                 String cadena = ciclo.getMiCondicional().get(i).getCadena();
                 TipoEncadenamiento tipo = new TipoEncadenamiento(cadena, valor);
                 listAux.add(tipo);
             } else if (ciclo.getMiCondicional().get(i).getTipo().equals("Tipo2")) {
                 Boolean valor = tabla.comprobarCondicionTipo2(ciclo.getMiCondicional().get(i).getDato1().toString(), listValores);
-                System.out.println(valor + "    soy el valor tipo2 :D");
                 String cadena = ciclo.getMiCondicional().get(i).getCadena();
                 TipoEncadenamiento tipo = new TipoEncadenamiento(cadena, valor);
                 listAux.add(tipo);
-            } else if(ciclo.getMiCondicional().get(i).getTipo().equals("Tipo3")){
+            } else if (ciclo.getMiCondicional().get(i).getTipo().equals("Tipo3")) {
                 Boolean valor = Boolean.valueOf(ciclo.getMiCondicional().get(i).getDato1().toString());
                 String cadena = ciclo.getMiCondicional().get(i).getCadena();
                 TipoEncadenamiento tipo = new TipoEncadenamiento(cadena, valor);
@@ -451,8 +333,6 @@ public class CondicionesLogicas {
 
                     if (nodo1 != null && nodo2 != null) {
                         Integer nuevoValor = nodo2 + nodo1;
-                        System.out.println("dato1:  " + nodo2 + " dato2:  " + nodo1);
-                        System.out.println("suma: " + nuevoValor);
                         String operacion = listOp.get(i - 1).getOperacion();
                         OpAritmeticasWhile nuevo = new OpAritmeticasWhile(nuevoValor, operacion, "Integer");
                         listOp.set(i, nuevo);
@@ -497,26 +377,14 @@ public class CondicionesLogicas {
             }
             if (aRemover != null) {
                 if (aRemover) {
-                    System.out.println("soy el nodo a remover " + nodoARemover);
-                    System.out.println(listOp.size() + "    SIZE");
-                    for (int i = 0; i < listOp.size(); i++) {
-                        System.out.println(listOp.get(i).getDato().toString()+" DATAZO"+"   "+i);
-                    }
-                    
+                   
                     listOp.remove(0);
-                    System.out.println("------------------------------------------------------------------------");
-                    System.out.println(listOp.size() + "    SIZE");
-                    for (int i = 0; i < listOp.size(); i++) {
-                        System.out.println(listOp.get(i).getDato().toString()+" DATAZO"+"   "+i);
-                    }
                     segundaRondaVariable(listOp, tabla, listValores, linea, columna);
                 }
             }
         }
     }
 
-    //HACER DOS METODOS, EL PRIMERO QUE OPERE UNICAMENTE MULTIPLICACIONES Y DIVISIONES
-    //EL SEGUNDO QUE SE EJECUTE JUSTO DESPUES Y QUE YA OPERE SUMAS Y RESTAS
     private boolean isNumeric(String cadena) {
         try {
             Integer.parseInt(cadena);

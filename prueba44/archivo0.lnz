@@ -1,0 +1,30 @@
+{
+	LIENZOS:{
+		otroLienzo:{
+			nombre:"lienzo 2",
+			tipo:"gif",
+			Fondo:{
+				HEX: #AB254C
+			},
+			size:{
+				cuadro: 100,
+				dimension_x: 12,
+				dimension_y: 12
+			}
+		},
+		lienzoId1:{
+			nombre:"prueba de comentario",
+			tipo:"gif",
+			Fondo:{
+				Red: 25,
+				Blue: 89,
+				Green: 45
+			},
+			size:{
+				cuadro: 50,
+				dimension_x: 12,
+				dimension_y: 10
+			}
+		}
+	}
+}

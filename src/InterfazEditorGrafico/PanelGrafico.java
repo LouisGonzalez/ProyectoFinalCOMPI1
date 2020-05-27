@@ -7,6 +7,7 @@ package InterfazEditorGrafico;
 
 import Animaciones.CreacionGifs;
 import Animaciones.CreacionGifs2;
+import OperacionEditorGrafico.Animaciones;
 import OperacionEditorGrafico.LlenadoPaneles;
 import OperacionEditorGrafico.PanelMatriz;
 import java.awt.Color;
@@ -321,7 +322,7 @@ public class PanelGrafico extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        btnGif.setText("Generar GIF");
+        btnGif.setText("Generar animacion");
         btnGif.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGifActionPerformed(evt);
@@ -371,40 +372,18 @@ public class PanelGrafico extends javax.swing.JPanel {
     }//GEN-LAST:event_btnImagenActionPerformed
 
     private void btnGifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGifActionPerformed
-     
-        metodo();
-     
-    }//GEN-LAST:event_btnGifActionPerformed
-
-  
-    public void metodo(){
-        CreacionGifs gif = new CreacionGifs();
-        File file = new File("/home/luisitopapurey/Escritorio/Compiladores 1/ProyectoFinal/src/gramaticaTMP/prueba.gif");
-        try {
-            file.createNewFile();
-            FileOutputStream os = new FileOutputStream(file);
-            gif.start(os);
-            gif.setSize(panelMatriz.getWidth(), panelMatriz.getHeight());
-            gif.setRepeat(20);
-            gif.setQuality(30);
-            for (int i = 0; i < misTiempos.getTransiciones().size(); i++) {
-                BufferedImage image = new BufferedImage(panelMatriz.getWidth(), panelMatriz.getHeight(), BufferedImage.TYPE_INT_RGB);
-                Graphics2D g2d = image.createGraphics();
-                g2d.fillRect(0, 0, panelMatriz.getWidth(), panelMatriz.getHeight());
-                principal.crearTablero2(miLienzo, borrador, misPintados, misColores, misTiempos.getTransiciones().get(i), listPintados, g2d);
-                g2d.dispose();
-                gif.setDelay(misTiempos.getTransiciones().get(i).getDuracion());
-                gif.addFrame(image);
-              //  ImageIO.write(image, "jpg", new File("/home/luisitopapurey/Escritorio/Compiladores 1/ProyectoFinal/src/gramaticaTMP/pruebas"+i+".jpg"));
-            }
-            gif.finish();
-            os.close();
-        } catch (IOException ex) {
-            Logger.getLogger(PanelGrafico.class.getName()).log(Level.SEVERE, null, ex);
+        //Animaciones animacion = new Animaciones();
+        if(miLienzo.getTipo().equals("png")){
+            NuevoJPG jpg = new NuevoJPG(null, true, panelMatriz, misTiempos, miLienzo, principal, misPintados, misColores, listPintados, borrador);
+            jpg.setVisible(true);
+          //  animacion.crearPNG("/home/luisitopapurey/Escritorio/Compiladores 1/ProyectoFinal/src/gramaticaTMP", panelMatriz, misTiempos, miLienzo, principal, misPintados, misColores, listPintados, borrador);
+        } else if(miLienzo.getTipo().equals("gif")) {
+            NuevoGif gif = new NuevoGif(null, true, panelMatriz, misTiempos, miLienzo, principal, misPintados, misColores, listPintados, borrador);
+            gif.setVisible(true);
         }
-    }
-    
-    
+        
+    }//GEN-LAST:event_btnGifActionPerformed
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox borrador;
     private javax.swing.JButton btnGif;

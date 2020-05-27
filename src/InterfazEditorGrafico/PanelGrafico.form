@@ -316,7 +316,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnGif">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Generar GIF"/>
+        <Property name="text" type="java.lang.String" value="Generar animacion"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGifActionPerformed"/>

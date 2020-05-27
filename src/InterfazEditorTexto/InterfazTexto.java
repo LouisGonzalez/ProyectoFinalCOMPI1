@@ -18,6 +18,7 @@ import gramaticaPNT.SintaxPNT;
 import gramaticaPNT.TablaSimbolos;
 import gramaticaTMP.AnalizadorLexico4;
 import gramaticaTMP.SintaxTMP;
+import java.awt.Desktop;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -50,13 +51,14 @@ public class InterfazTexto extends javax.swing.JFrame {
     private final VerificacionObjetos verificador2 = new VerificacionObjetos();
     private boolean todoEnOrden = true;
     public static String bandejaErrores = "";
-    
+
     /**
      * Creates new form InterfazTexto
      */
     public InterfazTexto() {
         initComponents();
         setLocationRelativeTo(null);
+        btnGrafico.setEnabled(false);
     }
 
     /**
@@ -81,7 +83,6 @@ public class InterfazTexto extends javax.swing.JFrame {
         btnAnalizador = new javax.swing.JMenuItem();
         menuGenerar = new javax.swing.JMenu();
         btnGrafico = new javax.swing.JMenuItem();
-        btnGenerar = new javax.swing.JMenuItem();
         menuAyuda = new javax.swing.JMenu();
         btnTecnico = new javax.swing.JMenuItem();
         btnUsuario = new javax.swing.JMenuItem();
@@ -151,20 +152,32 @@ public class InterfazTexto extends javax.swing.JFrame {
         });
         menuGenerar.add(btnGrafico);
 
-        btnGenerar.setText("Generar");
-        menuGenerar.add(btnGenerar);
-
         jMenuBar1.add(menuGenerar);
 
         menuAyuda.setText("Ayuda");
 
         btnTecnico.setText("Manual Tecnico");
+        btnTecnico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTecnicoActionPerformed(evt);
+            }
+        });
         menuAyuda.add(btnTecnico);
 
         btnUsuario.setText("Manual de Usuario");
+        btnUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuarioActionPerformed(evt);
+            }
+        });
         menuAyuda.add(btnUsuario);
 
         btnInfo.setText("Acerca de...");
+        btnInfo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInfoActionPerformed(evt);
+            }
+        });
         menuAyuda.add(btnInfo);
 
         jMenuBar1.add(menuAyuda);
@@ -289,46 +302,31 @@ public class InterfazTexto extends javax.swing.JFrame {
                         AnalizadorLexico3 lexer3 = new AnalizadorLexico3(new StringReader(textos[i]));
                         try {
                             new SintaxPNT(lexer3, listTabla, tabla, listLienzos, listColores, listTiempos, listPintar, listPintados).parse();
-                                 JOptionPane.showMessageDialog(null, "Ver");
-                       for (int j = 0; j < listTabla.size(); j++) {
+                       /*     for (int j = 0; j < listTabla.size(); j++) {
                                 if (listTabla.get(j).getTipo().equals("Integer")) {
                                     System.out.println(listTabla.get(j).getId() + " - " + listTabla.get(j).getValorEntero());
                                 } else if (listTabla.get(j).getTipo().equals("String")) {
                                     System.out.println(listTabla.get(j).getId() + " - " + listTabla.get(j).getValorCadena());
                                 } else if (listTabla.get(j).getTipo().equals("Boolean")) {
                                     System.out.println(listTabla.get(j).getId() + " - " + listTabla.get(j).getValorBoolean());
-
                                 }
-
                             }
                             for (int j = 0; j < listPintados.size(); j++) {
-                                System.out.println("id: "+j+" - "+listPintados.get(j).getPosX() + " - " + listPintados.get(j).getPosY() + " - "+listPintados.get(j).getIdColor() + " - "+listPintados.get(j).getIdImagen()+" - "+listPintados.get(j).getNombreLienzo());
-                                
-                            }
-                            
-                            verificador2.verificarCuadrosPorPintar(listPintados, listLienzos, listTiempos, listColores);
-                            
-                            
-                           
-                            
-                            
-                            
-                            
-                            
-                            
-                        } catch (Exception ex) {
+                                System.out.println("id: " + j + " - " + listPintados.get(j).getPosX() + " - " + listPintados.get(j).getPosY() + " - " + listPintados.get(j).getIdColor() + " - " + listPintados.get(j).getIdImagen() + " - " + listPintados.get(j).getNombreLienzo());
 
+                            }*/
+                            verificador2.verificarCuadrosPorPintar(listPintados, listLienzos, listTiempos, listColores);
+
+                        } catch (Exception ex) {
                             Logger.getLogger(PanelTexto.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else if (paths[i].endsWith(".clrs")) {
                         AnalizadorLexico lexer = new AnalizadorLexico(new StringReader(textos[i]));
                         try {
                             new SintaxCLRS(lexer, listColores).parse();
-                            
-                            if(!verificador2.verificarLienzosColores(listLienzos, listColores)){
+                            if (!verificador2.verificarLienzosColores(listLienzos, listColores)) {
                                 todoEnOrden = false;
-                            } 
-                            
+                            }
                         } catch (Exception ex) {
                             Logger.getLogger(PanelTexto.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -337,21 +335,16 @@ public class InterfazTexto extends javax.swing.JFrame {
                         try {
                             new SintaxLNZ(lexer2, listLienzos, txtErrores).parse();
                         } catch (Exception ex) {
-                            System.out.println(".LNZ");
                             Logger.getLogger(PanelTexto.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else if (paths[i].endsWith(".tmp")) {
                         AnalizadorLexico4 lexer4 = new AnalizadorLexico4(new StringReader(textos[i]));
                         try {
                             new SintaxTMP(lexer4, listTiempos).parse();
-                            
-                            if(!verificador2.verificarLienzosTiempos(listLienzos, listTiempos)){
+                            if (!verificador2.verificarLienzosTiempos(listLienzos, listTiempos)) {
                                 todoEnOrden = false;
                             }
-                            
-                                                        
                         } catch (Exception ex) {
-                            System.out.println(".TMP");
                             Logger.getLogger(PanelTexto.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
@@ -360,8 +353,39 @@ public class InterfazTexto extends javax.swing.JFrame {
         }
         txtErrores.setText(bandejaErrores);
         bandejaErrores = "";
-       
+        if (txtErrores.getText().equals("")) {
+            btnGrafico.setEnabled(true);
+        } else {
+            btnGrafico.setEnabled(false);
+        }
     }//GEN-LAST:event_btnAnalizadorActionPerformed
+
+    private void btnTecnicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTecnicoActionPerformed
+        try {
+            File file = new File("/home/luisitopapurey/Escritorio/Compiladores 1/ProyectoFinal/Documentacion/Manual Tecnico/Manual Tecnico.pdf");
+            Desktop.getDesktop().open(file);
+        } catch (IOException ex) {
+            Logger.getLogger(InterfazTexto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnTecnicoActionPerformed
+
+    private void btnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioActionPerformed
+        try {
+            File file = new File("/home/luisitopapurey/Escritorio/Compiladores 1/ProyectoFinal/Documentacion/Manual de Usuario/Manual de Usuario.pdf");
+            Desktop.getDesktop().open(file);
+        } catch (IOException ex) {
+            Logger.getLogger(InterfazTexto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnUsuarioActionPerformed
+
+    private void btnInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoActionPerformed
+        File file = new File("/home/luisitopapurey/Escritorio/Compiladores 1/ProyectoFinal/Documentacion/Acerca de/Acerca de.pdf");
+        try {
+            Desktop.getDesktop().open(file);
+        } catch (IOException ex) {
+            Logger.getLogger(InterfazTexto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnInfoActionPerformed
 
     private void abrirPanel(String titulo, String[] texto, String path) {
         PanelTexto panel;
@@ -404,7 +428,6 @@ public class InterfazTexto extends javax.swing.JFrame {
     private javax.swing.JMenuItem archivoNuevo;
     private javax.swing.JMenuItem archivoSalir;
     private javax.swing.JMenuItem btnAnalizador;
-    private javax.swing.JMenuItem btnGenerar;
     private javax.swing.JMenuItem btnGrafico;
     private javax.swing.JMenuItem btnInfo;
     private javax.swing.JMenuItem btnTecnico;

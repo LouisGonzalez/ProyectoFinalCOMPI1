@@ -1,0 +1,29 @@
+{
+	COLORES:{
+		otroLienzo:{
+			otroColor:{
+				Red: 28,
+				Blue: 0,
+				Green: 14
+			},
+			MiAmarillo:{
+				HEX: #ADD125
+			}
+		},
+		lienzoId1:{
+			VerdePalido:{
+				HEX: #Acd125
+			},
+			MiAmarillo:{
+				Red: 255,
+				Blue: 12,
+				Green: 75
+			},
+			azul:{
+				Red: 51,
+				Blue: 204,
+				Green: 255
+			}
+		}
+	}
+}

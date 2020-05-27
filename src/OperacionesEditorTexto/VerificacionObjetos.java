@@ -173,7 +173,7 @@ public class VerificacionObjetos {
     public void mostrarCuadrosFalsos(ArrayList<Pintados> listPintados) {
         for (int i = 0; i < listPintados.size(); i++) {
             if (!listPintados.get(i).getFunciono()) {
-                InterfazTexto.bandejaErrores += "El cuadro a pintar no. " + i + " no existe dentro de ningun lienzo.\n";
+                InterfazTexto.bandejaErrores += "El cuadro a pintar con datos: Lienzo: "+listPintados.get(i).getNombreLienzo()+", Color: "+listPintados.get(i).getIdColor()+", Imagen: "+listPintados.get(i).getIdImagen()+", PosX: "+listPintados.get(i).getPosX()+", PosY: "+listPintados.get(i).getPosY()+" no existe dentro de ningun lienzo.\n";
             }
         }
     }

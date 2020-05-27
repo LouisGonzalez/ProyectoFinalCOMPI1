@@ -25,7 +25,6 @@ public class CasillasAPintar {
         if (lista.getOpX() != null) {
 
             valorVarx[0] = calcularOperacion(lista.getOpX(), tabla, listValores, linea, columna);
-            System.out.println(valorVarx[0] + " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEO");
         } else {
             valorVarx[0] = verificarValor(lista.getRangoX()[0], listValores);
             if (lista.getRangoX()[1] != null) {
@@ -34,15 +33,11 @@ public class CasillasAPintar {
 
         }
         if (lista.getOpY() != null) {
-
             valorVary[0] = calcularOperacion(lista.getOpY(), tabla, listValores, linea, columna);
-
-            System.out.println(valorVary[0] + " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEOoooooooooo");
         } else {
             valorVary[0] = verificarValor(lista.getRangoY()[0], listValores);
             if (lista.getRangoY()[1] != null) {
                 valorVary[1] = verificarValor(lista.getRangoY()[1], listValores);
-                System.out.println(valorVary[1]);
             }
 
         }
@@ -132,7 +127,6 @@ public class CasillasAPintar {
             }*/
 
             for (int i = 0; i < listOp.size(); i++) {
-                System.out.println(listOp.get(i).getDato().toString() + "         ESTE ES EL DATO MODERFUCKER " + listOp.get(i).getOperacion());
             }
 
             ArrayList<OpAritmeticasWhile> listAux = new ArrayList<>();
@@ -142,7 +136,6 @@ public class CasillasAPintar {
             suma = cond.calculoValorVariable(listAux, tabla, listValores, linea, columna);
 
         }
-        System.out.println("El valor de suma para pintar es de " + suma);
         return suma;
     }
 

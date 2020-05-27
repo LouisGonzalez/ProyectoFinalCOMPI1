@@ -5,7 +5,7 @@
    			 Red: 255,
 			 Blue: 12,
    			 Green: 75
-   		 },
+   		},
    		 VerdePalido:{
    			 HEX: #Acd125
    		 }

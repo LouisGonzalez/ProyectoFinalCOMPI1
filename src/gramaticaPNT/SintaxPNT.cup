@@ -55,6 +55,11 @@ parser code {:
 
     public void syntax_error(Symbol s){
         setAccion("ERROR", "Error sintaxis columna: "+s.right+" fila: "+s.left,"");
+        if(totalErrores.equals("")){
+            totalErrores = "ERROR: Error sintaxis: Linea: "+s.left+" Columna: "+s.right+".\n";
+        } else {
+            totalErrores += "ERROR: Error sintaxis: Linea: "+s.left+" Columna: "+s.right+".\n";
+        }
     }
 
     public void traspasarDatos(ArrayList<OpAritmeticasWhile> list, ArrayList<OpAritmeticasWhile> aux){
@@ -95,7 +100,7 @@ parser code {:
 
     start with a;
 
-    a ::= b c {: if(!parser.todoCorrecto) { System.out.println(parser.totalErrores);  InterfazTexto.bandejaErrores += "ERRORES .PNT:\n"; InterfazTexto.bandejaErrores += parser.totalErrores; InterfazTexto.bandejaErrores += "--------------------------------------------------------\n"; parser.totalErrores = ""; } :}
+    a ::= b c {: if(!parser.todoCorrecto) {  InterfazTexto.bandejaErrores += "ERRORES .PNT:\n"; InterfazTexto.bandejaErrores += parser.totalErrores; InterfazTexto.bandejaErrores += "--------------------------------------------------------\n"; parser.totalErrores = ""; parser.todoCorrecto = true; } :}
     | error {: parser.todoCorrecto = false; :}
 ;
     b ::= VARS AGRUPACION_A b1 AGRUPACION_B
@@ -109,7 +114,7 @@ parser code {:
     | BOOLEAN ID:a IGUAL TRUE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, true); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida anteriormente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b5 PUNTO_COMA b1:e
     | BOOLEAN ID:a IGUAL FALSE {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ ValoresPNT valor = new ValoresPNT("Boolean", a.toString(), null, null, false); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida anteriormente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b5 PUNTO_COMA b1:e 
     |    
-    | error b1:a {: parser.totalErrores += "Declaracion de variable incorrecta.\n"; parser.todoCorrecto = false; RESULT=a; :} 
+    | error b1:a {: parser.totalErrores += "Declaracion de instruccion incorrecta.\n"; parser.todoCorrecto = false; RESULT=a; :} 
 ;
     b2prima1 ::= ID:a MAS b2prima1:b {: parser.signoActual = ""; if(parser.booleanWhile != null){ if(parser.booleanWhile){  OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "SUMA", "String");  parser.listOp.add(opWhile);  } }  Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer", (Integer) aleft, (Integer) aright); if(id == null) {  parser.todoCorrecto = false;   } else { if(b == null){ RESULT=null; } else { Integer aDevolver = id + b.intValue(); RESULT=aDevolver; } } :}
     | NUMERO:a MAS b2prima1:b {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "SUMA", "Integer");   parser.listOp.add(opWhile);  } } if(b==null){ parser.todoCorrecto = false; RESULT=null; } else { Integer aDevolver = (Integer) a + b.intValue(); RESULT=aDevolver; } :}
@@ -120,7 +125,7 @@ parser code {:
     | ID:a {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, null, "String");   parser.listOp.add(opWhile); } }  Integer aDevolver = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer", (Integer) aleft, (Integer) aright); if(aDevolver == null){ parser.todoCorrecto = false; } RESULT=aDevolver; :}
     | NUMERO:a {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, null, "Integer");  parser.listOp.add(opWhile); } }  RESULT=(Integer) a; :}
     |   
-    | error b2prima1:a {: parser.totalErrores += "Declaracion de variable incorrecta.\n"; parser.todoCorrecto = false;  RESULT=a; :}
+    | error b2prima1:a {: parser.totalErrores += "Declaracion de instruccion incorrecta.\n"; parser.todoCorrecto = false;  RESULT=a; :}
 ;
     b2prima3 ::= b2prima3:a MAS {: parser.signoActual = "SUMA"; :} b2prima3:b {: if(a!=null && b != null){  RESULT=a + b; } else {  RESULT=null; } :}
     | b2prima3:a MENOS {: parser.signoActual = "RESTA"; :} b2prima3:b {: if(a!=null && b!=null){ RESULT=a-b; } else {  RESULT=null; } :}
@@ -129,7 +134,7 @@ parser code {:
     | ID:a {:   if(parser.booleanWhile != null){ if(parser.booleanWhile){ OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, parser.signoActual, "String"); parser.listOp.add(opWhile); } }     Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer", (Integer) aleft, (Integer) aright); if(id!= null){ RESULT=id; } else { RESULT=null; } :}
     | NUMERO:a {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, parser.signoActual, "Integer"); parser.listOp.add(opWhile); } }    RESULT=(Integer) a; :}
     |
-    | error b2prima3:a {: parser.totalErrores += "Declaracion de variable incorrecta.\n"; parser.todoCorrecto = false; :}
+    | error b2prima3:a {: parser.totalErrores += "Declaracion de instruccion incorrecta.\n"; parser.todoCorrecto = false; :}
 ;
     b2prima4 ::= b2prima4:a MAS {: parser.signoActual2 = "SUMA"; :} b2prima4:b {: if(a!=null && b != null){ RESULT=a+b;  } else { RESULT=null; } :}
     | b2prima4:a MENOS {: parser.signoActual2 = "RESTA"; :} b2prima4:b {: if(a!=null && b!=null){ RESULT= a-b; } else { RESULT=null; } :}
@@ -138,7 +143,7 @@ parser code {:
     | ID:a {: if(parser.booleanIf != null){ if(parser.booleanIf){  OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, parser.signoActual2, "String"); parser.listOp.add(opWhile);  } } else { OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, parser.signoActual2, "String"); parser.listOp.add(opWhile); }  Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer", (Integer) aleft, (Integer) aright); if(id!= null) { RESULT= id; } else { RESULT=null; } :}
     | NUMERO:a {: if(parser.booleanIf != null){ if(parser.booleanIf){ OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, parser.signoActual2, "Integer"); parser.listOp.add(opWhile);  } } else { OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, parser.signoActual2, "Integer"); parser.listOp.add(opWhile); }  RESULT = (Integer) a; :}
     |
-    | error b2prima4:a {: parser.totalErrores += "Declaracion de variable incorrecta.\n"; parser.todoCorrecto = false; :}
+    | error b2prima4:a {: parser.totalErrores += "Declaracion de instruccion incorrecta.\n"; parser.todoCorrecto = false; :}
 ;
     b2prima2 ::=  ID:a MAS b2prima2:b {:   OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "SUMA", "String");  parser.listOp.add(opWhile);   Integer id = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer", (Integer) aleft, (Integer) aright); if(id == null) { parser.todoCorrecto = false; } else { if(b == null){ parser.todoCorrecto = false; RESULT=null; } else { Integer aDevolver = id + b; RESULT=aDevolver; } } :}
     | NUMERO:a MAS b2prima2:b {: OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, "SUMA", "Integer");   parser.listOp.add(opWhile);  if(b==null){ parser.todoCorrecto = false; RESULT=null; } else { Integer aDevolver = (Integer) a + b; RESULT=aDevolver; } :}
@@ -149,7 +154,7 @@ parser code {:
     | ID:a {: if(parser.booleanIf != null){ if(parser.booleanIf){    OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, null, "String");   parser.listOp.add(opWhile); } } else {  OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, null, "String");   parser.listOp.add(opWhile); }   Integer aDevolver = (Integer) parser.tabla.verificarUnValor(a.toString(), parser.listValores, "Integer", (Integer) aleft, (Integer) aright); if(aDevolver == null){ parser.todoCorrecto = false; } RESULT=aDevolver; :}
     | NUMERO:a {:  if(parser.booleanIf != null){ if(parser.booleanIf){  OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, null, "Integer");  parser.listOp.add(opWhile); } } else { OpAritmeticasWhile opWhile = new OpAritmeticasWhile(a, null, "Integer");  parser.listOp.add(opWhile); }  RESULT=(Integer) a; :}
     |
-    | error b2prima2:a {: parser.totalErrores += "Declaracion de variable incorrecta.\n"; parser.todoCorrecto = false; RESULT=a; :}
+    | error b2prima2:a {: parser.totalErrores += "Declaracion de instruccion incorrecta.\n"; parser.todoCorrecto = false; RESULT=a; :}
 ;
     b3 ::= COMA ID:a IGUAL b2prima3:b {: if(!parser.tabla.verificarId(a.toString(), parser.listValores)){ if(b!=null){ ValoresPNT valor = new ValoresPNT("Integer", a.toString(), null, b, null); parser.tabla.agregarDato(parser.listValores, valor); } else { parser.todoCorrecto = false; } } else { parser.totalErrores += "La variable "+a.toString()+" ya ha sido definida previamente. Linea: "+aleft+" Columna: "+aright+".\n"; parser.todoCorrecto = false; } :} b3
     |
@@ -167,7 +172,6 @@ parser code {:
 ;
     c1 ::= PINTAR PARENTESIS_A idColor:a COMA idImagen:b COMA  posX:c {: if(parser.nuevaOpX != null){ parser.traspasarDatos(parser.listOp, parser.listAux); } parser.listOp = new ArrayList<>();  :}  COMA posY:d PARENTESIS_B PUNTO_COMA 
         {:  if(parser.booleanIf == null || parser.booleanIf){ 
-                System.out.println("cumplo "+b.toString()); 
                 CuadrosPintar cuadros = new CuadrosPintar(a.toString(), b.toString()); 
                 if(parser.nuevaOpX != null){                    
                     cuadros.setOpX(parser.listAux);                 
@@ -207,7 +211,6 @@ parser code {:
         
         if(parser.booleanWhile != null){
             if(parser.booleanWhile){ 
-                System.out.println("Entro aquii");
                 CondicionalIf cond = new CondicionalIf(a, parser.contIfs); 
                 parser.ciclo.setCondicional(cond); 
             }
@@ -275,7 +278,7 @@ parser code {:
 
 
 
-    | WHILE PARENTESIS_A {:parser.booleanWhile = true;:}  c2:a {: if(parser.booleanIf != null){ if(parser.booleanIf){ parser.ciclo.setMiCondicional(parser.listCondw);  parser.booleanWhile = null; } } else { parser.ciclo.setMiCondicional(parser.listCondw);  parser.booleanWhile = null; } :}
+    | WHILE PARENTESIS_A {:parser.booleanWhile = true;:}  c2:a {: if(parser.booleanIf != null){ if(parser.booleanIf){  parser.ciclo.setMiCondicional(parser.listCondw);  parser.booleanWhile = null; } } else { parser.ciclo.setMiCondicional(parser.listCondw);  parser.booleanWhile = null; } :}
         {:
         ArrayList<TipoEncadenamiento> listAux = new ArrayList<>();
         listAux = parser.cond.devolverArreglo(parser.ciclo, parser.tabla, parser.listValores);
@@ -314,7 +317,7 @@ parser code {:
                 } 
             }    
         } else {
-            if(parser.booleanIf){
+           
                 if(parser.booleanWhile == null){ 
                     parser.entro = true; 
                     if(parser.cond.verificar2(listAux) == null){ 
@@ -347,13 +350,13 @@ parser code {:
                     parser.entro = false;   
                 }
 
-            }
+            
         }    
-         :} PARENTESIS_B LLAVE_A {: System.out.println("VALOR DEL WHILE JUSTO AHORA "+parser.booleanWhile); :} c1:b {: if(parser.booleanIf != null){ if(parser.booleanIf){   parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual, (Integer) aleft, (Integer) aright); parser.booleanWhile = false; } } else {  parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual, (Integer) aleft, (Integer) aright); parser.booleanWhile = false; }  :} LLAVE_B c1
+         :} PARENTESIS_B LLAVE_A c1:b {: parser.listCondw = new ArrayList<>(); if(parser.booleanIf != null){ if(parser.booleanIf){   parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual, (Integer) aleft, (Integer) aright); parser.booleanWhile = false;  } } else {  parser.cond.repetirCiclo(a, parser.ciclo, parser.listValores, parser.listPintados, parser.lienzoActual, (Integer) aleft, (Integer) aright); parser.booleanWhile = false;  }   :} LLAVE_B c1
     
     | b8 c1
     |
-    | error {:  parser.totalErrores += "Mala definicion de instruccion.\n";  parser.todoCorrecto = false; :}
+    | error c1 {:  parser.totalErrores += "Mala definicion de instruccion.\n";  parser.todoCorrecto = false; :}
 ;
     else1 ::= ELSE LLAVE_A 
         {: if(parser.verificador != null){ 
@@ -378,7 +381,7 @@ parser code {:
         } :} LLAVE_B {:  parser.booleanIf = null; if(parser.booleanWhile != null){ if(parser.booleanWhile == true){ parser.contIfs++; } } :} c1:b
     | {: parser.booleanIf = null; if(parser.booleanWhile !=null){ if(parser.booleanWhile == true){ parser.contIfs++; } } :}  c1:a
 ;
-    b8 ::= ID:a IGUAL b2prima3:b PUNTO_COMA {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ Operacion op = new Operacion(a.toString()); op.setMiOperacion(parser.listOp); if(parser.booleanIf!=null){ if(parser.booleanIf){ op.setNoIf(parser.contIfs); } } System.out.println("SE HA AGREGADO LA OPERACION"); parser.ciclo.getListOp().add(op); parser.listOp = new ArrayList<>(); } }  parser.tabla.modificarValor(a.toString(), parser.listValores, "Integer", b, (Integer) aleft, (Integer) aright); :} 
+    b8 ::= ID:a IGUAL b2prima3:b PUNTO_COMA {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ Operacion op = new Operacion(a.toString()); op.setMiOperacion(parser.listOp); if(parser.booleanIf!=null){ if(parser.booleanIf){ op.setNoIf(parser.contIfs); } }  parser.ciclo.getListOp().add(op); parser.listOp = new ArrayList<>(); } }  parser.tabla.modificarValor(a.toString(), parser.listValores, "Integer", b, (Integer) aleft, (Integer) aright); :} 
     | ID:a IGUAL COMILLAS ID:b COMILLAS PUNTO_COMA {: parser.tabla.modificarValor(a.toString(), parser.listValores, "String", b, (Integer) aleft, (Integer) aright); :}
     | ID:a IGUAL TRUE PUNTO_COMA {: Object objeto = true; parser.tabla.modificarValor(a.toString(), parser.listValores, "Boolean", objeto, (Integer) aleft, (Integer) aright); :}
     | ID:a IGUAL FALSE PUNTO_COMA {: Object objeto = false; parser.tabla.modificarValor(a.toString(), parser.listValores, "Boolean", objeto, (Integer) aleft, (Integer) aright); :}
@@ -391,7 +394,7 @@ parser code {:
     ext ::= AND bools:a {: if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.condWhile.setCadena("AND"); parser.listCondw.add(parser.condWhile); parser.condWhile = new CondicionWhile(); } } :}  ext:b {:  TipoEncadenamiento tipo = new TipoEncadenamiento("AND", Boolean.valueOf(a.toString())); b.add(tipo); RESULT=b; :}
     | OR bools:a  {:  if(parser.booleanWhile != null){ if(parser.booleanWhile){ parser.condWhile.setCadena("OR"); parser.listCondw.add(parser.condWhile); parser.condWhile = new CondicionWhile(); } } :}  ext:b {:   TipoEncadenamiento tipo = new TipoEncadenamiento("OR", Boolean.valueOf(a.toString())); b.add(tipo); RESULT=b; :}
     | {: ArrayList<TipoEncadenamiento> booleanos = new ArrayList<>(); RESULT=booleanos;  :}
-    | error {: parser.totalErrores += "Error al momento de encadenar una condicion AND u OR.\n"; parser.todoCorrecto = false;  :}
+    | error ext {: parser.totalErrores += "Error al momento de encadenar una condicion AND u OR.\n"; parser.todoCorrecto = false;  :}
 ;
     bools ::= c3:a relacional:b c3:c {: parser.condWhile.setTipo("Tipo1");   Boolean valor = parser.tabla.comprobarCondicionTipo1(a, (Integer) b, c); RESULT=valor; :}
     | ID:a {: if(parser.booleanWhile!= null){ if(parser.booleanWhile){ parser.condWhile.setTipo("Tipo2");  parser.condWhile.setDato1(a); } } Boolean valor = parser.tabla.comprobarCondicionTipo2(a.toString(), parser.listValores); RESULT=valor; :}
